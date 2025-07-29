@@ -176,14 +176,11 @@ export type Page = {
   slug: Slug;
   heading: string;
   subheading?: string;
-  pageBuilder?: Array<
-    | ({
-        _key: string;
-      } & CallToAction)
-    | ({
-        _key: string;
-      } & InfoSection)
-  >;
+  pageBuilder?: Array<{
+    _key: string;
+  } & CallToAction | {
+    _key: string;
+  } & InfoSection>;
 };
 
 export type Post = {
@@ -252,21 +249,17 @@ export type SanityAssistInstructionTask = {
 
 export type SanityAssistTaskStatus = {
   _type: "sanity.assist.task.status";
-  tasks?: Array<
-    {
-      _key: string;
-    } & SanityAssistInstructionTask
-  >;
+  tasks?: Array<{
+    _key: string;
+  } & SanityAssistInstructionTask>;
 };
 
 export type SanityAssistSchemaTypeAnnotations = {
   _type: "sanity.assist.schemaType.annotations";
   title?: string;
-  fields?: Array<
-    {
-      _key: string;
-    } & SanityAssistSchemaTypeField
-  >;
+  fields?: Array<{
+    _key: string;
+  } & SanityAssistSchemaTypeField>;
 };
 
 export type SanityAssistOutputType = {
@@ -319,23 +312,18 @@ export type SanityAssistInstructionUserInput = {
 };
 
 export type SanityAssistInstructionPrompt = Array<{
-  children?: Array<
-    | {
-        marks?: Array<string>;
-        text?: string;
-        _type: "span";
-        _key: string;
-      }
-    | ({
-        _key: string;
-      } & SanityAssistInstructionFieldRef)
-    | ({
-        _key: string;
-      } & SanityAssistInstructionContext)
-    | ({
-        _key: string;
-      } & SanityAssistInstructionUserInput)
-  >;
+  children?: Array<{
+    marks?: Array<string>;
+    text?: string;
+    _type: "span";
+    _key: string;
+  } | {
+    _key: string;
+  } & SanityAssistInstructionFieldRef | {
+    _key: string;
+  } & SanityAssistInstructionContext | {
+    _key: string;
+  } & SanityAssistInstructionUserInput>;
   style?: "normal";
   listItem?: never;
   markDefs?: null;
@@ -356,24 +344,19 @@ export type SanityAssistInstruction = {
   title?: string;
   userId?: string;
   createdById?: string;
-  output?: Array<
-    | ({
-        _key: string;
-      } & SanityAssistOutputField)
-    | ({
-        _key: string;
-      } & SanityAssistOutputType)
-  >;
+  output?: Array<{
+    _key: string;
+  } & SanityAssistOutputField | {
+    _key: string;
+  } & SanityAssistOutputType>;
 };
 
 export type SanityAssistSchemaTypeField = {
   _type: "sanity.assist.schemaType.field";
   path?: string;
-  instructions?: Array<
-    {
-      _key: string;
-    } & SanityAssistInstruction
-  >;
+  instructions?: Array<{
+    _key: string;
+  } & SanityAssistInstruction>;
 };
 
 export type SanityImagePaletteSwatch = {
@@ -494,38 +477,7 @@ export type SanityAssetSourceData = {
   url?: string;
 };
 
-export type AllSanitySchemaTypes =
-  | CallToAction
-  | Link
-  | InfoSection
-  | BlockContent
-  | Settings
-  | Page
-  | Post
-  | Person
-  | SanityAssistInstructionTask
-  | SanityAssistTaskStatus
-  | SanityAssistSchemaTypeAnnotations
-  | SanityAssistOutputType
-  | SanityAssistOutputField
-  | SanityAssistInstructionContext
-  | AssistInstructionContext
-  | SanityAssistInstructionUserInput
-  | SanityAssistInstructionPrompt
-  | SanityAssistInstructionFieldRef
-  | SanityAssistInstruction
-  | SanityAssistSchemaTypeField
-  | SanityImagePaletteSwatch
-  | SanityImagePalette
-  | SanityImageDimensions
-  | SanityImageHotspot
-  | SanityImageCrop
-  | SanityFileAsset
-  | SanityImageAsset
-  | SanityImageMetadata
-  | Geopoint
-  | Slug
-  | SanityAssetSourceData;
+export type AllSanitySchemaTypes = CallToAction | Link | InfoSection | BlockContent | Settings | Page | Post | Person | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./sanity/lib/queries.ts
 // Variable: settingsQuery
@@ -584,91 +536,80 @@ export type SettingsQueryResult = {
     _type: "image";
   };
 } | null;
+// Variable: homeQuery
+// Query: *[_type == 'home'][0]{    _id,    _type,    "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),    "description": coalesce(description[_key == $language][0].value, description[_key == "es"][0].value, description[0].value),    "sections": sections[]{      ...,      _key,      _type == "inicioSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "subtitle1": coalesce(subtitle1[_key == $language][0].value, subtitle1[_key == "es"][0].value, subtitle1[0].value),        "subtitle2": coalesce(subtitle2[_key == $language][0].value, subtitle2[_key == "es"][0].value, subtitle2[0].value),        "highlightedWord": coalesce(highlightedWord[_key == $language][0].value, highlightedWord[_key == "es"][0].value, highlightedWord[0].value),        "subtitle3": coalesce(subtitle3[_key == $language][0].value, subtitle3[_key == "es"][0].value, subtitle3[0].value),        "location": coalesce(location[_key == $language][0].value, location[_key == "es"][0].value, location[0].value),      },      _type == "manifiestoSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "content": coalesce(content[_key == $language][0].value, content[_key == "es"][0].value, content[0].value),        backgroundColor,      },      _type == "trabajosSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "description": coalesce(description[_key == $language][0].value, description[_key == "es"][0].value, description[0].value),        maxPosts,        backgroundColor,      },      _type == "algunaIdeaSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "description": coalesce(description[_key == $language][0].value, description[_key == "es"][0].value, description[0].value),        backgroundColor,      },      _type == "cursosSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "description": coalesce(description[_key == $language][0].value, description[_key == "es"][0].value, description[0].value),        backgroundColor,      },      _type == "tiendaSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "description": coalesce(description[_key == $language][0].value, description[_key == "es"][0].value, description[0].value),        backgroundColor,      },      _type == "contactoSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "description": coalesce(description[_key == $language][0].value, description[_key == "es"][0].value, description[0].value),        backgroundColor,      },    },  }
+export type HomeQueryResult = null;
 // Variable: getPageQuery
-// Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    name,    slug,    heading,    subheading,    "pageBuilder": pageBuilder[]{      ...,      _type == "callToAction" => {          link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }      },      },      _type == "infoSection" => {        content[]{          ...,          markDefs[]{            ...,              _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }          }        }      },    },  }
+// Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    "name": coalesce(name[_key == $language][0].value, name[_key == "es"][0].value, name[0].value),    slug,    "heading": coalesce(heading[_key == $language][0].value, heading[_key == "es"][0].value, heading[0].value),    "subheading": coalesce(subheading[_key == $language][0].value, subheading[_key == "es"][0].value, subheading[0].value),    "pageBuilder": pageBuilder[]{      ...,      _type == "callToAction" => {          link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }      },      },      _type == "infoSection" => {        content[]{          ...,          markDefs[]{            ...,              _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }          }        }      },      _type == "inicioSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "subtitle1": coalesce(subtitle1[_key == $language][0].value, subtitle1[_key == "es"][0].value, subtitle1[0].value),        "subtitle2": coalesce(subtitle2[_key == $language][0].value, subtitle2[_key == "es"][0].value, subtitle2[0].value),        "highlightedWord": coalesce(highlightedWord[_key == $language][0].value, highlightedWord[_key == "es"][0].value, highlightedWord[0].value),        "subtitle3": coalesce(subtitle3[_key == $language][0].value, subtitle3[_key == "es"][0].value, subtitle3[0].value),        "location": coalesce(location[_key == $language][0].value, location[_key == "es"][0].value, location[0].value),      },    },  }
 export type GetPageQueryResult = {
   _id: string;
   _type: "page";
-  name: string;
+  name: null;
   slug: Slug;
-  heading: string;
-  subheading: string | null;
-  pageBuilder: Array<
-    | {
-        _key: string;
-        _type: "callToAction";
-        heading: string;
+  heading: null;
+  subheading: null;
+  pageBuilder: Array<{
+    _key: string;
+    _type: "callToAction";
+    heading: string;
+    text?: string;
+    buttonText?: string;
+    link: {
+      _type: "link";
+      linkType?: "href" | "page" | "post";
+      href?: string;
+      page: string | null;
+      post: string | null;
+      openInNewTab?: boolean;
+    } | null;
+  } | {
+    _key: string;
+    _type: "infoSection";
+    heading?: string;
+    subheading?: string;
+    content: Array<{
+      children?: Array<{
+        marks?: Array<string>;
         text?: string;
-        buttonText?: string;
-        link: {
-          _type: "link";
-          linkType?: "href" | "page" | "post";
-          href?: string;
-          page: string | null;
-          post: string | null;
-          openInNewTab?: boolean;
-        } | null;
-      }
-    | {
+        _type: "span";
         _key: string;
-        _type: "infoSection";
-        heading?: string;
-        subheading?: string;
-        content: Array<{
-          children?: Array<{
-            marks?: Array<string>;
-            text?: string;
-            _type: "span";
-            _key: string;
-          }>;
-          style?:
-            | "blockquote"
-            | "h1"
-            | "h2"
-            | "h3"
-            | "h4"
-            | "h5"
-            | "h6"
-            | "normal";
-          listItem?: "bullet" | "number";
-          markDefs: Array<{
-            linkType?: "href" | "page" | "post";
-            href?: string;
-            page: string | null;
-            post: string | null;
-            openInNewTab?: boolean;
-            _type: "link";
-            _key: string;
-          }> | null;
-          level?: number;
-          _type: "block";
-          _key: string;
-        }> | null;
-      }
-  > | null;
+      }>;
+      style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+      listItem?: "bullet" | "number";
+      markDefs: Array<{
+        linkType?: "href" | "page" | "post";
+        href?: string;
+        page: string | null;
+        post: string | null;
+        openInNewTab?: boolean;
+        _type: "link";
+        _key: string;
+      }> | null;
+      level?: number;
+      _type: "block";
+      _key: string;
+    }> | null;
+  }> | null;
 } | null;
 // Variable: sitemapData
 // Query: *[_type == "page" || _type == "post" && defined(slug.current)] | order(_type asc) {    "slug": slug.current,    _type,    _updatedAt,  }
-export type SitemapDataResult = Array<
-  | {
-      slug: string;
-      _type: "page";
-      _updatedAt: string;
-    }
-  | {
-      slug: string;
-      _type: "post";
-      _updatedAt: string;
-    }
->;
+export type SitemapDataResult = Array<{
+  slug: string;
+  _type: "page";
+  _updatedAt: string;
+} | {
+  slug: string;
+  _type: "post";
+  _updatedAt: string;
+}>;
 // Variable: allPostsQuery
-// Query: *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  "author": author->{firstName, lastName, picture},  }
+// Query: *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value, "Untitled"),  "slug": slug.current,  "excerpt": coalesce(excerpt[_key == $language][0].value, excerpt[_key == "es"][0].value, excerpt[0].value),  coverImage,  "date": coalesce(date, _updatedAt),  "author": author->{firstName, lastName, picture},  }
 export type AllPostsQueryResult = Array<{
   _id: string;
   status: "draft" | "published";
-  title: string;
+  title: "Untitled";
   slug: string;
-  excerpt: string | null;
+  excerpt: null;
   coverImage: {
     asset?: {
       _ref: string;
@@ -702,13 +643,13 @@ export type AllPostsQueryResult = Array<{
   } | null;
 }>;
 // Variable: morePostsQuery
-// Query: *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  "author": author->{firstName, lastName, picture},  }
+// Query: *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value, "Untitled"),  "slug": slug.current,  "excerpt": coalesce(excerpt[_key == $language][0].value, excerpt[_key == "es"][0].value, excerpt[0].value),  coverImage,  "date": coalesce(date, _updatedAt),  "author": author->{firstName, lastName, picture},  }
 export type MorePostsQueryResult = Array<{
   _id: string;
   status: "draft" | "published";
-  title: string;
+  title: "Untitled";
   slug: string;
-  excerpt: string | null;
+  excerpt: null;
   coverImage: {
     asset?: {
       _ref: string;
@@ -742,35 +683,14 @@ export type MorePostsQueryResult = Array<{
   } | null;
 }>;
 // Variable: postQuery
-// Query: *[_type == "post" && slug.current == $slug] [0] {    content[]{    ...,    markDefs[]{      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }    }  },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  "author": author->{firstName, lastName, picture},  }
+// Query: *[_type == "post" && slug.current == $slug] [0] {    "content": coalesce(content[_key == $language][0].value, content[_key == "es"][0].value, content[0].value)[]{    ...,    markDefs[]{      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }    }  },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value, "Untitled"),  "slug": slug.current,  "excerpt": coalesce(excerpt[_key == $language][0].value, excerpt[_key == "es"][0].value, excerpt[0].value),  coverImage,  "date": coalesce(date, _updatedAt),  "author": author->{firstName, lastName, picture},  }
 export type PostQueryResult = {
-  content: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
-    listItem?: "bullet" | "number";
-    markDefs: Array<{
-      linkType?: "href" | "page" | "post";
-      href?: string;
-      page: string | null;
-      post: string | null;
-      openInNewTab?: boolean;
-      _type: "link";
-      _key: string;
-    }> | null;
-    level?: number;
-    _type: "block";
-    _key: string;
-  }> | null;
+  content: null;
   _id: string;
   status: "draft" | "published";
-  title: string;
+  title: "Untitled";
   slug: string;
-  excerpt: string | null;
+  excerpt: null;
   coverImage: {
     asset?: {
       _ref: string;
@@ -813,18 +733,27 @@ export type PostPagesSlugsResult = Array<{
 export type PagesSlugsResult = Array<{
   slug: string;
 }>;
+// Variable: productsQuery
+// Query: *[_type == "product" && isActive == true] | order(sortOrder asc, _createdAt desc) {    _id,    "name": coalesce(name[_key == $language][0].value, name[_key == "es"][0].value, name[0].value),    "subtitle": coalesce(subtitle[_key == $language][0].value, subtitle[_key == "es"][0].value, subtitle[0].value),    image {      asset,      "alt": coalesce(alt[_key == $language][0].value, alt[_key == "es"][0].value, alt[0].value)    },    "buttonText": coalesce(buttonText[_key == $language][0].value, buttonText[_key == "es"][0].value, buttonText[0].value),    "priceShippingInfo": coalesce(priceShippingInfo[_key == $language][0].value, priceShippingInfo[_key == "es"][0].value, priceShippingInfo[0].value),    "soldText": coalesce(soldText[_key == $language][0].value, soldText[_key == "es"][0].value, soldText[0].value),    "slug": slug.current,    sortOrder,    sold  }
+export type ProductsQueryResult = Array<never>;
+// Variable: featuredProductsQuery
+// Query: *[_type == "product" && isActive == true] | order(sortOrder asc, _createdAt desc) [0...$limit] {    _id,    "name": coalesce(name[_key == $language][0].value, name[_key == "es"][0].value, name[0].value),    "subtitle": coalesce(subtitle[_key == $language][0].value, subtitle[_key == "es"][0].value, subtitle[0].value),    image {      asset,      "alt": coalesce(alt[_key == $language][0].value, alt[_key == "es"][0].value, alt[0].value)    },    "buttonText": coalesce(buttonText[_key == $language][0].value, buttonText[_key == "es"][0].value, buttonText[0].value),    "priceShippingInfo": coalesce(priceShippingInfo[_key == $language][0].value, priceShippingInfo[_key == "es"][0].value, priceShippingInfo[0].value),    "soldText": coalesce(soldText[_key == $language][0].value, soldText[_key == "es"][0].value, soldText[0].value),    "slug": slug.current,    sortOrder,    sold  }
+export type FeaturedProductsQueryResult = Array<never>;
 
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    '*[_type == "settings"][0]': SettingsQueryResult;
-    '\n  *[_type == \'page\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    "pageBuilder": pageBuilder[]{\n      ...,\n      _type == "callToAction" => {\n        \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n      }\n,\n      },\n      _type == "infoSection" => {\n        content[]{\n          ...,\n          markDefs[]{\n            ...,\n            \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n          }\n        }\n      },\n    },\n  }\n': GetPageQueryResult;
-    '\n  *[_type == "page" || _type == "post" && defined(slug.current)] | order(_type asc) {\n    "slug": slug.current,\n    _type,\n    _updatedAt,\n  }\n': SitemapDataResult;
-    '\n  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': AllPostsQueryResult;
-    '\n  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': MorePostsQueryResult;
-    '\n  *[_type == "post" && slug.current == $slug] [0] {\n    content[]{\n    ...,\n    markDefs[]{\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n    }\n  },\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': PostQueryResult;
-    '\n  *[_type == "post" && defined(slug.current)]\n  {"slug": slug.current}\n': PostPagesSlugsResult;
-    '\n  *[_type == "page" && defined(slug.current)]\n  {"slug": slug.current}\n': PagesSlugsResult;
+    "*[_type == \"settings\"][0]": SettingsQueryResult;
+    "\n  *[_type == 'home'][0]{\n    _id,\n    _type,\n    \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n    \"description\": coalesce(description[_key == $language][0].value, description[_key == \"es\"][0].value, description[0].value),\n    \"sections\": sections[]{\n      ...,\n      _key,\n      _type == \"inicioSection\" => {\n        \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n        \"subtitle1\": coalesce(subtitle1[_key == $language][0].value, subtitle1[_key == \"es\"][0].value, subtitle1[0].value),\n        \"subtitle2\": coalesce(subtitle2[_key == $language][0].value, subtitle2[_key == \"es\"][0].value, subtitle2[0].value),\n        \"highlightedWord\": coalesce(highlightedWord[_key == $language][0].value, highlightedWord[_key == \"es\"][0].value, highlightedWord[0].value),\n        \"subtitle3\": coalesce(subtitle3[_key == $language][0].value, subtitle3[_key == \"es\"][0].value, subtitle3[0].value),\n        \"location\": coalesce(location[_key == $language][0].value, location[_key == \"es\"][0].value, location[0].value),\n      },\n      _type == \"manifiestoSection\" => {\n        \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n        \"content\": coalesce(content[_key == $language][0].value, content[_key == \"es\"][0].value, content[0].value),\n        backgroundColor,\n      },\n      _type == \"trabajosSection\" => {\n        \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n        \"description\": coalesce(description[_key == $language][0].value, description[_key == \"es\"][0].value, description[0].value),\n        maxPosts,\n        backgroundColor,\n      },\n      _type == \"algunaIdeaSection\" => {\n        \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n        \"description\": coalesce(description[_key == $language][0].value, description[_key == \"es\"][0].value, description[0].value),\n        backgroundColor,\n      },\n      _type == \"cursosSection\" => {\n        \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n        \"description\": coalesce(description[_key == $language][0].value, description[_key == \"es\"][0].value, description[0].value),\n        backgroundColor,\n      },\n      _type == \"tiendaSection\" => {\n        \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n        \"description\": coalesce(description[_key == $language][0].value, description[_key == \"es\"][0].value, description[0].value),\n        backgroundColor,\n      },\n      _type == \"contactoSection\" => {\n        \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n        \"description\": coalesce(description[_key == $language][0].value, description[_key == \"es\"][0].value, description[0].value),\n        backgroundColor,\n      },\n    },\n  }\n": HomeQueryResult;
+    "\n  *[_type == 'page' && slug.current == $slug][0]{\n    _id,\n    _type,\n    \"name\": coalesce(name[_key == $language][0].value, name[_key == \"es\"][0].value, name[0].value),\n    slug,\n    \"heading\": coalesce(heading[_key == $language][0].value, heading[_key == \"es\"][0].value, heading[0].value),\n    \"subheading\": coalesce(subheading[_key == $language][0].value, subheading[_key == \"es\"][0].value, subheading[0].value),\n    \"pageBuilder\": pageBuilder[]{\n      ...,\n      _type == \"callToAction\" => {\n        \n  link {\n      ...,\n      \n  _type == \"link\" => {\n    \"page\": page->slug.current,\n    \"post\": post->slug.current\n  }\n\n      }\n,\n      },\n      _type == \"infoSection\" => {\n        content[]{\n          ...,\n          markDefs[]{\n            ...,\n            \n  _type == \"link\" => {\n    \"page\": page->slug.current,\n    \"post\": post->slug.current\n  }\n\n          }\n        }\n      },\n      _type == \"inicioSection\" => {\n        \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n        \"subtitle1\": coalesce(subtitle1[_key == $language][0].value, subtitle1[_key == \"es\"][0].value, subtitle1[0].value),\n        \"subtitle2\": coalesce(subtitle2[_key == $language][0].value, subtitle2[_key == \"es\"][0].value, subtitle2[0].value),\n        \"highlightedWord\": coalesce(highlightedWord[_key == $language][0].value, highlightedWord[_key == \"es\"][0].value, highlightedWord[0].value),\n        \"subtitle3\": coalesce(subtitle3[_key == $language][0].value, subtitle3[_key == \"es\"][0].value, subtitle3[0].value),\n        \"location\": coalesce(location[_key == $language][0].value, location[_key == \"es\"][0].value, location[0].value),\n      },\n    },\n  }\n": GetPageQueryResult;
+    "\n  *[_type == \"page\" || _type == \"post\" && defined(slug.current)] | order(_type asc) {\n    \"slug\": slug.current,\n    _type,\n    _updatedAt,\n  }\n": SitemapDataResult;
+    "\n  *[_type == \"post\" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value, \"Untitled\"),\n  \"slug\": slug.current,\n  \"excerpt\": coalesce(excerpt[_key == $language][0].value, excerpt[_key == \"es\"][0].value, excerpt[0].value),\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{firstName, lastName, picture},\n\n  }\n": AllPostsQueryResult;
+    "\n  *[_type == \"post\" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value, \"Untitled\"),\n  \"slug\": slug.current,\n  \"excerpt\": coalesce(excerpt[_key == $language][0].value, excerpt[_key == \"es\"][0].value, excerpt[0].value),\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{firstName, lastName, picture},\n\n  }\n": MorePostsQueryResult;
+    "\n  *[_type == \"post\" && slug.current == $slug] [0] {\n    \"content\": coalesce(content[_key == $language][0].value, content[_key == \"es\"][0].value, content[0].value)[]{\n    ...,\n    markDefs[]{\n      ...,\n      \n  _type == \"link\" => {\n    \"page\": page->slug.current,\n    \"post\": post->slug.current\n  }\n\n    }\n  },\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value, \"Untitled\"),\n  \"slug\": slug.current,\n  \"excerpt\": coalesce(excerpt[_key == $language][0].value, excerpt[_key == \"es\"][0].value, excerpt[0].value),\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{firstName, lastName, picture},\n\n  }\n": PostQueryResult;
+    "\n  *[_type == \"post\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": PostPagesSlugsResult;
+    "\n  *[_type == \"page\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": PagesSlugsResult;
+    "\n  *[_type == \"product\" && isActive == true] | order(sortOrder asc, _createdAt desc) {\n    _id,\n    \"name\": coalesce(name[_key == $language][0].value, name[_key == \"es\"][0].value, name[0].value),\n    \"subtitle\": coalesce(subtitle[_key == $language][0].value, subtitle[_key == \"es\"][0].value, subtitle[0].value),\n    image {\n      asset,\n      \"alt\": coalesce(alt[_key == $language][0].value, alt[_key == \"es\"][0].value, alt[0].value)\n    },\n    \"buttonText\": coalesce(buttonText[_key == $language][0].value, buttonText[_key == \"es\"][0].value, buttonText[0].value),\n    \"priceShippingInfo\": coalesce(priceShippingInfo[_key == $language][0].value, priceShippingInfo[_key == \"es\"][0].value, priceShippingInfo[0].value),\n    \"soldText\": coalesce(soldText[_key == $language][0].value, soldText[_key == \"es\"][0].value, soldText[0].value),\n    \"slug\": slug.current,\n    sortOrder,\n    sold\n  }\n": ProductsQueryResult;
+    "\n  *[_type == \"product\" && isActive == true] | order(sortOrder asc, _createdAt desc) [0...$limit] {\n    _id,\n    \"name\": coalesce(name[_key == $language][0].value, name[_key == \"es\"][0].value, name[0].value),\n    \"subtitle\": coalesce(subtitle[_key == $language][0].value, subtitle[_key == \"es\"][0].value, subtitle[0].value),\n    image {\n      asset,\n      \"alt\": coalesce(alt[_key == $language][0].value, alt[_key == \"es\"][0].value, alt[0].value)\n    },\n    \"buttonText\": coalesce(buttonText[_key == $language][0].value, buttonText[_key == \"es\"][0].value, buttonText[0].value),\n    \"priceShippingInfo\": coalesce(priceShippingInfo[_key == $language][0].value, priceShippingInfo[_key == \"es\"][0].value, priceShippingInfo[0].value),\n    \"soldText\": coalesce(soldText[_key == $language][0].value, soldText[_key == \"es\"][0].value, soldText[0].value),\n    \"slug\": slug.current,\n    sortOrder,\n    sold\n  }\n": FeaturedProductsQueryResult;
   }
 }

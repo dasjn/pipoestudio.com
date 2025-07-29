@@ -10,9 +10,10 @@ import PortableText from "@/app/components/PortableText";
 import { sanityFetch } from "@/sanity/lib/live";
 import { postPagesSlugs, postQuery } from "@/sanity/lib/queries";
 import { resolveOpenGraphImage } from "@/sanity/lib/utils";
+import { i18n, type Locale } from "@/i18n.config";
 
 type Props = {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; locale: Locale }>;
 };
 
 /**
@@ -26,7 +27,17 @@ export async function generateStaticParams() {
     perspective: "published",
     stega: false,
   });
-  return data;
+  
+  // Generate params for each locale and slug combination
+  const params = [];
+  for (const item of data || []) {
+    for (const locale of i18n.locales) {
+      if (item.language === locale) {
+        params.push({ slug: item.slug, locale });
+      }
+    }
+  }
+  return params;
 }
 
 /**
@@ -40,7 +51,7 @@ export async function generateMetadata(
   const params = await props.params;
   const { data: post } = await sanityFetch({
     query: postQuery,
-    params,
+    params: { slug: params.slug, language: params.locale },
     // Metadata should never contain stega
     stega: false,
   });
@@ -63,7 +74,7 @@ export async function generateMetadata(
 export default async function PostPage(props: Props) {
   const params = await props.params;
   const [{ data: post }] = await Promise.all([
-    sanityFetch({ query: postQuery, params }),
+    sanityFetch({ query: postQuery, params: { slug: params.slug, language: params.locale } }),
   ]);
 
   if (!post?._id) {

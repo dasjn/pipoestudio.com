@@ -16,6 +16,8 @@ import {
   type DocumentLocation,
 } from 'sanity/presentation'
 import {assist} from '@sanity/assist'
+import {internationalizedArray} from 'sanity-plugin-internationalized-array'
+import {languages} from '../frontend/i18n.config'
 
 // Environment variables for project configuration
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID || 'your-projectID'
@@ -32,12 +34,13 @@ const homeLocation = {
 
 // resolveHref() is a convenience function that resolves the URL
 // path for different document types and used in the presentation tool.
-function resolveHref(documentType?: string, slug?: string): string | undefined {
+function resolveHref(documentType?: string, slug?: string, language?: string): string | undefined {
+  const locale = language || 'es'
   switch (documentType) {
     case 'post':
-      return slug ? `/posts/${slug}` : undefined
+      return slug ? `/${locale}/posts/${slug}` : undefined
     case 'page':
-      return slug ? `/${slug}` : undefined
+      return slug ? `/${locale}/${slug}` : undefined
     default:
       console.warn('Invalid document type:', documentType)
       return undefined
@@ -53,6 +56,12 @@ export default defineConfig({
   dataset,
 
   plugins: [
+    // Internationalized array plugin for field-level translation
+    internationalizedArray({
+      languages: languages,
+      defaultLanguages: ['es'],
+      fieldTypes: ['string', 'text', 'slug', 'blockContent']
+    }),
     // Presentation tool configuration for Visual Editing
     presentationTool({
       previewUrl: {
@@ -69,11 +78,11 @@ export default defineConfig({
             filter: `_type == "settings" && _id == "siteSettings"`,
           },
           {
-            route: '/:slug',
+            route: '/:locale/:slug',
             filter: `_type == "page" && slug.current == $slug || _id == $slug`,
           },
           {
-            route: '/posts/:slug',
+            route: '/:locale/posts/:slug',
             filter: `_type == "post" && slug.current == $slug || _id == $slug`,
           },
         ]),
@@ -92,10 +101,13 @@ export default defineConfig({
             resolve: (doc) => ({
               locations: [
                 {
-                  title: doc?.name || 'Untitled',
-                  href: resolveHref('page', doc?.slug)!,
+                  title: Array.isArray(doc?.name) ? doc.name[0]?.value || 'Untitled' : doc?.name || 'Untitled',
+                  href: resolveHref('page', doc?.slug, 'es')!,
                 },
-              ],
+              ].map((location, index) => ({
+                ...location,
+                _key: `page-${index}`,
+              })),
             }),
           }),
           post: defineLocations({
@@ -106,14 +118,17 @@ export default defineConfig({
             resolve: (doc) => ({
               locations: [
                 {
-                  title: doc?.title || 'Untitled',
-                  href: resolveHref('post', doc?.slug)!,
+                  title: Array.isArray(doc?.title) ? doc.title[0]?.value || 'Untitled' : doc?.title || 'Untitled',
+                  href: resolveHref('post', doc?.slug, 'es')!,
                 },
                 {
                   title: 'Home',
-                  href: '/',
+                  href: '/es',
                 } satisfies DocumentLocation,
-              ].filter(Boolean) as DocumentLocation[],
+              ].filter(Boolean).map((location, index) => ({
+                ...location,
+                _key: `post-${index}`,
+              })) as DocumentLocation[],
             }),
           }),
         },

@@ -1,6 +1,103 @@
 @import "tailwindcss";
 
-@plugin "@tailwindcss/typography";
+@font-face {
+  font-family: "Delight";
+  src:
+    url("/fonts/Delight/Delight-Regular.woff2") format("woff2"),
+    url("/fonts/Delight/Delight-Regular.woff") format("woff"),
+    url("/fonts/Delight/Delight-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Delight";
+  src:
+    url("/fonts/Delight/Delight-Thin.woff2") format("woff2"),
+    url("/fonts/Delight/Delight-Thin.woff") format("woff"),
+    url("/fonts/Delight/Delight-Thin.ttf") format("truetype");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Delight";
+  src:
+    url("/fonts/Delight/Delight-ExtraLight.woff2") format("woff2"),
+    url("/fonts/Delight/Delight-ExtraLight.woff") format("woff"),
+    url("/fonts/Delight/Delight-ExtraLight.ttf") format("truetype");
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Delight";
+  src:
+    url("/fonts/Delight/Delight-Light.woff2") format("woff2"),
+    url("/fonts/Delight/Delight-Light.woff") format("woff"),
+    url("/fonts/Delight/Delight-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Delight";
+  src:
+    url("/fonts/Delight/Delight-Medium.woff2") format("woff2"),
+    url("/fonts/Delight/Delight-Medium.woff") format("woff"),
+    url("/fonts/Delight/Delight-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Delight";
+  src:
+    url("/fonts/Delight/Delight-SemiBold.woff2") format("woff2"),
+    url("/fonts/Delight/Delight-SemiBold.woff") format("woff"),
+    url("/fonts/Delight/Delight-SemiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Delight";
+  src:
+    url("/fonts/Delight/Delight-Bold.woff2") format("woff2"),
+    url("/fonts/Delight/Delight-Bold.woff") format("woff"),
+    url("/fonts/Delight/Delight-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Delight";
+  src:
+    url("/fonts/Delight/Delight-ExtraBold.woff2") format("woff2"),
+    url("/fonts/Delight/Delight-ExtraBold.woff") format("woff"),
+    url("/fonts/Delight/Delight-ExtraBold.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Delight";
+  src:
+    url("/fonts/Delight/Delight-Black.woff2") format("woff2"),
+    url("/fonts/Delight/Delight-Black.woff") format("woff"),
+    url("/fonts/Delight/Delight-Black.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
 
 @utility container {
   margin: 0 auto;
@@ -16,6 +113,8 @@
   --color-brand: #f50;
   --color-blue: #0052ff;
   --color-yellow: #cdea19;
+  --color-green-pipo: #00a750;
+  --color-clean-gray: #e4e5e0;
   --color-gray-50: #f6f6f8;
   --color-gray-100: #eeeef1;
   --color-gray-200: #e3e4e8;
@@ -28,8 +127,8 @@
   --color-gray-900: #1b1d27;
   --color-gray-950: #13141b;
 
-  --font-display: "Inter", "sans-serif";
-  --font-sans: "Inter", "sans-serif";
+  --font-display: "Delight", "Inter", "sans-serif";
+  --font-sans: "Delight", "Inter", "sans-serif";
 
   --default-transition-duration: 250ms;
 }

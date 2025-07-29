@@ -7,8 +7,9 @@ import DateComponent from "@/app/components/Date";
 import OnBoarding from "@/app/components/Onboarding";
 import Avatar from "@/app/components/Avatar";
 import { createDataAttribute } from "next-sanity";
+import { type Locale } from "@/i18n.config";
 
-const Post = ({ post }: { post: AllPostsQueryResult[number] }) => {
+const Post = ({ post, locale }: { post: AllPostsQueryResult[number], locale: Locale }) => {
   const { _id, title, slug, excerpt, date, author } = post;
 
   const attr = createDataAttribute({
@@ -25,7 +26,7 @@ const Post = ({ post }: { post: AllPostsQueryResult[number] }) => {
     >
       <Link
         className="hover:text-brand underline transition-colors"
-        href={`/posts/${slug}`}
+        href={`/${locale}/posts/${slug}`}
       >
         <span className="absolute inset-0 z-10" />
       </Link>
@@ -75,13 +76,15 @@ const Posts = ({
 export const MorePosts = async ({
   skip,
   limit,
+  locale = 'es',
 }: {
   skip: string;
   limit: number;
+  locale?: Locale;
 }) => {
   const { data } = await sanityFetch({
     query: morePostsQuery,
-    params: { skip, limit },
+    params: { skip, limit, language: locale },
   });
 
   if (!data || data.length === 0) {
@@ -91,14 +94,17 @@ export const MorePosts = async ({
   return (
     <Posts heading={`Recent Posts (${data?.length})`}>
       {data?.map((post: any) => (
-        <Post key={post._id} post={post} />
+        <Post key={post._id} post={post} locale={locale} />
       ))}
     </Posts>
   );
 };
 
-export const AllPosts = async () => {
-  const { data } = await sanityFetch({ query: allPostsQuery });
+export const AllPosts = async ({ locale = 'es' }: { locale?: Locale }) => {
+  const { data } = await sanityFetch({ 
+    query: allPostsQuery,
+    params: { language: locale }
+  });
 
   if (!data || data.length === 0) {
     return <OnBoarding />;
@@ -106,11 +112,11 @@ export const AllPosts = async () => {
 
   return (
     <Posts
-      heading="Recent Posts"
+      heading={`Recent Posts (${locale})`}
       subHeading={`${data.length === 1 ? "This blog post is" : `These ${data.length} blog posts are`} populated from your Sanity Studio.`}
     >
       {data.map((post: any) => (
-        <Post key={post._id} post={post} />
+        <Post key={post._id} post={post} locale={locale} />
       ))}
     </Posts>
   );

@@ -13,6 +13,8 @@ export default {
         layer: "0 35px 60px -15px rgba(0, 0, 0, 0.3)",
       },
       colors: {
+        "green-pipo": "#00A750",
+        "clean-gray": "#e4e5e0",
         black: "#0d0e12",
         white: "#fff",
         cyan: {
@@ -92,6 +94,7 @@ export default {
           800: "#215233",
           900: "#183122",
           950: "#14211a",
+          pipo: "#00A750",
         },
       },
       fontFamily: {

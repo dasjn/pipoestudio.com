@@ -16,7 +16,7 @@ export const post = defineType({
     defineField({
       name: 'title',
       title: 'Title',
-      type: 'string',
+      type: 'internationalizedArrayString',
       validation: (rule) => rule.required(),
     }),
     defineField({
@@ -34,12 +34,12 @@ export const post = defineType({
     defineField({
       name: 'content',
       title: 'Content',
-      type: 'blockContent',
+      type: 'internationalizedArrayBlockContent',
     }),
     defineField({
       name: 'excerpt',
       title: 'Excerpt',
-      type: 'text',
+      type: 'internationalizedArrayText',
     }),
     defineField({
       name: 'coverImage',
@@ -54,7 +54,7 @@ export const post = defineType({
       fields: [
         {
           name: 'alt',
-          type: 'string',
+          type: 'internationalizedArrayString',
           title: 'Alternative text',
           description: 'Important for SEO and accessibility.',
           validation: (rule) => {
@@ -98,7 +98,10 @@ export const post = defineType({
         date && `on ${format(parseISO(date), 'LLL d, yyyy')}`,
       ].filter(Boolean)
 
-      return {title, media, subtitle: subtitles.join(' ')}
+      // Handle internationalized array format
+      const displayTitle = Array.isArray(title) ? title[0]?.value || 'Untitled' : 'Untitled'
+
+      return {title: displayTitle, media, subtitle: subtitles.join(' ')}
     },
   },
 })
