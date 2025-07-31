@@ -50,10 +50,19 @@ function CameraController({
     const lookAtDistance = currentLookAt.current.distanceTo(targetLookAt);
     const fovDifference = Math.abs((camera as any).fov - targetFov);
 
-    if (positionDistance < 0.01 && lookAtDistance < 0.01 && fovDifference < 0.1 && !transitionCompleteRef.current) {
+    if (
+      positionDistance < 0.01 &&
+      lookAtDistance < 0.01 &&
+      fovDifference < 0.1 &&
+      !transitionCompleteRef.current
+    ) {
       transitionCompleteRef.current = true;
       onTransitionComplete?.();
-    } else if (positionDistance > 0.1 || lookAtDistance > 0.1 || fovDifference > 1) {
+    } else if (
+      positionDistance > 0.1 ||
+      lookAtDistance > 0.1 ||
+      fovDifference > 1
+    ) {
       transitionCompleteRef.current = false;
     }
   });
@@ -61,16 +70,15 @@ function CameraController({
   return null;
 }
 
-
 export default function ThreeDCanvas() {
   // Navigation store integration
-  const { 
-    currentSection, 
-    getCurrentCameraPosition, 
-    getCurrentAnimations, 
-    setTransitioning 
+  const {
+    currentSection,
+    getCurrentCameraPosition,
+    getCurrentAnimations,
+    setTransitioning,
   } = useNavigationStore();
-  
+
   // Enable wheel navigation
   useWheelNavigation();
 
@@ -84,6 +92,20 @@ export default function ThreeDCanvas() {
   const [targetLookAt] = useState(new THREE.Vector3(0, 0, 0));
   const [targetFov, setTargetFov] = useState(30);
 
+  // Calculate dynamic FOV based on viewport
+  const calculateDynamicFov = useCallback((baseFov: number) => {
+    const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
+    
+    if (viewportWidth < 768) {
+      return baseFov * 2.8;
+    } else if (viewportWidth < 1024) {
+      return baseFov * 2.4;
+    } else if (viewportWidth < 1440) {
+      return baseFov * 2;
+    }
+    return baseFov;
+  }, []);
+
   // Handle camera transition completion
   const handleTransitionComplete = useCallback(() => {
     setTransitioning(false);
@@ -93,7 +115,7 @@ export default function ThreeDCanvas() {
   useEffect(() => {
     const cameraPosition = getCurrentCameraPosition();
     const animations = getCurrentAnimations();
-    
+
     if (cameraPosition) {
       targetPosition.set(
         cameraPosition.position.x,
@@ -105,19 +127,22 @@ export default function ThreeDCanvas() {
         cameraPosition.lookAt.y,
         cameraPosition.lookAt.z
       );
-      setTargetFov(cameraPosition.fov);
+
+      // FOV dinámico basado en viewport
+      const adjustedFov = calculateDynamicFov(cameraPosition.fov);
+      setTargetFov(adjustedFov);
     }
 
     if (animations && availableAnimations.length > 0) {
       const newActiveAnimations: { [key: string]: boolean } = {};
-      
+
       // Reset all animations
-      availableAnimations.forEach(animName => {
+      availableAnimations.forEach((animName) => {
         newActiveAnimations[animName] = false;
       });
-      
+
       // Activate animations for current section
-      animations.activeAnimations.forEach(animName => {
+      animations.activeAnimations.forEach((animName) => {
         newActiveAnimations[animName] = true;
       });
 
@@ -127,11 +152,44 @@ export default function ThreeDCanvas() {
         triggerUpdate: Date.now(),
       });
     }
-  }, [currentSection, availableAnimations]);
+  }, [currentSection, availableAnimations, calculateDynamicFov]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Listen for viewport changes to adjust FOV and sync sections
+  useEffect(() => {
+    const handleResize = () => {
+      const cameraPosition = getCurrentCameraPosition();
+      if (cameraPosition) {
+        const adjustedFov = calculateDynamicFov(cameraPosition.fov);
+        setTargetFov(adjustedFov);
+      }
+      
+      // Re-trigger section detection after resize
+      setTimeout(() => {
+        // Force re-detection of current section
+        const sections = document.querySelectorAll('section[id]');
+        const viewportHeight = window.innerHeight;
+        const scrollTop = window.scrollY;
+        
+        sections.forEach((section) => {
+          const rect = section.getBoundingClientRect();
+          const sectionTop = rect.top + scrollTop;
+          const sectionBottom = sectionTop + rect.height;
+          
+          // Check if section is currently in viewport center
+          const viewportCenter = scrollTop + viewportHeight / 2;
+          if (viewportCenter >= sectionTop && viewportCenter <= sectionBottom) {
+            const { setCurrentSection } = useNavigationStore.getState();
+            setCurrentSection(section.id as any);
+          }
+        });
+      }, 100);
+    };
 
-
-
+    if (typeof window !== "undefined") {
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }
+  }, [getCurrentCameraPosition, calculateDynamicFov]);
 
   return (
     <div className="fixed inset-0 -z-10">

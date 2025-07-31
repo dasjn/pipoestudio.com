@@ -38,7 +38,7 @@ export interface Section {
 // Estado del store
 interface NavigationState {
   // Sección actual activa
-  currentSection: SectionId | null;
+  currentSection: SectionId;
 
   // Flag para bloquear el observer durante scroll programático
   isScrolling: boolean;
@@ -187,14 +187,12 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
 
   getCurrentCameraPosition: () => {
     const { currentSection, sections } = get();
-    if (!currentSection) return null;
     const section = sections.find((s) => s.id === currentSection);
     return section?.cameraPosition || null;
   },
 
   getCurrentAnimations: () => {
     const { currentSection, sections } = get();
-    if (!currentSection) return null;
     const section = sections.find((s) => s.id === currentSection);
     return section?.animations || null;
   },
@@ -289,11 +287,8 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
           }
         });
 
-        // Si no hay ninguna sección visible, limpiar el estado
-        const anyVisible = entries.some((entry) => entry.isIntersecting);
-        if (!anyVisible) {
-          get().setCurrentSection(null);
-        }
+        // Si no hay ninguna sección visible, mantener la sección actual
+        // No limpiar el estado para evitar problemas de tipos
       },
       {
         threshold: 0.5, // 50% del elemento visible

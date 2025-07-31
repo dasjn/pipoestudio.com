@@ -12,7 +12,9 @@
       "Bash(taskkill:*)",
       "Bash(cmd /c:*)",
       "Bash(npm run lint)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run lint:*)"
     ],
     "deny": []
   }

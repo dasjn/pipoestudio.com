@@ -60,7 +60,7 @@ export default async function Page({ params }: Props) {
   return (
     <>
       <Header />
-      <Develop products={products || []} />
+      {/* <Develop products={products || []} /> */}
       <div className="relative">
         {home?.sections && home.sections.length > 0 ? (
           <SectionRenderer sections={home.sections} posts={posts || []} />

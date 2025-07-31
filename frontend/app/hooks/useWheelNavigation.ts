@@ -1,70 +1,139 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { useNavigationStore } from '../store/navigationStore';
 
 export const useWheelNavigation = () => {
   const { navigateNext, navigatePrevious, isTransitioning } = useNavigationStore();
-  const wheelTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const lastWheelTime = useRef(0);
+  const lastActionTime = useRef(0);
+  const isNavigating = useRef(false);
+  const touchStartY = useRef(0);
+  const touchStartTime = useRef(0);
+  const hasNavigated = useRef(false);
+
+  const handleNavigation = useCallback((direction: 'next' | 'prev') => {
+    const now = Date.now();
+    if (now - lastActionTime.current < 800 || isTransitioning || isNavigating.current) {
+      return;
+    }
+
+    isNavigating.current = true;
+    lastActionTime.current = now;
+    
+    if (direction === 'next') {
+      navigateNext();
+    } else {
+      navigatePrevious();
+    }
+    
+    setTimeout(() => {
+      isNavigating.current = false;
+    }, 100);
+  }, [navigateNext, navigatePrevious, isTransitioning]);
 
   useEffect(() => {
+    // Desktop wheel navigation
     const handleWheel = (e: WheelEvent) => {
-      // Prevent default scroll behavior during transitions
-      if (isTransitioning) {
-        e.preventDefault();
-        return;
-      }
-
-      const now = Date.now();
-      const timeSinceLastWheel = now - lastWheelTime.current;
-
-      // Debounce wheel events (minimum 800ms between navigations)
-      if (timeSinceLastWheel < 800) {
-        e.preventDefault();
-        return;
-      }
-
-      // Clear existing timeout
-      if (wheelTimeoutRef.current) {
-        clearTimeout(wheelTimeoutRef.current);
-      }
-
-      // Set timeout to handle wheel event
-      wheelTimeoutRef.current = setTimeout(() => {
-        if (e.deltaY > 0) {
-          // Scrolling down - next section
-          navigateNext();
-        } else if (e.deltaY < 0) {
-          // Scrolling up - previous section
-          navigatePrevious();
-        }
-        lastWheelTime.current = now;
-      }, 50);
-
-      // Prevent default scroll behavior
       e.preventDefault();
-    };
-
-    const handleScrollLock = (e: Event) => {
-      if (isTransitioning) {
-        e.preventDefault();
+      
+      if (e.deltaY > 0) {
+        handleNavigation('next');
+      } else if (e.deltaY < 0) {
+        handleNavigation('prev');
       }
     };
 
-    // Add wheel event listener
-    window.addEventListener('wheel', handleWheel, { passive: false });
+    // Check if touch is in UI areas (header or mobile menu)
+    const isInUIArea = (element: HTMLElement): boolean => {
+      const header = document.querySelector('header');
+      const mobileMenu = document.querySelector('[class*="fixed"][class*="inset-0"][class*="z-50"]');
+      
+      return (header && header.contains(element)) || 
+             (mobileMenu && mobileMenu.contains(element)) ||
+             element.closest('header') !== null ||
+             element.closest('[class*="fixed"][class*="z-50"]') !== null;
+    };
+
+    // Mobile touch navigation
+    const handleTouchStart = (e: TouchEvent) => {
+      const target = e.target as HTMLElement;
+      
+      if (isInUIArea(target)) {
+        return; // Allow normal UI interaction
+      }
+
+      touchStartY.current = e.touches[0].clientY;
+      touchStartTime.current = Date.now();
+      hasNavigated.current = false;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      const target = e.target as HTMLElement;
+      
+      if (isInUIArea(target)) {
+        return; // Allow normal UI interaction
+      }
+
+      e.preventDefault();
+      
+      if (isTransitioning || isNavigating.current || hasNavigated.current) {
+        return;
+      }
+
+      const touchCurrentY = e.touches[0].clientY;
+      const deltaY = touchStartY.current - touchCurrentY;
+      const minSwipeDistance = 80;
+
+      if (Math.abs(deltaY) > minSwipeDistance) {
+        hasNavigated.current = true;
+        
+        if (deltaY > 0) {
+          handleNavigation('next');
+        } else {
+          handleNavigation('prev');
+        }
+      }
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      const target = e.changedTouches[0].target as HTMLElement;
+      
+      if (isInUIArea(target)) {
+        return; // Allow normal UI interaction
+      }
+
+      e.preventDefault();
+      hasNavigated.current = false;
+    };
+
+    // Apply selective CSS scroll blocking
+    const applyScrollLock = () => {
+      // Only apply to main content area, not header
+      document.body.style.overscrollBehavior = 'none';
+      document.body.style.webkitOverflowScrolling = 'auto';
+    };
+
+    const removeScrollLock = () => {
+      document.body.style.overscrollBehavior = '';
+      document.body.style.webkitOverflowScrolling = '';
+    };
+
+    // Apply scroll locks
+    applyScrollLock();
     
-    // Lock scroll during transitions
-    window.addEventListener('scroll', handleScrollLock, { passive: false });
-    window.addEventListener('touchmove', handleScrollLock, { passive: false });
+    // Add event listeners
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('touchstart', handleTouchStart, { passive: false });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd, { passive: false });
 
     return () => {
+      // Remove event listeners
       window.removeEventListener('wheel', handleWheel);
-      window.removeEventListener('scroll', handleScrollLock);
-      window.removeEventListener('touchmove', handleScrollLock);
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
       
-      if (wheelTimeoutRef.current) {
-        clearTimeout(wheelTimeoutRef.current);
-      }
+      // Remove scroll locks
+      removeScrollLock();
     };
-  }, [navigateNext, navigatePrevious, isTransitioning]);
+  }, [handleNavigation, isTransitioning]);
 };
