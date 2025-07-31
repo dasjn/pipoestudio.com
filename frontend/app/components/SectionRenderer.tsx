@@ -7,6 +7,7 @@ import {
   TiendaSection,
   ContactoSection,
 } from "./sections";
+import SobreMiSection from "./sections/SobreMiSection";
 
 interface Section {
   _type: string;
@@ -19,7 +20,10 @@ interface SectionRendererProps {
   posts?: any[];
 }
 
-export default function SectionRenderer({ sections, posts = [] }: SectionRendererProps) {
+export default function SectionRenderer({
+  sections,
+  posts = [],
+}: SectionRendererProps) {
   if (!sections || sections.length === 0) {
     return null;
   }
@@ -28,21 +32,23 @@ export default function SectionRenderer({ sections, posts = [] }: SectionRendere
     <>
       {sections.map((section, index) => {
         const key = section._key || `${section._type}-${index}`;
-        
+
         switch (section._type) {
-          case 'inicioSection':
+          case "inicioSection":
             return <InicioSection key={key} data={section} />;
-          case 'manifiestoSection':
+          case "manifiestoSection":
             return <ManifiestoSection key={key} data={section} />;
-          case 'trabajosSection':
+          case "trabajosSection":
             return <TrabajosSection key={key} data={section} posts={posts} />;
-          case 'algunaIdeaSection':
+          case "algunaIdeaSection":
             return <AlgunaIdeaSection key={key} data={section} />;
-          case 'cursosSection':
+          case "cursosSection":
             return <CursosSection key={key} data={section} />;
-          case 'tiendaSection':
+          case "sobreMiSection":
+            return <SobreMiSection key={key} data={section} />;
+          case "tiendaSection":
             return <TiendaSection key={key} data={section} />;
-          case 'contactoSection':
+          case "contactoSection":
             return <ContactoSection key={key} data={section} />;
           default:
             console.warn(`Unknown section type: ${section._type}`);

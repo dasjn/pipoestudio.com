@@ -19,7 +19,7 @@ export default function ManifiestoSection({ data }: ManifiestoSectionProps) {
   return (
     <section
       id="manifiesto"
-      className={`h-svh ${content.backgroundColor} flex items-center justify-center`}
+      className={`h-svh bg-transparent flex items-center justify-center`}
     >
       <div className="text-center">
         <h2 className="text-3xl font-bold mb-4">{content.title}</h2>

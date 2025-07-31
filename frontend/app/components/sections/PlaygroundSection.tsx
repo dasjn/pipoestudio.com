@@ -1,6 +1,6 @@
 export default function Playground() {
   return (
-    <section className="h-svh bg-green-pipo text-white py-16 flex items-center justify-center">
+    <section id="postFooter" className="h-svh bg-green-pipo text-white py-16 flex items-center justify-center">
       <div className="max-w-[1920px] mx-auto px-5">
         <div className="text-center">
           <h3 className="text-2xl font-bold mb-4">PIPO PLAYGROUND</h3>

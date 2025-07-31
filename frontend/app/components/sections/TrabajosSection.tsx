@@ -15,11 +15,12 @@ interface TrabajosSectionProps {
 }
 
 export default function TrabajosSection({ data, posts }: TrabajosSectionProps) {
-  const locale = useLocaleStore(state => state.locale);
+  const locale = useLocaleStore((state) => state.locale);
 
   const content = {
     title: data?.title || "Trabajos",
-    description: data?.description || "Aquí van los posts (datos desde servidor)",
+    description:
+      data?.description || "Aquí van los posts (datos desde servidor)",
     maxPosts: data?.maxPosts || 3,
     backgroundColor: data?.backgroundColor || "bg-yellow-200",
   };
@@ -27,7 +28,7 @@ export default function TrabajosSection({ data, posts }: TrabajosSectionProps) {
   return (
     <section
       id="trabajos"
-      className={`h-svh ${content.backgroundColor} flex items-center justify-center`}
+      className={`h-svh bg-transparent flex items-center justify-center`}
     >
       <div>
         <div className="text-center">

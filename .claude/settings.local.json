@@ -10,7 +10,9 @@
       "WebFetch(domain:www.sanity.io)",
       "Bash(npm run dev:*)",
       "Bash(taskkill:*)",
-      "Bash(cmd /c:*)"
+      "Bash(cmd /c:*)",
+      "Bash(npm run lint)",
+      "Bash(npx tsc:*)"
     ],
     "deny": []
   }

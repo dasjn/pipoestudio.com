@@ -8,8 +8,11 @@ export const navigationLabels = {
     trabajos: "Trabajos",
     algunaIdea: "¿Alguna idea?",
     cursos: "Cursos",
+    sobreMi: "Sobre Mí",
     tienda: "Tienda",
     contacto: "Contacta",
+    footer: "Footer",
+    postFooter: "Post Footer",
     language: "EN/ES"
   },
   en: {
@@ -18,8 +21,11 @@ export const navigationLabels = {
     trabajos: "Work", 
     algunaIdea: "Got an idea?",
     cursos: "Courses",
+    sobreMi: "About Me",
     tienda: "Shop", 
     contacto: "Contact",
+    footer: "Footer",
+    postFooter: "Post Footer",
     language: "ES/EN"
   }
 } as const;

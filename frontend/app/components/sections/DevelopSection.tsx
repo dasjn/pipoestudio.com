@@ -53,10 +53,11 @@ export default function Develop({ products = [] }: DevelopProps) {
   ];
 
   // Use products from props or fallback to mock, take first 3
-  const productsToShow = products.length > 0 ? products.slice(0, 3) : mockProducts;
+  const productsToShow =
+    products.length > 0 ? products.slice(0, 3) : mockProducts;
 
   return (
-    <section className="h-svh bg-gray-400 text-white py-16 flex items-center justify-center">
+    <section className="h-svh bg-transparent text-white py-16 flex items-center justify-center">
       <div className="max-w-[1920px] mx-auto px-5">
         <div className="flex flex-row gap-5">
           {productsToShow.map((product) => (

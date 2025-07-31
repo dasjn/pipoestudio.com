@@ -31,7 +31,7 @@ export default function InicioSection({ data }: InicioSectionProps) {
   return (
     <section
       id="inicio"
-      className="min-h-screen bg-clean-gray flex items-start justify-center px-4 sm:px-6 lg:px-8 pt-16"
+      className="min-h-screen bg-transparent flex items-start justify-center px-4 sm:px-6 lg:px-8 pt-16"
     >
       <div className="text-center">
         <h1 className="font-bold text-green-pipo text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl  flex flex-col items-center uppercase">

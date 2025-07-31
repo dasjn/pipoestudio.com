@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import * as THREE from "three";
 
 // Definir las secciones disponibles
 export type SectionId =
@@ -7,14 +8,31 @@ export type SectionId =
   | "algunaIdea"
   | "trabajos"
   | "cursos"
+  | "sobreMi"
   | "tienda"
-  | "contacto";
+  | "contacto"
+  | "footer"
+  | "postFooter";
+
+// Configuración de posición de cámara
+export interface CameraPosition {
+  position: { x: number; y: number; z: number };
+  lookAt: { x: number; y: number; z: number };
+  fov: number;
+}
+
+// Configuración de animaciones 3D para cada sección
+export interface SectionAnimations {
+  activeAnimations: string[];
+}
 
 // Configuración de secciones
 export interface Section {
   id: SectionId;
   label: string;
   element?: HTMLElement | null;
+  cameraPosition: CameraPosition;
+  animations: SectionAnimations;
 }
 
 // Estado del store
@@ -25,33 +43,200 @@ interface NavigationState {
   // Flag para bloquear el observer durante scroll programático
   isScrolling: boolean;
 
+  // Flag para bloquear scroll durante animaciones de cámara
+  isTransitioning: boolean;
+
   // Todas las secciones disponibles
   sections: Section[];
 
   // Acciones
   setCurrentSection: (sectionId: SectionId) => void;
   scrollToSection: (sectionId: SectionId) => void;
+  navigateToSection: (sectionId: SectionId) => void;
   registerSection: (sectionId: SectionId, element: HTMLElement) => void;
   initializeSections: () => void;
+  setTransitioning: (transitioning: boolean) => void;
+  getCurrentCameraPosition: () => CameraPosition | null;
+  getCurrentAnimations: () => SectionAnimations | null;
+  navigateNext: () => void;
+  navigatePrevious: () => void;
 }
 
 // Store de navegación
 export const useNavigationStore = create<NavigationState>((set, get) => ({
   currentSection: "inicio",
   isScrolling: false,
+  isTransitioning: false,
 
   sections: [
-    { id: "inicio", label: "Inicio" },
-    { id: "manifiesto", label: "Manifiesto" },
-    { id: "trabajos", label: "Trabajos" },
-    { id: "algunaIdea", label: "¿Alguna idea?" },
-    { id: "cursos", label: "Cursos" },
-    { id: "tienda", label: "Tienda" },
-    { id: "contacto", label: "Contacta" },
+    {
+      id: "inicio",
+      label: "Inicio",
+      cameraPosition: {
+        position: { x: 0, y: 3.911, z: 13.5 },
+        lookAt: { x: 0, y: 3.911, z: 3.468 },
+        fov: 20,
+      },
+      animations: { activeAnimations: ["Idle"] },
+    },
+    {
+      id: "manifiesto",
+      label: "Manifiesto",
+      cameraPosition: {
+        position: { x: 0, y: 0.657, z: 15 },
+        lookAt: { x: 0, y: 0.657, z: 3.468 },
+        fov: 20,
+      },
+      animations: { activeAnimations: ["Action"] },
+    },
+    {
+      id: "trabajos",
+      label: "Trabajos",
+      cameraPosition: {
+        position: { x: 0, y: -2.677, z: 15 },
+        lookAt: { x: 0, y: -2.677, z: 3.468 },
+        fov: 20,
+      },
+      animations: { activeAnimations: ["Action.001"] },
+    },
+    {
+      id: "algunaIdea",
+      label: "¿Alguna idea?",
+      cameraPosition: {
+        position: { x: 0, y: -6.029, z: 15 },
+        lookAt: { x: 0, y: -6.029, z: 3.468 },
+        fov: 20,
+      },
+      animations: { activeAnimations: ["Action.002"] },
+    },
+    {
+      id: "cursos",
+      label: "Cursos",
+      cameraPosition: {
+        position: { x: 0, y: -9.373, z: 15 },
+        lookAt: { x: 0, y: -9.373, z: 3.468 },
+        fov: 20,
+      },
+      animations: { activeAnimations: ["Idle", "Action"] },
+    },
+    {
+      id: "sobreMi",
+      label: "Sobre Mi",
+      cameraPosition: {
+        position: { x: 0, y: -12.724, z: 15 },
+        lookAt: { x: 0, y: -12.724, z: 3.468 },
+        fov: 20,
+      },
+      animations: { activeAnimations: ["Action.001"] },
+    },
+    {
+      id: "tienda",
+      label: "Tienda",
+      cameraPosition: {
+        position: { x: 0, y: -16.078, z: 15 },
+        lookAt: { x: 0, y: -16.078, z: 3.468 },
+        fov: 20,
+      },
+      animations: { activeAnimations: ["Action.001", "Action.002"] },
+    },
+    {
+      id: "contacto",
+      label: "Contacta",
+      cameraPosition: {
+        position: { x: 0, y: -19.432, z: 15 },
+        lookAt: { x: 0, y: -19.432, z: 3.468 },
+        fov: 20,
+      },
+      animations: {
+        activeAnimations: ["Idle", "Action", "Action.001", "Action.002"],
+      },
+    },
+    {
+      id: "footer",
+      label: "Footer",
+      cameraPosition: {
+        position: { x: 0, y: -22.786, z: 15 },
+        lookAt: { x: 0, y: -22.786, z: 3.468 },
+        fov: 20,
+      },
+      animations: {
+        activeAnimations: ["Idle", "Action", "Action.001", "Action.002"],
+      },
+    },
+    {
+      id: "postFooter",
+      label: "Post Footer",
+      cameraPosition: {
+        position: { x: 0, y: -26.140, z: 15 },
+        lookAt: { x: 0, y: -26.140, z: 3.468 },
+        fov: 20,
+      },
+      animations: {
+        activeAnimations: ["Idle"],
+      },
+    },
   ],
 
   setCurrentSection: (sectionId: SectionId) => {
     set({ currentSection: sectionId });
+  },
+
+  setTransitioning: (transitioning: boolean) => {
+    set({ isTransitioning: transitioning });
+  },
+
+  getCurrentCameraPosition: () => {
+    const { currentSection, sections } = get();
+    if (!currentSection) return null;
+    const section = sections.find((s) => s.id === currentSection);
+    return section?.cameraPosition || null;
+  },
+
+  getCurrentAnimations: () => {
+    const { currentSection, sections } = get();
+    if (!currentSection) return null;
+    const section = sections.find((s) => s.id === currentSection);
+    return section?.animations || null;
+  },
+
+  navigateNext: () => {
+    const { currentSection, sections, isTransitioning } = get();
+    if (isTransitioning) return;
+
+    const currentIndex = sections.findIndex((s) => s.id === currentSection);
+    const nextIndex = Math.min(currentIndex + 1, sections.length - 1);
+    if (nextIndex !== currentIndex) {
+      get().navigateToSection(sections[nextIndex].id);
+    }
+  },
+
+  navigatePrevious: () => {
+    const { currentSection, sections, isTransitioning } = get();
+    if (isTransitioning) return;
+
+    const currentIndex = sections.findIndex((s) => s.id === currentSection);
+    const prevIndex = Math.max(currentIndex - 1, 0);
+    if (prevIndex !== currentIndex) {
+      get().navigateToSection(sections[prevIndex].id);
+    }
+  },
+
+  navigateToSection: (sectionId: SectionId) => {
+    const { isTransitioning } = get();
+    if (isTransitioning) return;
+
+    set({ isTransitioning: true, currentSection: sectionId });
+
+    // Scroll to HTML section
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+
+    // The transition will be unlocked when camera animation completes
   },
 
   scrollToSection: (sectionId: SectionId) => {
@@ -80,7 +265,6 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
     }));
   },
 
-
   initializeSections: () => {
     const { sections } = get();
 
@@ -95,8 +279,8 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
     // Detectar sección actual basada en scroll
     const observer = new IntersectionObserver(
       (entries) => {
-        // No actualizar si estamos en medio de un scroll programático
-        if (get().isScrolling) return;
+        // No actualizar si estamos en medio de un scroll programático o transición
+        if (get().isScrolling || get().isTransitioning) return;
 
         entries.forEach((entry) => {
           if (entry.isIntersecting && entry.target.id) {

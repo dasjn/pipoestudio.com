@@ -232,11 +232,13 @@ const Header: React.FC<HeaderProps> = ({ currentPath = "" }) => {
 
   // Configuración de navegación usando el store y diccionario i18n
   const navItems: NavItem[] = [
-    ...sections.map((section) => ({
-      label: getNavigationLabel(section.id, locale),
-      sectionId: section.id,
-      type: "scroll" as const,
-    })),
+    ...sections
+      .filter((section) => section.id !== "postFooter") // Excluir postFooter del header
+      .map((section) => ({
+        label: getNavigationLabel(section.id, locale),
+        sectionId: section.id,
+        type: "scroll" as const,
+      })),
     {
       label: getNavigationLabel("language", locale),
       onClick: toggleLanguage,

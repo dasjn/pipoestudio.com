@@ -1,5 +1,10 @@
 import Header from "@/app/components/sections/Header";
-import { settingsQuery, allPostsQuery, homeQuery, featuredProductsQuery } from "@/sanity/lib/queries";
+import {
+  settingsQuery,
+  allPostsQuery,
+  homeQuery,
+  featuredProductsQuery,
+} from "@/sanity/lib/queries";
 import { sanityFetch } from "@/sanity/lib/live";
 import { i18n, type Locale } from "@/i18n.config";
 import Footer from "../components/sections/Footer";
@@ -15,6 +20,7 @@ import {
 } from "../components/sections";
 import SectionRenderer from "../components/SectionRenderer";
 import Develop from "../components/sections/DevelopSection";
+import ThreeDCanvas from "../components/ThreeDCanvas";
 
 type Props = {
   params: Promise<{ locale: Locale }>;
@@ -23,13 +29,20 @@ type Props = {
 export default async function Page({ params }: Props) {
   const { locale } = await params;
 
-  const [{ data: settings }, { data: posts }, { data: home }, { data: products }] =
-    await Promise.all([
-      sanityFetch({ query: settingsQuery }),
-      sanityFetch({ query: allPostsQuery, params: { language: locale } }),
-      sanityFetch({ query: homeQuery, params: { language: locale } }),
-      sanityFetch({ query: featuredProductsQuery, params: { language: locale, limit: 3 } }),
-    ]);
+  const [
+    { data: settings },
+    { data: posts },
+    { data: home },
+    { data: products },
+  ] = await Promise.all([
+    sanityFetch({ query: settingsQuery }),
+    sanityFetch({ query: allPostsQuery, params: { language: locale } }),
+    sanityFetch({ query: homeQuery, params: { language: locale } }),
+    sanityFetch({
+      query: featuredProductsQuery,
+      params: { language: locale, limit: 3 },
+    }),
+  ]);
 
   // Fallback sections if no Sanity content
   const fallbackSections = (
@@ -57,6 +70,7 @@ export default async function Page({ params }: Props) {
       </div>
       <Footer />
       <PlaygroundSection />
+      <ThreeDCanvas />
     </>
   );
 }
