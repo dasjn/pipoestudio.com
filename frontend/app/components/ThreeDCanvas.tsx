@@ -77,6 +77,8 @@ export default function ThreeDCanvas() {
     getCurrentCameraPosition,
     getCurrentAnimations,
     setTransitioning,
+    onAnimationComplete,
+    sections,
   } = useNavigationStore();
 
   // Enable wheel navigation
@@ -147,12 +149,12 @@ export default function ThreeDCanvas() {
       });
 
       setAnimationControls({
-        clampWhenFinished: true,
         activeAnimations: newActiveAnimations,
+        animationSettings: animations.animationSettings,
         triggerUpdate: Date.now(),
       });
     }
-  }, [currentSection, availableAnimations, calculateDynamicFov]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [currentSection, availableAnimations, calculateDynamicFov, sections]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Listen for viewport changes to adjust FOV and sync sections
   useEffect(() => {
@@ -209,6 +211,7 @@ export default function ThreeDCanvas() {
         <Model
           animationControls={animationControls}
           onAnimationsLoaded={setAvailableAnimations}
+          onAnimationComplete={onAnimationComplete}
         />
         <Environment preset="sunset" />
       </Canvas>

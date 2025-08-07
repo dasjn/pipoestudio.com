@@ -50,33 +50,41 @@ type GLTFResult = GLTF & {
   };
 };
 
-type ActionName = "Idle" | "Action" | "Action.001" | "Action.002";
+type ActionName = "Idle" | "Move 01" | "Formulario Move" | "Formulario Iddle";
 type GLTFActions = Record<ActionName, THREE.AnimationAction>;
 
 interface ModelProps extends React.ComponentProps<"group"> {
   animationControls?: {
     activeAnimations: { [key: string]: boolean };
-    clampWhenFinished: boolean;
+    animationSettings?: { [key: string]: { loop: boolean; clampWhenFinished: boolean } };
     triggerUpdate?: number;
   };
   onAnimationsLoaded?: (animations: string[]) => void;
+  onAnimationComplete?: (animationName: string) => void;
 }
 
-export function Model({ animationControls, onAnimationsLoaded, ...props }: ModelProps) {
+export function Model({
+  animationControls,
+  onAnimationsLoaded,
+  onAnimationComplete,
+  ...props
+}: ModelProps) {
   const group = useRef<THREE.Group>();
   const { nodes, materials, animations } = useGLTF(
-    "/models/Pipo_Todo_Prueba_v05.glb"
+    "/models/Pipo_Todo_Prueba_v07.glb"
   ) as unknown as GLTFResult;
   const { actions } = useAnimations(animations, group);
-  console.log("Loaded actions:", Object.keys(actions));
 
   // State for animation blending
   const animationMixer = useRef<THREE.AnimationMixer | null>(null);
   const blendedActions = useRef<{ [key: string]: THREE.AnimationAction }>({});
+  const animationStartTimes = useRef<{ [key: string]: number }>({});
+  const animationDurations = useRef<{ [key: string]: number }>({});
+  const completedAnimations = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     if (onAnimationsLoaded && animations.length > 0) {
-      const animationNames = animations.map(anim => anim.name);
+      const animationNames = animations.map((anim) => anim.name);
       onAnimationsLoaded(animationNames);
     }
   }, [animations, onAnimationsLoaded]);
@@ -89,7 +97,24 @@ export function Model({ animationControls, onAnimationsLoaded, ...props }: Model
       // Create actions for all animations
       animations.forEach((animation) => {
         const action = animationMixer.current!.clipAction(animation);
-        action.clampWhenFinished = animationControls?.clampWhenFinished ?? true;
+        
+        // Store animation duration
+        animationDurations.current[animation.name] = animation.duration;
+        
+        // Get settings for this specific animation
+        const settings = animationControls?.animationSettings?.[animation.name];
+        
+        // Configure loop and clamp settings based on provided settings or defaults
+        if (settings) {
+          action.setLoop(settings.loop ? THREE.LoopRepeat : THREE.LoopOnce);
+          action.clampWhenFinished = settings.clampWhenFinished;
+        } else {
+          // Default fallback: most animations loop except Move animations
+          const isMove = animation.name.includes('Move');
+          action.setLoop(isMove ? THREE.LoopOnce : THREE.LoopRepeat);
+          action.clampWhenFinished = isMove;
+        }
+        
         blendedActions.current[animation.name] = action;
       });
     }
@@ -99,28 +124,70 @@ export function Model({ animationControls, onAnimationsLoaded, ...props }: Model
         animationMixer.current.stopAllAction();
       }
     };
-  }, [animations, animationControls?.clampWhenFinished]);
+  }, [animations, animationControls?.animationSettings]);
 
   useEffect(() => {
     if (animationControls && animationMixer.current) {
+      // First, clean up all previous animation tracking
+      Object.keys(animationStartTimes.current).forEach((animName) => {
+        if (!animationControls.activeAnimations[animName]) {
+          delete animationStartTimes.current[animName];
+          completedAnimations.current.delete(animName);
+        }
+      });
+
+      // Then handle current animations
       Object.keys(blendedActions.current).forEach((animName) => {
         const action = blendedActions.current[animName];
         const shouldPlay = animationControls.activeAnimations[animName];
-        
+
         if (shouldPlay && !action.isRunning()) {
           action.reset();
           action.play();
+          // Record start time for non-looping animations
+          const settings = animationControls.animationSettings?.[animName];
+          const isMove = animName.includes('Move');
+          const isNonLooping = (settings && !settings.loop) || (!settings && isMove);
+          
+          if (isNonLooping) {
+            animationStartTimes.current[animName] = Date.now();
+            completedAnimations.current.delete(animName); // Reset completion status
+          }
         } else if (!shouldPlay && action.isRunning()) {
           action.stop();
+          delete animationStartTimes.current[animName];
+          completedAnimations.current.delete(animName);
         }
       });
     }
-  }, [animationControls?.activeAnimations, animationControls?.triggerUpdate]);
+  }, [animationControls]);
 
   // Update mixer on each frame
   useFrame((state, delta) => {
     if (animationMixer.current) {
       animationMixer.current.update(delta);
+      
+      // Check for animation completion based on time
+      const currentTime = Date.now();
+      Object.keys(animationStartTimes.current).forEach((animName) => {
+        const startTime = animationStartTimes.current[animName];
+        const duration = animationDurations.current[animName];
+        
+        // Only check completion for animations that are currently being tracked and should be active
+        const isCurrentlyActive = animationControls?.activeAnimations?.[animName];
+        
+        if (startTime && duration && !completedAnimations.current.has(animName) && isCurrentlyActive) {
+          const elapsedTime = (currentTime - startTime) / 1000; // Convert to seconds
+          
+          // Use minimal buffer to ensure smooth transition
+          if (elapsedTime >= duration) {
+            completedAnimations.current.add(animName);
+            if (onAnimationComplete) {
+              onAnimationComplete(animName);
+            }
+          }
+        }
+      });
     }
   });
   return (
@@ -128,7 +195,7 @@ export function Model({ animationControls, onAnimationsLoaded, ...props }: Model
       <group name="Scene">
         <group
           name="Armature001"
-          position={[-1.684, 2.717, 3.473]}
+          position={[1.496, -3.829, 1.977]}
           scale={0.236}
         >
           <primitive object={nodes.Bone} />
@@ -282,4 +349,4 @@ export function Model({ animationControls, onAnimationsLoaded, ...props }: Model
   );
 }
 
-useGLTF.preload("/models/Pipo_Todo_Prueba_v05.glb");
+useGLTF.preload("/models/Pipo_Todo_Prueba_v07.glb");

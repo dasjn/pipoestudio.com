@@ -24,6 +24,11 @@ export interface CameraPosition {
 // Configuración de animaciones 3D para cada sección
 export interface SectionAnimations {
   activeAnimations: string[];
+  animationSettings?: { [key: string]: { loop: boolean; clampWhenFinished: boolean } };
+  sequence?: {
+    move: string;
+    idle: string;
+  };
 }
 
 // Configuración de secciones
@@ -49,6 +54,9 @@ interface NavigationState {
   // Todas las secciones disponibles
   sections: Section[];
 
+  // Estado de la secuencia de animación
+  isAnimationSequenceActive: boolean;
+
   // Acciones
   setCurrentSection: (sectionId: SectionId) => void;
   scrollToSection: (sectionId: SectionId) => void;
@@ -60,6 +68,8 @@ interface NavigationState {
   getCurrentAnimations: () => SectionAnimations | null;
   navigateNext: () => void;
   navigatePrevious: () => void;
+  onAnimationComplete: (animationName: string) => void;
+  setAnimationSequenceActive: (active: boolean) => void;
 }
 
 // Store de navegación
@@ -67,6 +77,7 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
   currentSection: "inicio",
   isScrolling: false,
   isTransitioning: false,
+  isAnimationSequenceActive: false,
 
   sections: [
     {
@@ -77,7 +88,14 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
         lookAt: { x: 0, y: 3.911, z: 3.468 },
         fov: 20,
       },
-      animations: { activeAnimations: ["Idle"] },
+      animations: { 
+        activeAnimations: ["Move 01"],
+        animationSettings: {
+          "Move 01": { loop: false, clampWhenFinished: true },
+          "Idle": { loop: true, clampWhenFinished: false }
+        },
+        sequence: { move: "Move 01", idle: "Idle" }
+      },
     },
     {
       id: "manifiesto",
@@ -87,7 +105,14 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
         lookAt: { x: 0, y: 0.657, z: 3.468 },
         fov: 20,
       },
-      animations: { activeAnimations: ["Action"] },
+      animations: { 
+        activeAnimations: ["Move 01"],
+        animationSettings: {
+          "Move 01": { loop: false, clampWhenFinished: true },
+          "Idle": { loop: true, clampWhenFinished: false }
+        },
+        sequence: { move: "Move 01", idle: "Idle" }
+      },
     },
     {
       id: "trabajos",
@@ -97,7 +122,14 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
         lookAt: { x: 0, y: -2.677, z: 3.468 },
         fov: 20,
       },
-      animations: { activeAnimations: ["Action.001"] },
+      animations: { 
+        activeAnimations: ["Move 01"],
+        animationSettings: {
+          "Move 01": { loop: false, clampWhenFinished: true },
+          "Idle": { loop: true, clampWhenFinished: false }
+        },
+        sequence: { move: "Move 01", idle: "Idle" }
+      },
     },
     {
       id: "algunaIdea",
@@ -107,7 +139,14 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
         lookAt: { x: 0, y: -6.029, z: 3.468 },
         fov: 20,
       },
-      animations: { activeAnimations: ["Action.002"] },
+      animations: { 
+        activeAnimations: ["Formulario Move"],
+        animationSettings: {
+          "Formulario Move": { loop: false, clampWhenFinished: true },
+          "Formulario Iddle": { loop: true, clampWhenFinished: false }
+        },
+        sequence: { move: "Formulario Move", idle: "Formulario Iddle" }
+      },
     },
     {
       id: "cursos",
@@ -117,7 +156,14 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
         lookAt: { x: 0, y: -9.373, z: 3.468 },
         fov: 20,
       },
-      animations: { activeAnimations: ["Idle", "Action"] },
+      animations: { 
+        activeAnimations: ["Move 01"],
+        animationSettings: {
+          "Move 01": { loop: false, clampWhenFinished: true },
+          "Idle": { loop: true, clampWhenFinished: false }
+        },
+        sequence: { move: "Move 01", idle: "Idle" }
+      },
     },
     {
       id: "sobreMi",
@@ -127,7 +173,14 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
         lookAt: { x: 0, y: -12.724, z: 3.468 },
         fov: 20,
       },
-      animations: { activeAnimations: ["Action.001"] },
+      animations: { 
+        activeAnimations: ["Move 01"],
+        animationSettings: {
+          "Move 01": { loop: false, clampWhenFinished: true },
+          "Idle": { loop: true, clampWhenFinished: false }
+        },
+        sequence: { move: "Move 01", idle: "Idle" }
+      },
     },
     {
       id: "tienda",
@@ -137,7 +190,14 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
         lookAt: { x: 0, y: -16.078, z: 3.468 },
         fov: 20,
       },
-      animations: { activeAnimations: ["Action.001", "Action.002"] },
+      animations: { 
+        activeAnimations: ["Move 01"],
+        animationSettings: {
+          "Move 01": { loop: false, clampWhenFinished: true },
+          "Idle": { loop: true, clampWhenFinished: false }
+        },
+        sequence: { move: "Move 01", idle: "Idle" }
+      },
     },
     {
       id: "contacto",
@@ -147,8 +207,13 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
         lookAt: { x: 0, y: -19.432, z: 3.468 },
         fov: 20,
       },
-      animations: {
-        activeAnimations: ["Idle", "Action", "Action.001", "Action.002"],
+      animations: { 
+        activeAnimations: ["Move 01"],
+        animationSettings: {
+          "Move 01": { loop: false, clampWhenFinished: true },
+          "Idle": { loop: true, clampWhenFinished: false }
+        },
+        sequence: { move: "Move 01", idle: "Idle" }
       },
     },
     {
@@ -159,8 +224,13 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
         lookAt: { x: 0, y: -22.786, z: 3.468 },
         fov: 20,
       },
-      animations: {
-        activeAnimations: ["Idle", "Action", "Action.001", "Action.002"],
+      animations: { 
+        activeAnimations: ["Move 01"],
+        animationSettings: {
+          "Move 01": { loop: false, clampWhenFinished: true },
+          "Idle": { loop: true, clampWhenFinished: false }
+        },
+        sequence: { move: "Move 01", idle: "Idle" }
       },
     },
     {
@@ -171,14 +241,39 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
         lookAt: { x: 0, y: -26.140, z: 3.468 },
         fov: 20,
       },
-      animations: {
+      animations: { 
         activeAnimations: ["Idle"],
+        animationSettings: {
+          "Idle": { loop: true, clampWhenFinished: false }
+        }
       },
     },
   ],
 
   setCurrentSection: (sectionId: SectionId) => {
-    set({ currentSection: sectionId });
+    const { sections } = get();
+    const section = sections.find(s => s.id === sectionId);
+    
+    // If this section has a sequence, reset to Move and activate sequence
+    if (section?.animations.sequence) {
+      set((state) => ({
+        sections: state.sections.map((s) =>
+          s.id === sectionId
+            ? {
+                ...s,
+                animations: {
+                  ...s.animations,
+                  activeAnimations: [section.animations.sequence!.move]
+                }
+              }
+            : s
+        ),
+        currentSection: sectionId,
+        isAnimationSequenceActive: true
+      }));
+    } else {
+      set({ currentSection: sectionId });
+    }
   },
 
   setTransitioning: (transitioning: boolean) => {
@@ -220,10 +315,32 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
   },
 
   navigateToSection: (sectionId: SectionId) => {
-    const { isTransitioning } = get();
+    const { isTransitioning, sections } = get();
     if (isTransitioning) return;
 
-    set({ isTransitioning: true, currentSection: sectionId });
+    const section = sections.find(s => s.id === sectionId);
+    
+    // Reset animations to initial Move state if sequence is defined
+    if (section?.animations.sequence) {
+      set((state) => ({
+        sections: state.sections.map((s) =>
+          s.id === sectionId
+            ? {
+                ...s,
+                animations: {
+                  ...s.animations,
+                  activeAnimations: [section.animations.sequence!.move]
+                }
+              }
+            : s
+        ),
+        isTransitioning: true,
+        currentSection: sectionId,
+        isAnimationSequenceActive: true
+      }));
+    } else {
+      set({ isTransitioning: true, currentSection: sectionId });
+    }
 
     // Scroll to HTML section
     const element = document.getElementById(sectionId);
@@ -302,5 +419,41 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
         observer.observe(element);
       }
     });
+  },
+
+  setAnimationSequenceActive: (active: boolean) => {
+    set({ isAnimationSequenceActive: active });
+  },
+
+  onAnimationComplete: (animationName: string) => {
+    const { currentSection, sections, isAnimationSequenceActive } = get();
+    
+    if (!isAnimationSequenceActive) {
+      return;
+    }
+    
+    const section = sections.find(s => s.id === currentSection);
+    
+    if (!section?.animations.sequence) {
+      return;
+    }
+    
+    // Si terminó la animación Move, cambiar a Idle
+    if (animationName === section.animations.sequence.move) {
+      set((state) => ({
+        sections: state.sections.map((s) =>
+          s.id === currentSection
+            ? {
+                ...s,
+                animations: {
+                  ...s.animations,
+                  activeAnimations: [section.animations.sequence!.idle]
+                }
+              }
+            : s
+        ),
+        isAnimationSequenceActive: false
+      }));
+    }
   },
 }));
