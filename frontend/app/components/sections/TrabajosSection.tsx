@@ -28,7 +28,7 @@ export default function TrabajosSection({ data, posts }: TrabajosSectionProps) {
   return (
     <section
       id="trabajos"
-      className={`h-svh bg-transparent flex items-center justify-center`}
+      className="w-full h-full flex items-center justify-center"
     >
       <div>
         <div className="text-center">

@@ -7,18 +7,7 @@ import {
 } from "@/sanity/lib/queries";
 import { sanityFetch } from "@/sanity/lib/live";
 import { i18n, type Locale } from "@/i18n.config";
-import {
-  InicioSection,
-  ManifiestoSection,
-  TrabajosSection,
-  AlgunaIdeaSection,
-  CursosSection,
-  TiendaSection,
-  ContactoSection,
-  PlaygroundSection,
-} from "../components/sections";
-import Footer from "../components/sections/Footer";
-import SobreMiSection from "../components/sections/SobreMiSection";
+import { InicioSection, PlaygroundSection } from "../components/sections";
 import ThreeDCanvas from "../components/ThreeDCanvas";
 import type { SectionsData } from "../components/Shelves";
 
@@ -67,14 +56,6 @@ export default async function Page({ params }: Props) {
     <>
       <Header />
       <InicioSection data={sectionsData.inicio} />
-      <ManifiestoSection data={sectionsData.manifiesto} />
-      <TrabajosSection data={sectionsData.trabajos} posts={sectionsData.posts} />
-      <AlgunaIdeaSection data={sectionsData.algunaIdea} />
-      <CursosSection data={sectionsData.cursos} />
-      <SobreMiSection data={sectionsData.sobreMi} />
-      <TiendaSection data={sectionsData.tienda} />
-      <ContactoSection data={sectionsData.contacto} />
-      <Footer />
       <PlaygroundSection />
       <ThreeDCanvas sectionsData={sectionsData} />
     </>

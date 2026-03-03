@@ -1,8 +1,18 @@
 import * as THREE from "three";
 import React, { useRef, useEffect } from "react";
-import { useGLTF, useAnimations } from "@react-three/drei";
+import { useGLTF, useAnimations, Html } from "@react-three/drei";
+import { useNavigationStore } from "../store/navigationStore";
+import ManifiestoSection from "./sections/ManifiestoSection";
+import TrabajosSection from "./sections/TrabajosSection";
+import AlgunaIdeaSection from "./sections/AlgunaIdeaSection";
+import CursosSection from "./sections/CursosSection";
+import SobreMiSection from "./sections/SobreMiSection";
+import TiendaSection from "./sections/TiendaSection";
+import ContactoSection from "./sections/ContactoSection";
+import FooterSection from "./sections/Footer";
 import { GLTF } from "three-stdlib";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
+import { AnimatePresence, motion } from "framer-motion";
 import { useFacialAnimations } from "../hooks/useFacialAnimations";
 
 export interface SectionsData {
@@ -99,6 +109,80 @@ type ActionName =
   | "C-Jugueton";
 type GLTFActions = Record<ActionName, THREE.AnimationAction>;
 
+// Dimensiones world-space de los planos de sección (scale de los meshes)
+const PLANE_W = 3.446;
+const PLANE_H = 1.889;
+
+// Tamaño de referencia en px al que están diseñadas las secciones.
+// Todo el contenido escala desde este tamaño al tamaño real proyectado.
+const REF_W = 600;
+const REF_H = Math.round(REF_W * (PLANE_H / PLANE_W)); // ~329px
+
+function BoundedHtml({
+  position,
+  isActive,
+  children,
+}: {
+  position: [number, number, number];
+  isActive: boolean;
+  children: React.ReactNode;
+}) {
+  const { camera, size } = useThree();
+  const outerRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
+  const tl = useRef(new THREE.Vector3());
+  const br = useRef(new THREE.Vector3());
+  const [px, py, pz] = position;
+
+  useFrame(() => {
+    if (!outerRef.current || !innerRef.current) return;
+    tl.current.set(px - PLANE_W / 2, py + PLANE_H / 2, pz).project(camera);
+    br.current.set(px + PLANE_W / 2, py - PLANE_H / 2, pz).project(camera);
+    const w = Math.abs((br.current.x - tl.current.x) / 2) * size.width;
+    const h = Math.abs((tl.current.y - br.current.y) / 2) * size.height;
+    const scale = w / REF_W;
+
+    outerRef.current.style.width = `${w}px`;
+    outerRef.current.style.height = `${h}px`;
+    innerRef.current.style.transform = `translate(-50%, -50%) scale(${scale})`;
+  });
+
+  return (
+    <Html center>
+      <AnimatePresence>
+        {isActive && (
+          <motion.div
+            key="section"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35, ease: "easeInOut" }}
+          >
+            <div
+              ref={outerRef}
+              style={{ overflow: "hidden", position: "relative" }}
+            >
+              <div
+                ref={innerRef}
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  width: REF_W,
+                  height: REF_H,
+                  transformOrigin: "center",
+                }}
+              >
+                {children}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </Html>
+  );
+}
+
 interface ModelProps extends React.ComponentProps<"group"> {
   animationControls?: {
     activeAnimations: { [key: string]: boolean };
@@ -119,6 +203,7 @@ export function Model({
   sectionsData,
   ...props
 }: ModelProps) {
+  const { currentSection } = useNavigationStore();
   const group = useRef<THREE.Group>();
   const { nodes, materials, animations } = useGLTF(
     "/models/Pipo_Todo_Prueba_v25.glb",
@@ -492,56 +577,91 @@ export function Model({
           geometry={nodes.Module01002.geometry}
           position={[0, 0.666, 3.468]}
           scale={[3.446, 1.889, 2.489]}
-        />
+        >
+          <BoundedHtml position={[0, 0.666, 3.468]} isActive={currentSection === "manifiesto"}>
+            <ManifiestoSection data={sectionsData?.manifiesto} />
+          </BoundedHtml>
+        </mesh>
         <mesh
           name="trabajos"
           visible={false}
           geometry={nodes.Module01001.geometry}
           position={[0, -2.645, 3.468]}
           scale={[3.446, 1.889, 2.489]}
-        />
+        >
+          <BoundedHtml position={[0, -2.645, 3.468]} isActive={currentSection === "trabajos"}>
+            <TrabajosSection
+              data={sectionsData?.trabajos}
+              posts={sectionsData?.posts ?? []}
+            />
+          </BoundedHtml>
+        </mesh>
         <mesh
           name="algunaIdea"
           visible={false}
           geometry={nodes.Module01003.geometry}
           position={[0, -5.983, 3.468]}
           scale={[3.446, 1.889, 2.489]}
-        />
+        >
+          <BoundedHtml position={[0, -5.983, 3.468]} isActive={currentSection === "algunaIdea"}>
+            <AlgunaIdeaSection data={sectionsData?.algunaIdea} />
+          </BoundedHtml>
+        </mesh>
         <mesh
           name="cursos"
           visible={false}
           geometry={nodes.Module01004.geometry}
           position={[0, -9.318, 3.468]}
           scale={[3.446, 1.889, 2.489]}
-        />
+        >
+          <BoundedHtml position={[0, -9.318, 3.468]} isActive={currentSection === "cursos"}>
+            <CursosSection data={sectionsData?.cursos} />
+          </BoundedHtml>
+        </mesh>
         <mesh
           name="sobreMi"
           visible={false}
           geometry={nodes.Module01005.geometry}
           position={[0, -12.651, 3.468]}
           scale={[3.446, 1.889, 2.489]}
-        />
+        >
+          <BoundedHtml position={[0, -12.651, 3.468]} isActive={currentSection === "sobreMi"}>
+            <SobreMiSection data={sectionsData?.sobreMi} />
+          </BoundedHtml>
+        </mesh>
         <mesh
           name="tienda"
           visible={false}
           geometry={nodes.Module01006.geometry}
           position={[0, -15.993, 3.468]}
           scale={[3.446, 1.889, 2.489]}
-        />
+        >
+          <BoundedHtml position={[0, -15.993, 3.468]} isActive={currentSection === "tienda"}>
+            <TiendaSection data={sectionsData?.tienda} />
+          </BoundedHtml>
+        </mesh>
         <mesh
           name="contacto"
           visible={false}
           geometry={nodes.Module01007.geometry}
           position={[0, -19.333, 3.468]}
           scale={[3.446, 1.889, 2.489]}
-        />
+        >
+          <BoundedHtml position={[0, -19.333, 3.468]} isActive={currentSection === "contacto"}>
+            <ContactoSection data={sectionsData?.contacto} />
+          </BoundedHtml>
+        </mesh>
         <mesh
           name="footer"
           visible={false}
           geometry={nodes.Module01008.geometry}
           position={[0, -22.673, 3.468]}
           scale={[3.446, 1.889, 2.489]}
-        />
+        >
+          <BoundedHtml position={[0, -22.673, 3.468]} isActive={currentSection === "footer"}>
+            <FooterSection />
+          </BoundedHtml>
+        </mesh>
       </group>
     </group>
   );
