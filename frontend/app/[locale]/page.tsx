@@ -7,7 +7,6 @@ import {
 } from "@/sanity/lib/queries";
 import { sanityFetch } from "@/sanity/lib/live";
 import { i18n, type Locale } from "@/i18n.config";
-import Footer from "../components/sections/Footer";
 import {
   InicioSection,
   ManifiestoSection,
@@ -18,9 +17,14 @@ import {
   ContactoSection,
   PlaygroundSection,
 } from "../components/sections";
-import SectionRenderer from "../components/SectionRenderer";
-import Develop from "../components/sections/DevelopSection";
+import Footer from "../components/sections/Footer";
+import SobreMiSection from "../components/sections/SobreMiSection";
 import ThreeDCanvas from "../components/ThreeDCanvas";
+import type { SectionsData } from "../components/Shelves";
+
+function findSectionData(sections: any[], type: string) {
+  return sections?.find((s: any) => s._type === type);
+}
 
 type Props = {
   params: Promise<{ locale: Locale }>;
@@ -44,33 +48,35 @@ export default async function Page({ params }: Props) {
     }),
   ]);
 
-  // Fallback sections if no Sanity content
-  const fallbackSections = (
-    <>
-      <InicioSection />
-      <ManifiestoSection />
-      <TrabajosSection posts={posts || []} />
-      <AlgunaIdeaSection />
-      <CursosSection />
-      <TiendaSection />
-      <ContactoSection />
-    </>
-  );
+  const sanitySections = home?.sections ?? [];
+
+  const sectionsData: SectionsData = {
+    inicio: findSectionData(sanitySections, "inicioSection"),
+    manifiesto: findSectionData(sanitySections, "manifiestoSection"),
+    trabajos: findSectionData(sanitySections, "trabajosSection"),
+    algunaIdea: findSectionData(sanitySections, "algunaIdeaSection"),
+    cursos: findSectionData(sanitySections, "cursosSection"),
+    sobreMi: findSectionData(sanitySections, "SobreMiSection"),
+    tienda: findSectionData(sanitySections, "tiendaSection"),
+    contacto: findSectionData(sanitySections, "contactoSection"),
+    posts: posts ?? [],
+    products: products ?? [],
+  };
 
   return (
     <>
       <Header />
-      {/* <Develop products={products || []} /> */}
-      <div className="relative">
-        {home?.sections && home.sections.length > 0 ? (
-          <SectionRenderer sections={home.sections} posts={posts || []} />
-        ) : (
-          fallbackSections
-        )}
-      </div>
+      <InicioSection data={sectionsData.inicio} />
+      <ManifiestoSection data={sectionsData.manifiesto} />
+      <TrabajosSection data={sectionsData.trabajos} posts={sectionsData.posts} />
+      <AlgunaIdeaSection data={sectionsData.algunaIdea} />
+      <CursosSection data={sectionsData.cursos} />
+      <SobreMiSection data={sectionsData.sobreMi} />
+      <TiendaSection data={sectionsData.tienda} />
+      <ContactoSection data={sectionsData.contacto} />
       <Footer />
       <PlaygroundSection />
-      <ThreeDCanvas />
+      <ThreeDCanvas sectionsData={sectionsData} />
     </>
   );
 }

@@ -3,6 +3,20 @@ import React, { useRef, useEffect } from "react";
 import { useGLTF, useAnimations } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 import { useFrame } from "@react-three/fiber";
+import { useFacialAnimations } from "../hooks/useFacialAnimations";
+
+export interface SectionsData {
+  manifiesto?: any;
+  trabajos?: any;
+  algunaIdea?: any;
+  cursos?: any;
+  sobreMi?: any;
+  tienda?: any;
+  contacto?: any;
+  inicio?: any;
+  posts: any[];
+  products: any[];
+}
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -23,14 +37,6 @@ type GLTFResult = GLTF & {
     Cube024: THREE.Mesh;
     Cube022: THREE.Mesh;
     Cube023: THREE.Mesh;
-    Cube036: THREE.Mesh;
-    Cube037: THREE.Mesh;
-    Cube038: THREE.Mesh;
-    Cube039: THREE.Mesh;
-    Cube040: THREE.Mesh;
-    Cube041: THREE.Mesh;
-    Cube042: THREE.Mesh;
-    Cube043: THREE.Mesh;
     Module01: THREE.Mesh;
     Module02: THREE.Mesh;
     Module03: THREE.Mesh;
@@ -39,6 +45,30 @@ type GLTFResult = GLTF & {
     Module02003: THREE.Mesh;
     Module02004: THREE.Mesh;
     Module02005: THREE.Mesh;
+    Cube036: THREE.Mesh;
+    Cube037: THREE.Mesh;
+    Cube038: THREE.Mesh;
+    Cube039: THREE.Mesh;
+    Cube040: THREE.Mesh;
+    Cube041: THREE.Mesh;
+    Cube042: THREE.Mesh;
+    Cube043: THREE.Mesh;
+    Marco01: THREE.Mesh;
+    Foto01: THREE.Mesh;
+    Marco01001: THREE.Mesh;
+    Foto01001: THREE.Mesh;
+    Marco01002: THREE.Mesh;
+    Foto01002: THREE.Mesh;
+    Marco01003: THREE.Mesh;
+    Foto01003: THREE.Mesh;
+    Module01002: THREE.Mesh;
+    Module01001: THREE.Mesh;
+    Module01003: THREE.Mesh;
+    Module01004: THREE.Mesh;
+    Module01005: THREE.Mesh;
+    Module01006: THREE.Mesh;
+    Module01007: THREE.Mesh;
+    Module01008: THREE.Mesh;
     Bone: THREE.Bone;
   };
   materials: {
@@ -46,32 +76,52 @@ type GLTFResult = GLTF & {
     ["Pipo Caras"]: THREE.MeshStandardMaterial;
     ["Pipo Wood 01"]: THREE.MeshStandardMaterial;
     ["Pipo Wood 02"]: THREE.MeshStandardMaterial;
-    ["Module 01"]: THREE.MeshStandardMaterial;
+    Mueble: THREE.MeshStandardMaterial;
+    MaderaCuadros: THREE.MeshStandardMaterial;
+    Imagen01: THREE.MeshStandardMaterial;
   };
 };
 
-type ActionName = "Idle" | "Move 01" | "Formulario Move" | "Formulario Iddle";
+type ActionName =
+  | "Idle 01"
+  | "Idle 02"
+  | "Idle 03"
+  | "Idle 04"
+  | "Scroll 01- U"
+  | "Scroll 01-D"
+  | "Scroll 02 - D"
+  | "Scroll 02- U"
+  | "Scroll 03 - D"
+  | "Scroll 03 - U"
+  | "Scroll 03 - U.001"
+  | "C-Cachondo"
+  | "C-Enfadado"
+  | "C-Jugueton";
 type GLTFActions = Record<ActionName, THREE.AnimationAction>;
 
 interface ModelProps extends React.ComponentProps<"group"> {
   animationControls?: {
     activeAnimations: { [key: string]: boolean };
-    animationSettings?: { [key: string]: { loop: boolean; clampWhenFinished: boolean } };
+    animationSettings?: {
+      [key: string]: { loop: boolean; clampWhenFinished: boolean };
+    };
     triggerUpdate?: number;
   };
   onAnimationsLoaded?: (animations: string[]) => void;
   onAnimationComplete?: (animationName: string) => void;
+  sectionsData?: SectionsData;
 }
 
 export function Model({
   animationControls,
   onAnimationsLoaded,
   onAnimationComplete,
+  sectionsData,
   ...props
 }: ModelProps) {
   const group = useRef<THREE.Group>();
   const { nodes, materials, animations } = useGLTF(
-    "/models/Pipo_Todo_Prueba_v07.glb"
+    "/models/Pipo_Todo_Prueba_v25.glb",
   ) as unknown as GLTFResult;
   const { actions } = useAnimations(animations, group);
 
@@ -91,30 +141,31 @@ export function Model({
 
   useEffect(() => {
     if (group.current && animations.length > 0) {
-      // Create mixer
+      // Limpiar mixer anterior si existe
+      if (animationMixer.current) {
+        animationMixer.current.stopAllAction();
+      }
+
+      // Crear nuevo mixer
       animationMixer.current = new THREE.AnimationMixer(group.current);
 
-      // Create actions for all animations
+      // Limpiar referencias anteriores
+      blendedActions.current = {};
+      animationStartTimes.current = {};
+      animationDurations.current = {};
+      completedAnimations.current.clear();
+
+      // Crear actions para todas las animaciones (pero NO reproducirlas)
       animations.forEach((animation) => {
         const action = animationMixer.current!.clipAction(animation);
-        
-        // Store animation duration
+
+        // Guardar duración
         animationDurations.current[animation.name] = animation.duration;
-        
-        // Get settings for this specific animation
-        const settings = animationControls?.animationSettings?.[animation.name];
-        
-        // Configure loop and clamp settings based on provided settings or defaults
-        if (settings) {
-          action.setLoop(settings.loop ? THREE.LoopRepeat : THREE.LoopOnce);
-          action.clampWhenFinished = settings.clampWhenFinished;
-        } else {
-          // Default fallback: most animations loop except Move animations
-          const isMove = animation.name.includes('Move');
-          action.setLoop(isMove ? THREE.LoopOnce : THREE.LoopRepeat);
-          action.clampWhenFinished = isMove;
-        }
-        
+
+        // Configurar como detenida inicialmente
+        action.stop();
+        action.reset();
+
         blendedActions.current[animation.name] = action;
       });
     }
@@ -124,67 +175,78 @@ export function Model({
         animationMixer.current.stopAllAction();
       }
     };
-  }, [animations, animationControls?.animationSettings]);
+  }, [animations]);
 
   useEffect(() => {
-    if (animationControls && animationMixer.current) {
-      // First, clean up all previous animation tracking
-      Object.keys(animationStartTimes.current).forEach((animName) => {
-        if (!animationControls.activeAnimations[animName]) {
-          delete animationStartTimes.current[animName];
-          completedAnimations.current.delete(animName);
-        }
-      });
+    if (!animationControls || !animationMixer.current) return;
 
-      // Then handle current animations
-      Object.keys(blendedActions.current).forEach((animName) => {
-        const action = blendedActions.current[animName];
-        const shouldPlay = animationControls.activeAnimations[animName];
+    // Encontrar la animación que debe reproducirse
+    const activeAnimName = Object.keys(animationControls.activeAnimations).find(
+      (name) => animationControls.activeAnimations[name],
+    );
 
-        if (shouldPlay && !action.isRunning()) {
-          action.reset();
-          action.play();
-          // Record start time for non-looping animations
-          const settings = animationControls.animationSettings?.[animName];
-          const isMove = animName.includes('Move');
-          const isNonLooping = (settings && !settings.loop) || (!settings && isMove);
-          
-          if (isNonLooping) {
-            animationStartTimes.current[animName] = Date.now();
-            completedAnimations.current.delete(animName); // Reset completion status
-          }
-        } else if (!shouldPlay && action.isRunning()) {
-          action.stop();
-          delete animationStartTimes.current[animName];
-          completedAnimations.current.delete(animName);
-        }
-      });
+    console.log(`[SHELVES] Playing: ${activeAnimName}`);
+    // console.log(`[SHELVES] Available:`, Object.keys(blendedActions.current));
+
+    if (!activeAnimName || !blendedActions.current[activeAnimName]) {
+      console.log(`[SHELVES] Animation not found: ${activeAnimName}`);
+      return;
+    }
+
+    const activeAction = blendedActions.current[activeAnimName];
+    const settings = animationControls.animationSettings?.[activeAnimName];
+
+    // Detener TODAS las animaciones primero
+    animationMixer.current.stopAllAction();
+    animationStartTimes.current = {};
+    completedAnimations.current.clear();
+
+    // Configurar la animación activa
+    if (settings) {
+      activeAction.setLoop(
+        settings.loop ? THREE.LoopRepeat : THREE.LoopOnce,
+        Infinity,
+      );
+      activeAction.clampWhenFinished = settings.clampWhenFinished;
+    }
+
+    // Iniciar la animación
+    activeAction.reset();
+    activeAction.setEffectiveTimeScale(1);
+    activeAction.setEffectiveWeight(1);
+    activeAction.play();
+
+    // Registrar tiempo de inicio para animaciones no-loop
+    const isNonLooping = settings && !settings.loop;
+    if (isNonLooping) {
+      animationStartTimes.current[activeAnimName] = Date.now();
     }
   }, [animationControls]);
+
+  // Animaciones de cara aleatorias (autónomas, mixer independiente)
+  useFacialAnimations(group, animations);
 
   // Update mixer on each frame
   useFrame((state, delta) => {
     if (animationMixer.current) {
       animationMixer.current.update(delta);
-      
+
       // Check for animation completion based on time
       const currentTime = Date.now();
       Object.keys(animationStartTimes.current).forEach((animName) => {
         const startTime = animationStartTimes.current[animName];
         const duration = animationDurations.current[animName];
-        
-        // Only check completion for animations that are currently being tracked and should be active
-        const isCurrentlyActive = animationControls?.activeAnimations?.[animName];
-        
-        if (startTime && duration && !completedAnimations.current.has(animName) && isCurrentlyActive) {
-          const elapsedTime = (currentTime - startTime) / 1000; // Convert to seconds
-          
-          // Use minimal buffer to ensure smooth transition
+
+        if (
+          startTime &&
+          duration &&
+          !completedAnimations.current.has(animName)
+        ) {
+          const elapsedTime = (currentTime - startTime) / 1000;
+
           if (elapsedTime >= duration) {
             completedAnimations.current.add(animName);
-            if (onAnimationComplete) {
-              onAnimationComplete(animName);
-            }
+            onAnimationComplete?.(animName);
           }
         }
       });
@@ -277,7 +339,7 @@ export function Model({
           castShadow
           receiveShadow
           geometry={nodes.Module01.geometry}
-          material={materials["Module 01"]}
+          material={materials["Mueble"]}
           position={[0, 0.657, 3.468]}
           scale={[3.446, 1.889, 2.489]}
         />
@@ -286,7 +348,7 @@ export function Model({
           castShadow
           receiveShadow
           geometry={nodes.Module02.geometry}
-          material={materials["Module 01"]}
+          material={materials["Mueble"]}
           position={[0, -19.432, 3.468]}
           scale={[3.446, 1.889, 2.489]}
         />
@@ -295,7 +357,7 @@ export function Model({
           castShadow
           receiveShadow
           geometry={nodes.Module03.geometry}
-          material={materials["Module 01"]}
+          material={materials["Mueble"]}
           position={[0, -22.786, 3.468]}
           scale={[3.446, 1.889, 2.489]}
         />
@@ -304,7 +366,7 @@ export function Model({
           castShadow
           receiveShadow
           geometry={nodes.Module02001.geometry}
-          material={materials["Module 01"]}
+          material={materials["Mueble"]}
           position={[0, -16.078, 3.468]}
           scale={[3.446, 1.889, 2.489]}
         />
@@ -313,7 +375,7 @@ export function Model({
           castShadow
           receiveShadow
           geometry={nodes.Module02002.geometry}
-          material={materials["Module 01"]}
+          material={materials["Mueble"]}
           position={[0, -12.724, 3.468]}
           scale={[3.446, 1.889, 2.489]}
         />
@@ -322,7 +384,7 @@ export function Model({
           castShadow
           receiveShadow
           geometry={nodes.Module02003.geometry}
-          material={materials["Module 01"]}
+          material={materials["Mueble"]}
           position={[0, -9.373, 3.468]}
           scale={[3.446, 1.889, 2.489]}
         />
@@ -331,7 +393,7 @@ export function Model({
           castShadow
           receiveShadow
           geometry={nodes.Module02004.geometry}
-          material={materials["Module 01"]}
+          material={materials["Mueble"]}
           position={[0, -6.029, 3.468]}
           scale={[3.446, 1.889, 2.489]}
         />
@@ -340,8 +402,144 @@ export function Model({
           castShadow
           receiveShadow
           geometry={nodes.Module02005.geometry}
-          material={materials["Module 01"]}
+          material={materials["Mueble"]}
           position={[0, -2.677, 3.468]}
+          scale={[3.446, 1.889, 2.489]}
+        />
+        <mesh
+          name="Marco01"
+          castShadow
+          receiveShadow
+          geometry={nodes.Marco01.geometry}
+          material={materials.MaderaCuadros}
+          position={[-0.771, -3.278, 4.033]}
+          rotation={[-0.335, -0.337, -0.114]}
+          scale={0.651}
+        />
+        <mesh
+          name="Foto01"
+          castShadow
+          receiveShadow
+          geometry={nodes.Foto01.geometry}
+          material={materials.Imagen01}
+          position={[-0.771, -3.277, 4.034]}
+          rotation={[-0.335, -0.337, -0.114]}
+          scale={0.651}
+        />
+        <mesh
+          name="Marco01001"
+          castShadow
+          receiveShadow
+          geometry={nodes.Marco01001.geometry}
+          material={materials.MaderaCuadros}
+          position={[0.779, -3.278, 4.033]}
+          rotation={[-0.321, 0.191, 0.063]}
+          scale={0.651}
+        />
+        <mesh
+          name="Foto01001"
+          castShadow
+          receiveShadow
+          geometry={nodes.Foto01001.geometry}
+          material={materials.Imagen01}
+          position={[0.779, -3.277, 4.034]}
+          rotation={[-0.321, 0.191, 0.063]}
+          scale={0.651}
+        />
+        <mesh
+          name="Marco01002"
+          castShadow
+          receiveShadow
+          geometry={nodes.Marco01002.geometry}
+          material={materials.MaderaCuadros}
+          position={[1.576, -3.504, 4.572]}
+          rotation={[-0.321, 0.191, 0.063]}
+          scale={0.467}
+        />
+        <mesh
+          name="Foto01002"
+          castShadow
+          receiveShadow
+          geometry={nodes.Foto01002.geometry}
+          material={materials.Imagen01}
+          position={[1.577, -3.504, 4.573]}
+          rotation={[-0.321, 0.191, 0.063]}
+          scale={0.467}
+        />
+        <mesh
+          name="Marco01003"
+          castShadow
+          receiveShadow
+          geometry={nodes.Marco01003.geometry}
+          material={materials.MaderaCuadros}
+          position={[-1.537, -3.501, 4.572]}
+          rotation={[-0.337, -0.351, -0.12]}
+          scale={0.467}
+        />
+        <mesh
+          name="Foto01003"
+          castShadow
+          receiveShadow
+          geometry={nodes.Foto01003.geometry}
+          material={materials.Imagen01}
+          position={[-1.538, -3.501, 4.573]}
+          rotation={[-0.337, -0.351, -0.12]}
+          scale={0.467}
+        />
+        <mesh
+          name="manifiesto"
+          visible={false}
+          geometry={nodes.Module01002.geometry}
+          position={[0, 0.666, 3.468]}
+          scale={[3.446, 1.889, 2.489]}
+        />
+        <mesh
+          name="trabajos"
+          visible={false}
+          geometry={nodes.Module01001.geometry}
+          position={[0, -2.645, 3.468]}
+          scale={[3.446, 1.889, 2.489]}
+        />
+        <mesh
+          name="algunaIdea"
+          visible={false}
+          geometry={nodes.Module01003.geometry}
+          position={[0, -5.983, 3.468]}
+          scale={[3.446, 1.889, 2.489]}
+        />
+        <mesh
+          name="cursos"
+          visible={false}
+          geometry={nodes.Module01004.geometry}
+          position={[0, -9.318, 3.468]}
+          scale={[3.446, 1.889, 2.489]}
+        />
+        <mesh
+          name="sobreMi"
+          visible={false}
+          geometry={nodes.Module01005.geometry}
+          position={[0, -12.651, 3.468]}
+          scale={[3.446, 1.889, 2.489]}
+        />
+        <mesh
+          name="tienda"
+          visible={false}
+          geometry={nodes.Module01006.geometry}
+          position={[0, -15.993, 3.468]}
+          scale={[3.446, 1.889, 2.489]}
+        />
+        <mesh
+          name="contacto"
+          visible={false}
+          geometry={nodes.Module01007.geometry}
+          position={[0, -19.333, 3.468]}
+          scale={[3.446, 1.889, 2.489]}
+        />
+        <mesh
+          name="footer"
+          visible={false}
+          geometry={nodes.Module01008.geometry}
+          position={[0, -22.673, 3.468]}
           scale={[3.446, 1.889, 2.489]}
         />
       </group>
@@ -349,4 +547,4 @@ export function Model({
   );
 }
 
-useGLTF.preload("/models/Pipo_Todo_Prueba_v07.glb");
+useGLTF.preload("/models/Pipo_Todo_Prueba_v25.glb");

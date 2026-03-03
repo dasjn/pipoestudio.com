@@ -2,7 +2,7 @@
 
 import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { useEffect, useState, useRef, useCallback } from "react";
-import { Model } from "./Shelves";
+import { Model, type SectionsData } from "./Shelves";
 import { Environment } from "@react-three/drei";
 import * as THREE from "three";
 import { useNavigationStore } from "../store/navigationStore";
@@ -39,7 +39,7 @@ function CameraController({
       const newFov = THREE.MathUtils.lerp(
         currentFov,
         targetFov,
-        transitionSpeed
+        transitionSpeed,
       );
       (camera as any).fov = newFov;
       camera.updateProjectionMatrix();
@@ -70,15 +70,19 @@ function CameraController({
   return null;
 }
 
-export default function ThreeDCanvas() {
+export default function ThreeDCanvas({
+  sectionsData,
+}: {
+  sectionsData?: SectionsData;
+}) {
   // Navigation store integration
   const {
     currentSection,
     getCurrentCameraPosition,
-    getCurrentAnimations,
+    getAnimationSettings,
     setTransitioning,
     onAnimationComplete,
-    sections,
+    activeAnimation,
   } = useNavigationStore();
 
   // Enable wheel navigation
@@ -96,8 +100,9 @@ export default function ThreeDCanvas() {
 
   // Calculate dynamic FOV based on viewport
   const calculateDynamicFov = useCallback((baseFov: number) => {
-    const viewportWidth = typeof window !== 'undefined' ? window.innerWidth : 1920;
-    
+    const viewportWidth =
+      typeof window !== "undefined" ? window.innerWidth : 1920;
+
     if (viewportWidth < 768) {
       return baseFov * 2.8;
     } else if (viewportWidth < 1024) {
@@ -113,29 +118,31 @@ export default function ThreeDCanvas() {
     setTransitioning(false);
   }, [setTransitioning]);
 
-  // Update camera and animations based on current section
+  // Update camera based on current section
   useEffect(() => {
     const cameraPosition = getCurrentCameraPosition();
-    const animations = getCurrentAnimations();
 
     if (cameraPosition) {
       targetPosition.set(
         cameraPosition.position.x,
         cameraPosition.position.y,
-        cameraPosition.position.z
+        cameraPosition.position.z,
       );
       targetLookAt.set(
         cameraPosition.lookAt.x,
         cameraPosition.lookAt.y,
-        cameraPosition.lookAt.z
+        cameraPosition.lookAt.z,
       );
 
       // FOV dinámico basado en viewport
       const adjustedFov = calculateDynamicFov(cameraPosition.fov);
       setTargetFov(adjustedFov);
     }
+  }, [currentSection, calculateDynamicFov]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    if (animations && availableAnimations.length > 0) {
+  // Update animations based on activeAnimation from store
+  useEffect(() => {
+    if (activeAnimation && availableAnimations.length > 0) {
       const newActiveAnimations: { [key: string]: boolean } = {};
 
       // Reset all animations
@@ -143,18 +150,16 @@ export default function ThreeDCanvas() {
         newActiveAnimations[animName] = false;
       });
 
-      // Activate animations for current section
-      animations.activeAnimations.forEach((animName) => {
-        newActiveAnimations[animName] = true;
-      });
+      // Activate the current animation
+      newActiveAnimations[activeAnimation] = true;
 
       setAnimationControls({
         activeAnimations: newActiveAnimations,
-        animationSettings: animations.animationSettings,
+        animationSettings: getAnimationSettings(),
         triggerUpdate: Date.now(),
       });
     }
-  }, [currentSection, availableAnimations, calculateDynamicFov, sections]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [activeAnimation, availableAnimations, getAnimationSettings]);
 
   // Listen for viewport changes to adjust FOV and sync sections
   useEffect(() => {
@@ -164,19 +169,19 @@ export default function ThreeDCanvas() {
         const adjustedFov = calculateDynamicFov(cameraPosition.fov);
         setTargetFov(adjustedFov);
       }
-      
+
       // Re-trigger section detection after resize
       setTimeout(() => {
         // Force re-detection of current section
-        const sections = document.querySelectorAll('section[id]');
+        const sections = document.querySelectorAll("section[id]");
         const viewportHeight = window.innerHeight;
         const scrollTop = window.scrollY;
-        
+
         sections.forEach((section) => {
           const rect = section.getBoundingClientRect();
           const sectionTop = rect.top + scrollTop;
           const sectionBottom = sectionTop + rect.height;
-          
+
           // Check if section is currently in viewport center
           const viewportCenter = scrollTop + viewportHeight / 2;
           if (viewportCenter >= sectionTop && viewportCenter <= sectionBottom) {
@@ -212,8 +217,9 @@ export default function ThreeDCanvas() {
           animationControls={animationControls}
           onAnimationsLoaded={setAvailableAnimations}
           onAnimationComplete={onAnimationComplete}
+          sectionsData={sectionsData}
         />
-        <Environment preset="sunset" />
+        <Environment preset="warehouse" />
       </Canvas>
     </div>
   );
