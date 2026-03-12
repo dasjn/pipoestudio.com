@@ -69,6 +69,7 @@ frontend/
 - **Módulos del mueble:** Module01 (arriba), Module02/02001-005 (medio), Module03 (abajo)
 - **Armature:** Armature001 con Bone (en posición 1.496, -3.829, 1.977, scale 0.236)
 - **Meshes de sección:** Module01001-Module01008 (visibilidad oculta, solo para anclar BoundedHtml)
+- **Meshes de fotos (trabajos):** `Foto01`, `Foto01001`, `Foto01002`, `Foto01003` + marcos `Marco01`/`Marco01001`/`Marco01002`/`Marco01003` — posicionados en Y≈-3.28, frente al slot de trabajos
 
 ### Posiciones world-space de meshes de sección
 
@@ -189,3 +190,4 @@ Las secciones dentro del mueble usan Tailwind v4 con tokens del `@theme` en `glo
 3. **`actions` de useAnimations no se usa:** El hook está importado pero el componente usa un mixer custom propio
 4. **isTransitioning** se desbloquea cuando la cámara llega al destino (no cuando termina la animación del modelo)
 5. **SobreMiSection** tiene el type `"SobreMiSection"` con S mayúscula en Sanity (distinto al patrón camelCase del resto)
+6. **trabajosSection legacy fields:** El documento Sanity tiene `backgroundColor`, `description`, `maxPosts` del schema anterior — están marcados `hidden: true` en el schema para evitar el warning "unknown fields". Se pueden eliminar del documento desde Studio.

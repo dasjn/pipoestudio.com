@@ -83,6 +83,42 @@ const PLANE_W = 4.6;  // calibrado visualmente contra el slot del mueble
 
 ---
 
+## 8. TrabajosSection — fotos 3D desde Sanity
+
+**Implementación:** Las 4 fotos de la sección trabajos se cargan en los meshes del GLB (`Foto01`, `Foto01001`, `Foto01002`, `Foto01003`) vía `useTexture` de drei.
+
+**Componente `FotoTexture` (Shelves.tsx):**
+- Recibe `url` (Sanity CDN) y `geometry` (del mesh GLB)
+- `texture.flipY = false` — corrige orientación para UVs de GLTF
+- Calcula cover: compara aspect ratio del mesh (desde bounding box) vs imagen, ajusta `texture.repeat` y `texture.offset`
+- Usa `meshBasicMaterial` → sin afectación de luz (colores fieles a la imagen)
+- Fallback: si no hay URL, el mesh usa el material `Imagen01` original del GLB
+
+**Schema Sanity (`trabajosSection`):**
+- `title`: `internationalizedArrayString` (interno, para preview)
+- `statement`: `internationalizedArrayText` (texto que aparece en el slot del mueble)
+- `fotos`: array de `image` (máx. 4, hotspot activado)
+- Campos legacy `description/maxPosts/backgroundColor`: `hidden: true`
+
+**Query GROQ:**
+```groq
+_type == "trabajosSection" => {
+  "statement": coalesce(statement[_key == $language][0].value, ...),
+  "fotos": fotos[]{ "url": asset->url },
+}
+```
+
+**Cover logic:**
+```typescript
+meshAspect = (box.max.x - box.min.x) / (box.max.y - box.min.y)
+imageAspect = img.width / img.height
+// imagen más ancha: encaja alto, recorta lados → repeat.set(meshAspect/imageAspect, 1)
+// imagen más alta: encaja ancho, recorta altos → repeat.set(1, imageAspect/meshAspect)
+// offset centra el recorte en ambos casos
+```
+
+---
+
 ## 7. Acceso a Sanity Studio
 
 **Situación:** El proyecto existe en `manage.sanity.io` con project ID `kzek939n`, dataset activo con 21 documentos. Pero `SANITY_STUDIO_STUDIO_HOST` está vacío → el studio no está deployado online.

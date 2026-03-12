@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import React, { useRef, useEffect } from "react";
-import { useGLTF, useAnimations, Html } from "@react-three/drei";
+import { useGLTF, useAnimations, Html, useTexture } from "@react-three/drei";
 import { useNavigationStore } from "../store/navigationStore";
 import ManifiestoSection from "./sections/ManifiestoSection";
 import TrabajosSection from "./sections/TrabajosSection";
@@ -118,6 +118,46 @@ const PLANE_H = 1.889;
 const REF_W = 600;
 const REF_H = Math.round(REF_W * (PLANE_H / PLANE_W)); // ~329px
 
+function FotoTexture({
+  url,
+  geometry,
+}: {
+  url: string;
+  geometry: THREE.BufferGeometry;
+}) {
+  const texture = useTexture(url);
+
+  useEffect(() => {
+    texture.flipY = false;
+
+    geometry.computeBoundingBox();
+    const box = geometry.boundingBox;
+    if (!box) return;
+
+    const meshAspect = (box.max.x - box.min.x) / (box.max.y - box.min.y);
+    const img = texture.image as { width: number; height: number };
+    if (!img?.width || !img?.height) return;
+    const imageAspect = img.width / img.height;
+
+    // cover: ajusta al margen más pequeño, recorta el grande
+    if (imageAspect > meshAspect) {
+      // imagen más ancha → encaja alto, recorta anchos
+      const s = meshAspect / imageAspect;
+      texture.repeat.set(s, 1);
+      texture.offset.set((1 - s) / 2, 0);
+    } else {
+      // imagen más alta → encaja ancho, recorta altos
+      const s = imageAspect / meshAspect;
+      texture.repeat.set(1, s);
+      texture.offset.set(0, (1 - s) / 2);
+    }
+
+    texture.needsUpdate = true;
+  }, [texture, geometry]);
+
+  return <meshBasicMaterial map={texture} />;
+}
+
 function BoundedHtml({
   position,
   isActive,
@@ -204,6 +244,8 @@ export function Model({
   ...props
 }: ModelProps) {
   const { currentSection } = useNavigationStore();
+  const fotos: (string | undefined)[] =
+    sectionsData?.trabajos?.fotos?.map((f: any) => f.url as string) ?? [];
   const group = useRef<THREE.Group>();
   const { nodes, materials, animations } = useGLTF(
     "/models/Pipo_Todo_Prueba_v25.glb",
@@ -506,11 +548,13 @@ export function Model({
           castShadow
           receiveShadow
           geometry={nodes.Foto01.geometry}
-          material={materials.Imagen01}
+          material={fotos[0] ? undefined : materials.Imagen01}
           position={[-0.771, -3.277, 4.034]}
           rotation={[-0.335, -0.337, -0.114]}
           scale={0.651}
-        />
+        >
+          {fotos[0] && <FotoTexture url={fotos[0]} geometry={nodes.Foto01.geometry} />}
+        </mesh>
         <mesh
           name="Marco01001"
           castShadow
@@ -526,11 +570,13 @@ export function Model({
           castShadow
           receiveShadow
           geometry={nodes.Foto01001.geometry}
-          material={materials.Imagen01}
+          material={fotos[1] ? undefined : materials.Imagen01}
           position={[0.779, -3.277, 4.034]}
           rotation={[-0.321, 0.191, 0.063]}
           scale={0.651}
-        />
+        >
+          {fotos[1] && <FotoTexture url={fotos[1]} geometry={nodes.Foto01001.geometry} />}
+        </mesh>
         <mesh
           name="Marco01002"
           castShadow
@@ -546,11 +592,13 @@ export function Model({
           castShadow
           receiveShadow
           geometry={nodes.Foto01002.geometry}
-          material={materials.Imagen01}
+          material={fotos[2] ? undefined : materials.Imagen01}
           position={[1.577, -3.504, 4.573]}
           rotation={[-0.321, 0.191, 0.063]}
           scale={0.467}
-        />
+        >
+          {fotos[2] && <FotoTexture url={fotos[2]} geometry={nodes.Foto01002.geometry} />}
+        </mesh>
         <mesh
           name="Marco01003"
           castShadow
@@ -566,11 +614,13 @@ export function Model({
           castShadow
           receiveShadow
           geometry={nodes.Foto01003.geometry}
-          material={materials.Imagen01}
+          material={fotos[3] ? undefined : materials.Imagen01}
           position={[-1.538, -3.501, 4.573]}
           rotation={[-0.337, -0.351, -0.12]}
           scale={0.467}
-        />
+        >
+          {fotos[3] && <FotoTexture url={fotos[3]} geometry={nodes.Foto01003.geometry} />}
+        </mesh>
         <mesh
           name="manifiesto"
           visible={false}

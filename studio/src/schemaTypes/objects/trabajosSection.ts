@@ -9,35 +9,39 @@ export const trabajosSection = defineType({
   fields: [
     defineField({
       name: 'title',
-      title: 'Title',
+      title: 'Título (interno)',
       type: 'internationalizedArrayString',
-      validation: (rule) => rule.required(),
     }),
     defineField({
-      name: 'description',
-      title: 'Description',
+      name: 'statement',
+      title: 'Texto',
       type: 'internationalizedArrayText',
     }),
     defineField({
+      name: 'fotos',
+      title: 'Fotos (máx. 4)',
+      type: 'array',
+      of: [{type: 'image', options: {hotspot: true}}],
+      validation: (rule) => rule.max(4),
+    }),
+    // Campos legacy — ocultos para no mostrar "unknown fields"
+    defineField({
+      name: 'description',
+      title: 'Description (legacy)',
+      type: 'internationalizedArrayText',
+      hidden: true,
+    }),
+    defineField({
       name: 'maxPosts',
-      title: 'Maximum Posts to Show',
+      title: 'Max Posts (legacy)',
       type: 'number',
-      initialValue: 3,
-      validation: (rule) => rule.min(1).max(10),
+      hidden: true,
     }),
     defineField({
       name: 'backgroundColor',
-      title: 'Background Color',
+      title: 'Background Color (legacy)',
       type: 'string',
-      options: {
-        list: [
-          {title: 'Yellow 200', value: 'bg-yellow-200'},
-          {title: 'Gray 100', value: 'bg-gray-100'},
-          {title: 'White', value: 'bg-white'},
-          {title: 'Clean Gray', value: 'bg-clean-gray'},
-        ],
-      },
-      initialValue: 'bg-yellow-200',
+      hidden: true,
     }),
   ],
   preview: {
@@ -45,7 +49,7 @@ export const trabajosSection = defineType({
       title: 'title',
     },
     prepare({title}) {
-      const displayTitle = Array.isArray(title) ? title[0]?.value || 'Untitled' : 'Untitled'
+      const displayTitle = Array.isArray(title) ? title[0]?.value || 'Trabajos Section' : 'Trabajos Section'
       return {
         title: displayTitle,
         subtitle: 'Trabajos Section',

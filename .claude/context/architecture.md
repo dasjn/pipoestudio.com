@@ -25,6 +25,7 @@
                        │  - Custom AnimationMixer     │
                        │  - useFacialAnimations()     │
                        │  - BoundedHtml overlays       │
+                       │  - FotoTexture (useTexture)  │
                        │  - onAnimationComplete→store  │
                        └─────────────────────────────┘
 ```

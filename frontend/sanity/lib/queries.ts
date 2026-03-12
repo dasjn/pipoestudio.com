@@ -25,10 +25,10 @@ export const homeQuery = defineQuery(`
         backgroundColor,
       },
       _type == "trabajosSection" => {
-        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),
-        "description": coalesce(description[_key == $language][0].value, description[_key == "es"][0].value, description[0].value),
-        maxPosts,
-        backgroundColor,
+        "statement": coalesce(statement[_key == $language][0].value, statement[_key == "es"][0].value, statement[0].value),
+        "fotos": fotos[]{
+          "url": asset->url,
+        },
       },
       _type == "algunaIdeaSection" => {
         "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),

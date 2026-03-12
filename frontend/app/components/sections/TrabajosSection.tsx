@@ -1,48 +1,26 @@
-"use client";
-import { useLocaleStore } from "@/app/store/localeStore";
-
 interface TrabajosSectionData {
   _type: "trabajosSection";
-  title?: string;
-  description?: string;
-  maxPosts?: number;
-  backgroundColor?: string;
+  statement?: string;
+  fotos?: { url: string }[];
 }
 
 interface TrabajosSectionProps {
   data?: TrabajosSectionData;
-  posts: any[]; // Posts data passed from server
 }
 
-export default function TrabajosSection({ data, posts }: TrabajosSectionProps) {
-  const locale = useLocaleStore((state) => state.locale);
+const DEFAULT_STATEMENT = "PROYECTOS QUE HABLAN POR SÍ SOLOS.";
 
-  const content = {
-    title: data?.title || "Trabajos",
-    description:
-      data?.description || "Aquí van los posts (datos desde servidor)",
-    maxPosts: data?.maxPosts || 3,
-    backgroundColor: data?.backgroundColor || "bg-yellow-200",
-  };
+export default function TrabajosSection({ data }: TrabajosSectionProps) {
+  const statement = data?.statement || DEFAULT_STATEMENT;
 
   return (
     <section
       id="trabajos"
-      className="w-full h-full flex items-center justify-center"
+      className="w-full h-full flex items-start justify-center px-2"
     >
-      <div>
-        <div className="text-center">
-          <h2 className="text-3xl font-bold mb-4">{content.title}</h2>
-          <p className="text-lg">{content.description}</p>
-          <div className="mt-4">
-            {posts?.slice(0, content.maxPosts).map((post, index) => (
-              <div key={post._id || index} className="mb-2">
-                <p className="text-sm">{post.title}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <p className="font-sans font-bold text-4xl leading-none tracking-normal text-center text-green-pipo">
+        {statement}
+      </p>
     </section>
   );
 }
