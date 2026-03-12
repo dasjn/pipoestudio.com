@@ -1,30 +1,26 @@
 interface SobreMiSectionData {
   _type: "SobreMiSection";
-  title?: string;
-  description?: string;
-  backgroundColor?: string;
+  statement?: string;
 }
 
 interface SobreMiSectionProps {
   data?: SobreMiSectionData;
 }
 
+const DEFAULT_STATEMENT =
+  "EN PIPO NO HACEMOS COSAS DISTINTAS PARA LLAMAR LA ATENCIÓN. SIMPLEMENTE NO SABEMOS HACERLO DE OTRA MANERA. CREEMOS QUE LO ÚNICO ES LO NORMAL.";
+
 export default function SobreMiSection({ data }: SobreMiSectionProps) {
-  const content = {
-    title: data?.title || "SobreMi",
-    description: data?.description || "Descubre nuestros SobreMi disponibles",
-    backgroundColor: data?.backgroundColor || "bg-orange-200",
-  };
+  const statement = data?.statement || DEFAULT_STATEMENT;
 
   return (
     <section
       id="sobreMi"
-      className="w-full h-full flex items-center justify-center"
+      className="w-full h-full flex items-center justify-center px-6"
     >
-      <div className="text-center">
-        <h2 className="text-3xl font-bold mb-4">{content.title}</h2>
-        <p className="text-lg">{content.description}</p>
-      </div>
+      <p className="font-sans font-bold text-[80px] leading-none tracking-normal text-center text-green-pipo">
+        {statement}
+      </p>
     </section>
   );
 }

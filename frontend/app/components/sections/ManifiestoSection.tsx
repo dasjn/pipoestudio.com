@@ -9,22 +9,20 @@ interface ManifiestoSectionProps {
   data?: ManifiestoSectionData;
 }
 
+const DEFAULT_CONTENT =
+  "EN PIPO NO HACEMOS COSAS DISTINTAS PARA LLAMAR LA ATENCIÓN. SIMPLEMENTE NO SABEMOS HACERLO DE OTRA MANERA. CREEMOS QUE LO ÚNICO ES LO NORMAL.";
+
 export default function ManifiestoSection({ data }: ManifiestoSectionProps) {
-  const content = {
-    title: data?.title || "Nuestro Manifiesto",
-    content: data?.content || "Aquí va el contenido del manifiesto",
-    backgroundColor: data?.backgroundColor || "bg-blue-200",
-  };
+  const content = data?.content || DEFAULT_CONTENT;
 
   return (
     <section
       id="manifiesto"
-      className="w-full h-full flex items-center justify-center"
+      className="w-full h-full flex items-center justify-center px-2"
     >
-      <div className="text-center">
-        <h2 className="text-3xl font-bold mb-4">{content.title}</h2>
-        <p className="text-lg">{content.content}</p>
-      </div>
+      <p className="font-sans font-bold text-4xl leading-none tracking-normal text-center text-green-pipo">
+        {content}
+      </p>
     </section>
   );
 }

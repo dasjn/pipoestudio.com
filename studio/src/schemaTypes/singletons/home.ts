@@ -36,6 +36,7 @@ export const home = defineType({
         {type: 'trabajosSection'},
         {type: 'algunaIdeaSection'},
         {type: 'cursosSection'},
+        {type: 'SobreMiSection'},
         {type: 'tiendaSection'},
         {type: 'contactoSection'},
       ],

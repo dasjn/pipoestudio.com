@@ -110,7 +110,7 @@ type ActionName =
 type GLTFActions = Record<ActionName, THREE.AnimationAction>;
 
 // Dimensiones world-space de los planos de sección (scale de los meshes)
-const PLANE_W = 3.446;
+const PLANE_W = 4.6;
 const PLANE_H = 1.889;
 
 // Tamaño de referencia en px al que están diseñadas las secciones.
@@ -578,7 +578,10 @@ export function Model({
           position={[0, 0.666, 3.468]}
           scale={[3.446, 1.889, 2.489]}
         >
-          <BoundedHtml position={[0, 0.666, 3.468]} isActive={currentSection === "manifiesto"}>
+          <BoundedHtml
+            position={[0, 0.666, 3.468]}
+            isActive={currentSection === "manifiesto"}
+          >
             <ManifiestoSection data={sectionsData?.manifiesto} />
           </BoundedHtml>
         </mesh>
@@ -589,7 +592,10 @@ export function Model({
           position={[0, -2.645, 3.468]}
           scale={[3.446, 1.889, 2.489]}
         >
-          <BoundedHtml position={[0, -2.645, 3.468]} isActive={currentSection === "trabajos"}>
+          <BoundedHtml
+            position={[0, -2.645, 3.468]}
+            isActive={currentSection === "trabajos"}
+          >
             <TrabajosSection
               data={sectionsData?.trabajos}
               posts={sectionsData?.posts ?? []}
@@ -603,7 +609,10 @@ export function Model({
           position={[0, -5.983, 3.468]}
           scale={[3.446, 1.889, 2.489]}
         >
-          <BoundedHtml position={[0, -5.983, 3.468]} isActive={currentSection === "algunaIdea"}>
+          <BoundedHtml
+            position={[0, -5.983, 3.468]}
+            isActive={currentSection === "algunaIdea"}
+          >
             <AlgunaIdeaSection data={sectionsData?.algunaIdea} />
           </BoundedHtml>
         </mesh>
@@ -614,7 +623,10 @@ export function Model({
           position={[0, -9.318, 3.468]}
           scale={[3.446, 1.889, 2.489]}
         >
-          <BoundedHtml position={[0, -9.318, 3.468]} isActive={currentSection === "cursos"}>
+          <BoundedHtml
+            position={[0, -9.318, 3.468]}
+            isActive={currentSection === "cursos"}
+          >
             <CursosSection data={sectionsData?.cursos} />
           </BoundedHtml>
         </mesh>
@@ -625,7 +637,10 @@ export function Model({
           position={[0, -12.651, 3.468]}
           scale={[3.446, 1.889, 2.489]}
         >
-          <BoundedHtml position={[0, -12.651, 3.468]} isActive={currentSection === "sobreMi"}>
+          <BoundedHtml
+            position={[0, -12.651, 3.468]}
+            isActive={currentSection === "sobreMi"}
+          >
             <SobreMiSection data={sectionsData?.sobreMi} />
           </BoundedHtml>
         </mesh>
@@ -636,7 +651,10 @@ export function Model({
           position={[0, -15.993, 3.468]}
           scale={[3.446, 1.889, 2.489]}
         >
-          <BoundedHtml position={[0, -15.993, 3.468]} isActive={currentSection === "tienda"}>
+          <BoundedHtml
+            position={[0, -15.993, 3.468]}
+            isActive={currentSection === "tienda"}
+          >
             <TiendaSection data={sectionsData?.tienda} />
           </BoundedHtml>
         </mesh>
@@ -647,7 +665,10 @@ export function Model({
           position={[0, -19.333, 3.468]}
           scale={[3.446, 1.889, 2.489]}
         >
-          <BoundedHtml position={[0, -19.333, 3.468]} isActive={currentSection === "contacto"}>
+          <BoundedHtml
+            position={[0, -19.333, 3.468]}
+            isActive={currentSection === "contacto"}
+          >
             <ContactoSection data={sectionsData?.contacto} />
           </BoundedHtml>
         </mesh>
@@ -658,7 +679,10 @@ export function Model({
           position={[0, -22.673, 3.468]}
           scale={[3.446, 1.889, 2.489]}
         >
-          <BoundedHtml position={[0, -22.673, 3.468]} isActive={currentSection === "footer"}>
+          <BoundedHtml
+            position={[0, -22.673, 3.468]}
+            isActive={currentSection === "footer"}
+          >
             <FooterSection />
           </BoundedHtml>
         </mesh>

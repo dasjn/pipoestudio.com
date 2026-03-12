@@ -50,6 +50,9 @@ export const homeQuery = defineQuery(`
         "description": coalesce(description[_key == $language][0].value, description[_key == "es"][0].value, description[0].value),
         backgroundColor,
       },
+      _type == "SobreMiSection" => {
+        "statement": coalesce(statement[_key == $language][0].value, statement[_key == "es"][0].value, statement[0].value),
+      },
     },
   }
 `);
