@@ -129,21 +129,22 @@ Al SALIR de una sección en dirección down/up, el idle destino es:
 
 ---
 
-## BoundedHtml — cómo funciona el overlay 2D en el mundo 3D
+## SectionOverlays — overlay 2D de secciones (reemplaza BoundedHtml)
 
-`BoundedHtml` proyecta las esquinas del plano 3D al espacio de pantalla cada frame:
-- `PLANE_W = 4.6`, `PLANE_H = 1.889` (world-space — PLANE_W calibrado visualmente al slot interior del mueble)
-- `REF_W = 600px`, `REF_H ≈ 246px` (tamaño de diseño de referencia — REF_H recalculado con nuevo PLANE_W)
-- Cada frame: calcula top-left y bottom-right en NDC → convierte a px → calcula `scale = w / REF_W`
-- El contenido se diseña a 600×REF_H px y se escala dinámicamente al tamaño proyectado
+`SectionOverlays.tsx` es un componente React puro **fuera del canvas** que renderiza el contenido de cada sección como overlay CSS.
+
+- `PLANE_W = 4.6`, `PLANE_H = 1.889` (world-space — calibrado visualmente al slot del mueble)
+- `REF_W = 600px`, `REF_H ≈ 246px` (tamaño de referencia en el que se diseña el contenido)
+- Tamaño calculado **una vez** en mount + resize usando fórmula de perspectiva (no por frame)
+- `position: fixed; top: 50%; left: 50%` — siempre centrado en viewport, independiente de la cámara
+- `shouldShow = currentSection === id && !isTransitioning` — aparece cuando la cámara está cerca del destino (threshold: 0.3 unidades)
 - Usa `AnimatePresence` + Framer Motion para fade in/out (0.35s, easeInOut)
-- **Portal:** usa `portal={portalRef}` apuntando a `document.body` para escapar el stacking context `-z-10` del canvas (ver fix #10)
 
-⚠️ **Calibración de PLANE_W:** Si el contenido no llega a los bordes del slot → subir PLANE_W. Si se sale → bajarlo. No modificar PLANE_H sin revisar que el contenido no se recorte verticalmente (`overflow: hidden` en outerRef).
+⚠️ **Calibración de PLANE_W:** Si el contenido no llega a los bordes del slot → subir PLANE_W. Si se sale → bajarlo. El valor se define en `SectionOverlays.tsx`.
 
-⚠️ **REF_W y escala:** `scale = projected_px / REF_W`. REF_W alto = contenido más pequeño. REF_W bajo = contenido más grande. Valor recomendado: 600.
+⚠️ **REF_W y escala:** `scale = slotWidthPx / REF_W`. REF_W alto = contenido más pequeño. REF_W bajo = contenido más grande. Valor recomendado: 600.
 
-⚠️ **Clickabilidad:** El Html de Drei porta por defecto al `parentNode` del canvas. Si el canvas está en un div con z-index negativo, el contenido queda detrás de toda la página y no es clickable. Siempre usar `portal` a `document.body`.
+⚠️ **Threshold isTransitioning:** Definido en `CameraController` (`ThreeDCanvas.tsx`). Actualmente `< 0.3` unidades. Subir = contenido aparece antes (pero puede desbloquear scroll antes de que acabe la animación del modelo). Ver fix #12.
 
 ---
 
@@ -194,4 +195,10 @@ Las secciones dentro del mueble usan Tailwind v4 con tokens del `@theme` en `glo
 4. **isTransitioning** se desbloquea cuando la cámara llega al destino (no cuando termina la animación del modelo)
 5. **SobreMiSection** tiene el type `"SobreMiSection"` con S mayúscula en Sanity (distinto al patrón camelCase del resto)
 6. **trabajosSection legacy fields:** El documento Sanity tiene `backgroundColor`, `description`, `maxPosts` del schema anterior — están marcados `hidden: true` en el schema para evitar el warning "unknown fields". Se pueden eliminar del documento desde Studio.
-7. **BoundedHtml portal:** Debe usar `portal={portalRef}` → `document.body` para que el contenido sea clickable (stacking context del canvas es z=-10). Ya corregido. Ver fix #10.
+7. **SectionOverlays threshold:** Si el contenido aparece demasiado tarde al navegar, subir el threshold en `CameraController` (`ThreeDCanvas.tsx`) de `0.3` hacia `0.5` o `1.0`. Ver fix #12.
+
+---
+
+## TODO — al final del proyecto
+
+- **SEO de contenido de secciones:** El texto de manifiesto, trabajos, etc. solo existe client-side (dentro del canvas R3F). Para indexación, añadir en `[locale]/page.tsx` (server component) un bloque hidden con el contenido plano de cada sección. Usar `sr-only` de Tailwind (no `display:none`) para que Google lo indexe sin penalización. El portable text de Sanity habría que serializar a string plano. No afecta al responsive ni al canvas.

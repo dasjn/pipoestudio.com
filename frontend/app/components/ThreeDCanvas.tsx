@@ -3,6 +3,7 @@
 import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { Model, type SectionsData } from "./Shelves";
+import SectionOverlays from "./SectionOverlays";
 import { Environment } from "@react-three/drei";
 import * as THREE from "three";
 import { useNavigationStore } from "../store/navigationStore";
@@ -51,9 +52,9 @@ function CameraController({
     const fovDifference = Math.abs((camera as any).fov - targetFov);
 
     if (
-      positionDistance < 0.01 &&
-      lookAtDistance < 0.01 &&
-      fovDifference < 0.1 &&
+      positionDistance < 0.3 &&
+      lookAtDistance < 0.3 &&
+      fovDifference < 1 &&
       !transitionCompleteRef.current
     ) {
       transitionCompleteRef.current = true;
@@ -199,6 +200,8 @@ export default function ThreeDCanvas({
   }, [getCurrentCameraPosition, calculateDynamicFov]);
 
   return (
+    <>
+    <SectionOverlays sectionsData={sectionsData} />
     <div className="fixed inset-0 -z-10">
       <Canvas
         camera={{ position: [0, 20, 9], fov: 30 }}
@@ -223,5 +226,6 @@ export default function ThreeDCanvas({
         <Environment preset="warehouse" />
       </Canvas>
     </div>
+    </>
   );
 }

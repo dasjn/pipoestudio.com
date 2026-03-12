@@ -178,6 +178,52 @@ return <Html center portal={portalRef}>...
 
 ---
 
+## 11. SectionOverlays — reemplazo de BoundedHtml por CSS puro
+
+**Problema:** `BoundedHtml` (Drei `Html` dentro del canvas) ejecutaba 8 `useFrame` por frame + 8 `useFrame` internos de Drei para calcular la posición/tamaño de cada overlay. Además, el contenido "vibraba" al cambiar de sección porque Drei rastrea la posición del mesh proyectada en pantalla frame a frame mientras la cámara hace lerp.
+
+**Fix:** Eliminado `BoundedHtml` y todos los meshes anchor invisibles de `Shelves.tsx`. Creado `SectionOverlays.tsx` — componente React puro fuera del canvas.
+
+**Cómo funciona:**
+- `position: fixed; top: 50%; left: 50%` — siempre en el centro del viewport
+- Tamaño calculado una vez en mount + en resize (no por frame) con la fórmula de perspectiva:
+```ts
+const visibleHeight = 2 * Math.tan(fovRad / 2) * DISTANCE; // DISTANCE = 15 - 3.468 = 11.532
+const visibleWidth = visibleHeight * (vw / vh);
+const slotWidthPx = (PLANE_W / visibleWidth) * vw;
+const scale = slotWidthPx / REF_W;
+```
+- La posición del overlay no depende de la cámara → **jitter imposible estructuralmente**
+- Offset Y menor por diferencia entre cameraY y slotY se compensa con `yOffsetPx`
+- `shouldShow = currentSection === id && !isTransitioning` — el contenido aparece cuando la cámara está cerca del destino
+
+**Resultado vs BoundedHtml:**
+- 0 `useFrame` para overlays (eran 8 + 8 internos de Drei)
+- 0 portales DOM (eran 8)
+- 0 mutations DOM por frame (eran 24)
+
+**Archivos afectados:** `SectionOverlays.tsx` (nuevo), `Shelves.tsx` (eliminado BoundedHtml + meshes anchor + imports), `ThreeDCanvas.tsx` (añadido `<SectionOverlays>` fuera del `<Canvas>`)
+
+---
+
+## 12. Threshold de isTransitioning — contenido aparece antes
+
+**Problema:** Con `shouldShow = currentSection === id && !isTransitioning`, el contenido tardaba demasiado en aparecer. `isTransitioning` se mantenía `true` hasta que la cámara estaba a `< 0.01` unidades del target (lerp exponencial con `transitionSpeed=0.025` tarda mucho en esa última fase).
+
+**Fix en `ThreeDCanvas.tsx` (`CameraController`):**
+```ts
+// Antes:
+positionDistance < 0.01 && lookAtDistance < 0.01 && fovDifference < 0.1
+// Después:
+positionDistance < 0.3 && lookAtDistance < 0.3 && fovDifference < 1
+```
+
+**Por qué funciona:** La cámara llega al 95% del recorrido mucho antes que al 99%. A 0.3 unidades del target la posición es visualmente correcta — el slot ya está en pantalla en la posición correcta. El contenido aparece perceptiblemente más rápido sin desalineación visible.
+
+**Nota:** Este threshold también controla cuándo se desbloquea el scroll (via `setTransitioning(false)`). Si el umbral es demasiado alto puede permitir scroll antes de que la animación del modelo termine.
+
+---
+
 ## 7. Acceso a Sanity Studio
 
 **Situación:** El proyecto existe en `manage.sanity.io` con project ID `kzek939n`, dataset activo con 21 documentos. Pero `SANITY_STUDIO_STUDIO_HOST` está vacío → el studio no está deployado online.
