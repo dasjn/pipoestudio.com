@@ -18,6 +18,16 @@ export const trabajosSection = defineType({
       type: 'internationalizedArrayText',
     }),
     defineField({
+      name: 'buttonText',
+      title: 'Texto del botón',
+      type: 'internationalizedArrayString',
+    }),
+    defineField({
+      name: 'buttonUrl',
+      title: 'URL del botón',
+      type: 'url',
+    }),
+    defineField({
       name: 'fotos',
       title: 'Fotos (máx. 4)',
       type: 'array',

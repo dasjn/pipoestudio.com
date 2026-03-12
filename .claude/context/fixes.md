@@ -119,6 +119,65 @@ imageAspect = img.width / img.height
 
 ---
 
+## 9. Botón en TrabajosSection — Button component + Sanity CMS
+
+**Implementación:** Botón primary debajo del statement de trabajos, con texto y URL desde Sanity.
+
+**Schema Sanity (`studio/src/schemaTypes/objects/trabajosSection.ts`):**
+```typescript
+defineField({ name: 'buttonText', title: 'Texto del botón', type: 'internationalizedArrayString' }),
+defineField({ name: 'buttonUrl', title: 'URL del botón', type: 'url' }),
+```
+
+**Query GROQ (`homeQuery`):**
+```groq
+_type == "trabajosSection" => {
+  "statement": coalesce(statement[...]),
+  "buttonText": coalesce(buttonText[_key == $language][0].value, ...),
+  buttonUrl,
+  "fotos": fotos[]{ "url": asset->url },
+}
+```
+
+**Icono:** Material Symbols `rotate_right` (Google Fonts, 16px) — cargado en `layout.tsx` vía `<link>` en `<head>`. Se renderiza como `<span className="material-symbols-outlined">` con `leading-none inline-flex items-center` para evitar whitespace y alinear correctamente.
+
+**Button component (`frontend/app/components/Button.tsx`):**
+- `as="button"` | `as="link"` — polimórfico (renderiza `<button>` o `<a>`)
+- `variant="primary"` | `"secondary"` con `withStroke` opcional
+- `size`: `sm | md | lg | xl`
+- Colores exactos del sistema Pipo (Figma): green `#00A750`, hover `#006430`, active `#008640`, focus ring `#004320`, disabled `#E4E5E0`/`#6F6F6F`
+- `isLoading` prop con spinner SVG animado
+- Specs Figma: `padding: 12px 10px`, `border-radius: 6px`, `gap: 10px`, `font-size: 31px` (md), `line-height: 38px`, `font-weight: 700`, `text-transform: uppercase`
+
+---
+
+## 10. BoundedHtml no clickable — portal a document.body
+
+**Problema:** Los elementos HTML dentro de `BoundedHtml` (ej. botones, links) no eran clickables.
+
+**Causa raíz:** Drei's `Html` porta su contenido a `gl.domElement.parentNode` — que es `<div className="fixed inset-0 -z-10">`. Ese div crea un stacking context con `z-index: -10`. Todo el contenido dentro queda detrás de todos los demás elementos de la página, independientemente del `pointer-events` CSS.
+
+**Fix aplicado en `BoundedHtml` (Shelves.tsx):**
+```typescript
+const portalRef = useRef<HTMLElement>(null!);
+const [portalReady, setPortalReady] = useState(false);
+
+useEffect(() => {
+  portalRef.current = document.body;
+  setPortalReady(true);
+}, []);
+
+// En el return:
+if (!portalReady) return null;
+return <Html center portal={portalRef}>...
+```
+
+**Por qué funciona:** `portal={portalRef}` redirige el render a `document.body`, fuera del stacking context `-z-10`. Drei sigue calculando la posición en screen-space correctamente.
+
+**Nota adicional:** El Canvas también tiene `style={{ pointerEvents: "none" }}` para no interferir con clicks normales en la página. Esto es seguro porque `useWheelNavigation` se adjunta a `window`, no al canvas.
+
+---
+
 ## 7. Acceso a Sanity Studio
 
 **Situación:** El proyecto existe en `manage.sanity.io` con project ID `kzek939n`, dataset activo con 21 documentos. Pero `SANITY_STUDIO_STUDIO_HOST` está vacío → el studio no está deployado online.

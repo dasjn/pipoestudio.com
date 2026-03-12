@@ -137,10 +137,13 @@ Al SALIR de una sección en dirección down/up, el idle destino es:
 - Cada frame: calcula top-left y bottom-right en NDC → convierte a px → calcula `scale = w / REF_W`
 - El contenido se diseña a 600×REF_H px y se escala dinámicamente al tamaño proyectado
 - Usa `AnimatePresence` + Framer Motion para fade in/out (0.35s, easeInOut)
+- **Portal:** usa `portal={portalRef}` apuntando a `document.body` para escapar el stacking context `-z-10` del canvas (ver fix #10)
 
 ⚠️ **Calibración de PLANE_W:** Si el contenido no llega a los bordes del slot → subir PLANE_W. Si se sale → bajarlo. No modificar PLANE_H sin revisar que el contenido no se recorte verticalmente (`overflow: hidden` en outerRef).
 
 ⚠️ **REF_W y escala:** `scale = projected_px / REF_W`. REF_W alto = contenido más pequeño. REF_W bajo = contenido más grande. Valor recomendado: 600.
+
+⚠️ **Clickabilidad:** El Html de Drei porta por defecto al `parentNode` del canvas. Si el canvas está en un div con z-index negativo, el contenido queda detrás de toda la página y no es clickable. Siempre usar `portal` a `document.body`.
 
 ---
 
@@ -191,3 +194,4 @@ Las secciones dentro del mueble usan Tailwind v4 con tokens del `@theme` en `glo
 4. **isTransitioning** se desbloquea cuando la cámara llega al destino (no cuando termina la animación del modelo)
 5. **SobreMiSection** tiene el type `"SobreMiSection"` con S mayúscula en Sanity (distinto al patrón camelCase del resto)
 6. **trabajosSection legacy fields:** El documento Sanity tiene `backgroundColor`, `description`, `maxPosts` del schema anterior — están marcados `hidden: true` en el schema para evitar el warning "unknown fields". Se pueden eliminar del documento desde Studio.
+7. **BoundedHtml portal:** Debe usar `portal={portalRef}` → `document.body` para que el contenido sea clickable (stacking context del canvas es z=-10). Ya corregido. Ver fix #10.

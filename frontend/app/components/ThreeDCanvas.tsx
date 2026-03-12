@@ -203,6 +203,7 @@ export default function ThreeDCanvas({
       <Canvas
         camera={{ position: [0, 20, 9], fov: 30 }}
         className="w-full h-full"
+        style={{ pointerEvents: "none" }}
       >
         <CameraController
           targetPosition={targetPosition}

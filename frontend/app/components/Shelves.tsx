@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useGLTF, useAnimations, Html, useTexture } from "@react-three/drei";
 import { useNavigationStore } from "../store/navigationStore";
 import ManifiestoSection from "./sections/ManifiestoSection";
@@ -173,6 +173,13 @@ function BoundedHtml({
   const tl = useRef(new THREE.Vector3());
   const br = useRef(new THREE.Vector3());
   const [px, py, pz] = position;
+  const portalRef = useRef<HTMLElement>(null!);
+  const [portalReady, setPortalReady] = useState(false);
+
+  useEffect(() => {
+    portalRef.current = document.body;
+    setPortalReady(true);
+  }, []);
 
   useFrame(() => {
     if (!outerRef.current || !innerRef.current) return;
@@ -187,8 +194,10 @@ function BoundedHtml({
     innerRef.current.style.transform = `translate(-50%, -50%) scale(${scale})`;
   });
 
+  if (!portalReady) return null;
+
   return (
-    <Html center>
+    <Html center portal={portalRef}>
       <AnimatePresence>
         {isActive && (
           <motion.div

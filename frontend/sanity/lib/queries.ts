@@ -26,6 +26,8 @@ export const homeQuery = defineQuery(`
       },
       _type == "trabajosSection" => {
         "statement": coalesce(statement[_key == $language][0].value, statement[_key == "es"][0].value, statement[0].value),
+        "buttonText": coalesce(buttonText[_key == $language][0].value, buttonText[_key == "es"][0].value, buttonText[0].value),
+        buttonUrl,
         "fotos": fotos[]{
           "url": asset->url,
         },
