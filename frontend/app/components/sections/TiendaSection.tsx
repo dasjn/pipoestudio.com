@@ -1,29 +1,46 @@
+import PipoProductCard, { type PipoProductCardData } from "../PipoProductCard";
+
 interface TiendaSectionData {
-  _type: "tiendaSection";
   title?: string;
-  description?: string;
-  backgroundColor?: string;
+  subtitle?: string;
 }
 
 interface TiendaSectionProps {
   data?: TiendaSectionData;
+  products?: PipoProductCardData[];
 }
 
-export default function TiendaSection({ data }: TiendaSectionProps) {
-  const content = {
-    title: data?.title || "Tienda",
-    description: data?.description || "Explora nuestros productos",
-    backgroundColor: data?.backgroundColor || "bg-green-200",
-  };
+const DEFAULT_TITLE = "TIENDA";
+const DEFAULT_SUBTITLE = "NO SIEMPRE HAY... ASÍ QUE APROVECHA.";
+
+export default function TiendaSection({ data, products }: TiendaSectionProps) {
+  const title = data?.title ?? DEFAULT_TITLE;
+  const subtitle = data?.subtitle ?? DEFAULT_SUBTITLE;
 
   return (
     <section
       id="tienda"
-      className="w-full h-full flex items-center justify-center"
+      className="font-sans w-full h-full flex flex-col items-center justify-center gap-3 px-2 mt-6"
     >
       <div className="text-center">
-        <h2 className="text-3xl font-bold mb-4">{content.title}</h2>
-        <p className="text-lg">{content.description}</p>
+        <p className="font-bold text-5xl leading-none text-green-pipo uppercase">
+          {title}
+        </p>
+        <p className="font-bold text-[10px] text-green-pipo uppercase">
+          {subtitle}
+        </p>
+      </div>
+
+      <div className="flex gap-2 w-full justify-center">
+        {products && products.length > 0 ? (
+          products.map((product) => (
+            <div key={product._id} className="w-56">
+              <PipoProductCard product={product} />
+            </div>
+          ))
+        ) : (
+          <p className="text-green-pipo font-bold text-xs">Cargando…</p>
+        )}
       </div>
     </section>
   );

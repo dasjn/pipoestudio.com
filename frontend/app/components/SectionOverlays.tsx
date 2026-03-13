@@ -126,7 +126,8 @@ export default function SectionOverlays({
     },
     {
       id: "tienda",
-      content: <TiendaSection data={sectionsData?.tienda} />,
+      content: <TiendaSection data={sectionsData?.tienda} products={sectionsData?.products} />,
+      planeH: 3.2,
     },
     {
       id: "contacto",

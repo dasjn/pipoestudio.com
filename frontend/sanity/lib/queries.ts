@@ -48,8 +48,7 @@ export const homeQuery = defineQuery(`
       },
       _type == "tiendaSection" => {
         "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),
-        "description": coalesce(description[_key == $language][0].value, description[_key == "es"][0].value, description[0].value),
-        backgroundColor,
+        "subtitle": coalesce(description[_key == $language][0].value, description[_key == "es"][0].value, description[0].value),
       },
       _type == "contactoSection" => {
         "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),

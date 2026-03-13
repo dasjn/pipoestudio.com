@@ -209,6 +209,25 @@ Las secciones dentro del mueble usan Tailwind v4 con tokens del `@theme` en `glo
 
 ---
 
+## TiendaSection — detalles de implementación
+
+- **Campos Sanity:** `title` (i18n string), `description` usado como `subtitle` (i18n string — renombrado en UI a "Subtítulo")
+- **Query:** `description` → proyectado como `subtitle`
+- **Productos:** vienen de `featuredProductsQuery` (limit=3) → `sectionsData.products[]`, pasados como prop `products` desde `SectionOverlays`
+- **Layout:** título grande verde (`text-5xl`) + subtítulo pequeño (`text-[10px]`) centrados arriba + tres `PipoProductCard` lado a lado (`w-56` cada una)
+- **planeH override en SectionOverlays:** `3.2`
+
+### PipoProductCard — componente tarjeta de producto
+
+- **Archivo:** `frontend/app/components/PipoProductCard.tsx`
+- **Diseño:** tarjeta gris `#E4E5E0`, imagen `aspectRatio: 4/5`, título+subtítulo superpuestos arriba-izquierda, precio superpuesto abajo-izquierda
+- **Efecto cut-out:** título y precio son `position: absolute` en un wrapper `position: relative` **sin** `overflow: hidden`, fuera del div de imagen (que sí tiene `overflow: hidden`). Esto evita artefactos de clipping en el borde izquierdo.
+- **Estado sold:** imagen en escala de grises + overlay gris + badge "SIN STOCK :(" rotado + botón outline (`secondary + withStroke`)
+- **Campos:** `name`, `subtitle`, `image` (Sanity asset), `buttonText`, `soldText`, `priceShippingInfo` (multiline, `whiteSpace: pre-line`), `sold`
+- **Font:** `className="font-sans"` en el article para usar Delight
+
+---
+
 ## AlgunaIdeaSection — detalles de implementación
 
 - **Formulario:** 5 campos (IDEA textarea, FOTOS file, NOMBRE, EMAIL, TELÉFONO) — todos required

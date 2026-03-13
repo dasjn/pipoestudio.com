@@ -15,8 +15,8 @@ export const tiendaSection = defineType({
     }),
     defineField({
       name: 'description',
-      title: 'Description',
-      type: 'internationalizedArrayText',
+      title: 'Subtítulo (ej: "NO SIEMPRE HAY... ASÍ QUE APROVECHA.")',
+      type: 'internationalizedArrayString',
     }),
     defineField({
       name: 'backgroundColor',
