@@ -112,6 +112,13 @@ export const settings = defineType({
       ],
     }),
     defineField({
+      name: 'contactEmail',
+      title: 'Email de contacto',
+      description: 'Dirección donde se reciben los mensajes del formulario de ideas.',
+      type: 'string',
+      validation: (rule) => rule.email(),
+    }),
+    defineField({
       name: 'ogImage',
       title: 'Open Graph Image',
       type: 'image',

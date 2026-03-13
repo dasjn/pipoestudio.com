@@ -96,7 +96,11 @@ export default function SectionOverlays({
 
   if (!layout) return null;
 
-  const sectionSlots: { id: SectionId; content: React.ReactNode }[] = [
+  const sectionSlots: {
+    id: SectionId;
+    content: React.ReactNode;
+    planeH?: number;
+  }[] = [
     {
       id: "manifiesto",
       content: <ManifiestoSection data={sectionsData?.manifiesto} />,
@@ -108,6 +112,7 @@ export default function SectionOverlays({
     {
       id: "algunaIdea",
       content: <AlgunaIdeaSection data={sectionsData?.algunaIdea} />,
+      planeH: 3.1,
     },
     {
       id: "cursos",
@@ -133,15 +138,19 @@ export default function SectionOverlays({
 
   return (
     <>
-      {sectionSlots.map(({ id, content }) => {
+      {sectionSlots.map(({ id, content, planeH: slotPlaneH }) => {
         const shouldShow = currentSection === id && !isTransitioning;
 
+        // Per-slot height override (for sections taller than the default slot)
+        const effectivePlaneH = slotPlaneH ?? PLANE_H;
+        const slotHeightPx =
+          (effectivePlaneH / layout.visibleHeight) * layout.vh;
+        const refH = Math.round(REF_W * (effectivePlaneH / PLANE_W));
+
         // Offset Y: el slot mesh está ligeramente por encima de la Y de cámara.
-        // Lo compensamos para que el overlay quede centrado en el slot real.
         const slotY = SLOT_Y[id] ?? 0;
         const cameraY =
-          sections.find((s) => s.id === id)?.cameraPosition.position.y ??
-          slotY;
+          sections.find((s) => s.id === id)?.cameraPosition.position.y ?? slotY;
         const yOffsetPx =
           ((slotY - cameraY) / (layout.visibleHeight / 2)) * (layout.vh / 2);
 
@@ -153,9 +162,9 @@ export default function SectionOverlays({
               top: "50%",
               left: "50%",
               width: layout.slotWidthPx,
-              height: layout.slotHeightPx,
+              height: slotHeightPx,
               marginLeft: -layout.slotWidthPx / 2,
-              marginTop: -(layout.slotHeightPx / 2) - yOffsetPx,
+              marginTop: -(slotHeightPx / 2) - yOffsetPx,
               overflow: "hidden",
               pointerEvents: shouldShow ? "auto" : "none",
             }}
@@ -176,7 +185,7 @@ export default function SectionOverlays({
                       top: "50%",
                       left: "50%",
                       width: REF_W,
-                      height: REF_H,
+                      height: refH,
                       transform: `translate(-50%, -50%) scale(${layout.scale})`,
                       transformOrigin: "center",
                     }}

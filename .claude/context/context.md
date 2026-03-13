@@ -187,6 +187,18 @@ Las secciones dentro del mueble usan Tailwind v4 con tokens del `@theme` en `glo
 
 ---
 
+## AlgunaIdeaSection — detalles de implementación
+
+- **Formulario:** 5 campos (IDEA textarea, FOTOS file, NOMBRE, EMAIL, TELÉFONO) — todos required
+- **Ancho del form:** 250px (dentro de REF_W=600px) → `FORM_CENTER_OFFSET = 175px`
+- **Animación slide:** form arranca centrado (`x:175`), desliza a `x:0` cuando `activeAnimation` es `"Scroll 01-D"`, `"Idle 02"` o `"Scroll 02- U"` mientras `currentSection === "algunaIdea"`
+- **Delays por animación:** configurables en `delays` object dentro del `useEffect` de slide
+- **planeH override en SectionOverlays:** `3.1` (mayor que el estándar 1.889 para dar cabida al form)
+- **Email receptor:** se lee de `settings.contactEmail` en Sanity → fallback a `CONTACTO_TO_EMAIL` env var
+- **Compresión de imágenes:** Canvas API client-side, max 1400px, JPEG 82%, max 4 fotos
+
+---
+
 ## Bugs conocidos / notas
 
 1. **Preload correcto:** El `useGLTF.preload` al final de Shelves.tsx apunta a `v25.glb` ✓ (ya corregido desde v024)

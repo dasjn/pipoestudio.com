@@ -224,6 +224,90 @@ positionDistance < 0.3 && lookAtDistance < 0.3 && fovDifference < 1
 
 ---
 
+## 13. AlgunaIdeaSection — formulario de contacto con Resend
+
+**Implementación:** Formulario de contacto en la sección `algunaIdea` que envía emails vía Resend usando una Next.js Server Action.
+
+**Archivos:**
+- `frontend/app/actions/contacto.ts` — Server Action: recibe FormData, lee `contactEmail` de Sanity settings, llama a Resend API
+- `frontend/app/components/sections/AlgunaIdeaSection.tsx` — formulario cliente con compresión de imágenes + animación de slide
+
+**Campos:** IDEA* (textarea), FOTOS (file upload), NOMBRE*, EMAIL*, TELÉFONO* — todos required excepto FOTOS
+
+**Compresión de imágenes (cliente):**
+- Canvas API, sin librerías externas
+- Max 1400px en el lado más largo, JPEG 82% quality
+- Max 4 archivos — validación antes de comprimir
+- El submit usa los archivos comprimidos (no los originales del input): `onSubmit` construye FormData manualmente con `formData.delete("fotos")` + `fotos.forEach(f => formData.append("fotos", f))`
+
+**Email receptor configurable desde Sanity:**
+- Campo `contactEmail` en `studio/src/schemaTypes/singletons/settings.tsx`
+- La Server Action lee `settings.contactEmail` vía `client.fetch(settingsQuery)` con fallback a `CONTACTO_TO_EMAIL` env var
+- `settingsQuery` actualizado: `*[_type == "settings"][0]{ ..., contactEmail }`
+
+**Variables de entorno:**
+```
+RESEND_API_KEY=""           # API key de resend.com
+CONTACTO_TO_EMAIL=""        # Fallback si no hay email en Sanity
+CONTACTO_FROM_EMAIL=""      # Debe ser dominio verificado en Resend (o onboarding@resend.dev para dev)
+```
+
+**Deployment:** Vercel free tier (Hobby) soporta Server Actions. Las env vars se añaden en Vercel Dashboard → Settings → Environment Variables.
+
+---
+
+## 14. AlgunaIdeaSection — animación de slide del formulario
+
+**Comportamiento:** El form aparece centrado en el slot y desliza a la izquierda cuando Pipo ejecuta su animación de scroll hacia esta sección, dejando espacio visual a la derecha para Pipo.
+
+**Implementación:** `motion.div` de Framer Motion wrapeando el form.
+
+```tsx
+const FORM_CENTER_OFFSET = 175; // (REF_W - formWidth) / 2 = (600 - 250) / 2
+
+<motion.div
+  initial={{ x: FORM_CENTER_OFFSET }}
+  animate={{ x: slid ? 0 : FORM_CENTER_OFFSET }}
+  transition={{ duration: 0.55, ease: [0.25, 0.1, 0.25, 1] }}
+>
+```
+
+**Trigger:** Solo se activa cuando `currentSection === "algunaIdea"` Y `activeAnimation` es una de las animaciones que llevan a Pipo a esta sección. Cada una tiene su propio delay configurable:
+
+```ts
+const delays: Record<string, number> = {
+  "Scroll 01-D": 8500,   // viene de trabajos bajando
+  "Idle 02":      80,    // ya en idle al llegar
+  "Scroll 02- U": 2000,  // viene de cursos subiendo
+};
+```
+
+**Reset:** `slid` vuelve a `false` cuando `currentSection !== "algunaIdea"`, para que la animación se repita en cada visita.
+
+---
+
+## 15. SectionOverlays — override de altura por sección
+
+**Problema:** `algunaIdea` tiene un formulario más alto que el slot estándar (`PLANE_H = 1.889`).
+
+**Fix:** Campo opcional `planeH` en la config de `sectionSlots`. Si se define, recalcula `slotHeightPx` y `refH` solo para ese slot:
+
+```ts
+const sectionSlots: { id: SectionId; content: ReactNode; planeH?: number }[] = [
+  { id: "algunaIdea", content: <AlgunaIdeaSection />, planeH: 3.1 },
+  // resto sin planeH → usa PLANE_H global (1.889)
+]
+```
+
+En el render loop:
+```ts
+const effectivePlaneH = slotPlaneH ?? PLANE_H;
+const slotHeightPx = (effectivePlaneH / layout.visibleHeight) * layout.vh;
+const refH = Math.round(REF_W * (effectivePlaneH / PLANE_W));
+```
+
+---
+
 ## 7. Acceso a Sanity Studio
 
 **Situación:** El proyecto existe en `manage.sanity.io` con project ID `kzek939n`, dataset activo con 21 documentos. Pero `SANITY_STUDIO_STUDIO_HOST` está vacío → el studio no está deployado online.
