@@ -9,28 +9,45 @@ export const cursosSection = defineType({
   fields: [
     defineField({
       name: 'title',
-      title: 'Title',
+      title: 'Título (ej: "APRENDE CON PIPO")',
       type: 'internationalizedArrayString',
       validation: (rule) => rule.required(),
     }),
     defineField({
-      name: 'description',
-      title: 'Description',
-      type: 'internationalizedArrayText',
+      name: 'youtubeLabel',
+      title: 'Etiqueta video YouTube (ej: "EN YOUTUBE")',
+      type: 'internationalizedArrayString',
     }),
     defineField({
-      name: 'backgroundColor',
-      title: 'Background Color',
-      type: 'string',
+      name: 'instagramLabel',
+      title: 'Etiqueta video Instagram (ej: "EN INSTAGRAM")',
+      type: 'internationalizedArrayString',
+    }),
+    defineField({
+      name: 'youtubeVideo',
+      title: 'Video YouTube (vertical, loop)',
+      type: 'file',
       options: {
-        list: [
-          {title: 'Orange 200', value: 'bg-orange-200'},
-          {title: 'Gray 100', value: 'bg-gray-100'},
-          {title: 'White', value: 'bg-white'},
-          {title: 'Clean Gray', value: 'bg-clean-gray'},
-        ],
+        accept: 'video/*',
       },
-      initialValue: 'bg-orange-200',
+    }),
+    defineField({
+      name: 'youtubeUrl',
+      title: 'Link YouTube (canal o vídeo)',
+      type: 'url',
+    }),
+    defineField({
+      name: 'instagramVideo',
+      title: 'Video Instagram (vertical, loop)',
+      type: 'file',
+      options: {
+        accept: 'video/*',
+      },
+    }),
+    defineField({
+      name: 'instagramUrl',
+      title: 'Link Instagram (perfil o reel)',
+      type: 'url',
     }),
   ],
   preview: {

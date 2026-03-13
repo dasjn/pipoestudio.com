@@ -117,6 +117,7 @@ export default function SectionOverlays({
     {
       id: "cursos",
       content: <CursosSection data={sectionsData?.cursos} />,
+      planeH: 3.5,
     },
     {
       id: "sobreMi",

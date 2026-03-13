@@ -39,8 +39,12 @@ export const homeQuery = defineQuery(`
       },
       _type == "cursosSection" => {
         "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),
-        "description": coalesce(description[_key == $language][0].value, description[_key == "es"][0].value, description[0].value),
-        backgroundColor,
+        "youtubeLabel": coalesce(youtubeLabel[_key == $language][0].value, youtubeLabel[_key == "es"][0].value, youtubeLabel[0].value),
+        "instagramLabel": coalesce(instagramLabel[_key == $language][0].value, instagramLabel[_key == "es"][0].value, instagramLabel[0].value),
+        "youtubeVideo": youtubeVideo { "url": asset->url },
+        youtubeUrl,
+        "instagramVideo": instagramVideo { "url": asset->url },
+        instagramUrl,
       },
       _type == "tiendaSection" => {
         "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),
