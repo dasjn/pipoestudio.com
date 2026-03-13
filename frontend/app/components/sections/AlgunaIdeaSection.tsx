@@ -80,7 +80,7 @@ export default function AlgunaIdeaSection({
       return;
     }
     const delays: Record<string, number> = {
-      "Scroll 01-D": 8500,
+      "Scroll 01-D": 6000,
       "Idle 02": 80,
       "Scroll 02- U": 2000,
     };
