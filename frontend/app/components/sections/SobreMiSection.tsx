@@ -1,26 +1,77 @@
 interface SobreMiSectionData {
   _type: "SobreMiSection";
-  statement?: string;
+  title?: string;
+  body?: string;
 }
 
 interface SobreMiSectionProps {
   data?: SobreMiSectionData;
 }
 
-const DEFAULT_STATEMENT =
-  "EN PIPO NO HACEMOS COSAS DISTINTAS PARA LLAMAR LA ATENCIÓN. SIMPLEMENTE NO SABEMOS HACERLO DE OTRA MANERA. CREEMOS QUE LO ÚNICO ES LO NORMAL.";
+const DEFAULT_TITLE = "SOBRE PIPO";
+const DEFAULT_BODY = `Pipo no es una fábrica. Es una forma de pensar con las manos.
+Detrás del nombre hay un taller en Gran Canaria, un muñeco de madera con carácter, y Antonio, el experto que lleva años transformando materiales descartados y nuevos en piezas únicas y con alma.
+
+El nombre "Pipo" viene de un apodo familiar del abuelo de Antonio. Por la zona les conocían como Los Pipotes, y este proyecto es también un guiño a ese legado que nunca se perdió del todo... ¡Ni se perderá!
+
+Cuando mi creador Antonio le contó la idea al equipo de FUGU CGCA, se empeñaron en que mi personalidad y mi pinta fueran tal cual soy ahora. ¡Y menos mal! Me podrían haber hecho mucho más feo… o peor, ¡mucho más aburrido!
+
+Aquí no se hacen muebles de catálogo. Se crean objetos únicos, pensados desde el material, desde la historia y desde lo que pide cada espacio.
+
+Porque en Pipo, lo único es lo normal.`;
+
+const FUGU_KEYWORD = "FUGU CGCA";
+const FUGU_URL = "https://www.byfugu.com/";
+
+function renderWithFuguLink(text: string) {
+  const idx = text.indexOf(FUGU_KEYWORD);
+  if (idx === -1) return text;
+  return (
+    <>
+      {text.slice(0, idx)}
+      <a
+        href={FUGU_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="font-bold underline"
+      >
+        {FUGU_KEYWORD}
+      </a>
+      {text.slice(idx + FUGU_KEYWORD.length)}
+    </>
+  );
+}
 
 export default function SobreMiSection({ data }: SobreMiSectionProps) {
-  const statement = data?.statement || DEFAULT_STATEMENT;
+  const title = data?.title ?? DEFAULT_TITLE;
+  const body = data?.body ?? DEFAULT_BODY;
+
+  const paragraphs = body.split(/\n\n+/).filter(Boolean);
+  const bodyParagraphs = paragraphs.slice(0, -1);
+  const lastParagraph = paragraphs[paragraphs.length - 1];
 
   return (
     <section
       id="sobreMi"
-      className="w-full h-full flex items-center justify-center px-6"
+      className="w-10/12 h-full flex flex-col items-center px-4 pt-4 gap-3 mx-auto"
     >
-      <p className="font-sans font-bold text-[80px] leading-none tracking-normal text-center text-green-pipo">
-        {statement}
+      <p className="font-sans font-bold text-5xl leading-none tracking-normal text-center text-green-pipo">
+        {title}
       </p>
+
+      <div
+        className="flex flex-col gap-2 text-center text-green-pipo font-sans text-[11px] leading-snug w-full"
+        style={{
+          background: "rgba(228, 229, 224, 0.7)",
+          padding: "10px",
+          borderRadius: "6px",
+        }}
+      >
+        {bodyParagraphs.map((p, i) => (
+          <p key={i}>{renderWithFuguLink(p)}</p>
+        ))}
+        {lastParagraph && <p className="font-bold">{lastParagraph}</p>}
+      </div>
     </section>
   );
 }

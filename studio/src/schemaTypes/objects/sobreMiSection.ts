@@ -8,10 +8,16 @@ export const sobreMiSection = defineType({
   icon: UserIcon,
   fields: [
     defineField({
-      name: 'statement',
-      title: 'Statement',
+      name: 'title',
+      title: 'Título (ej: "SOBRE PIPO")',
+      type: 'internationalizedArrayString',
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'body',
+      title: 'Cuerpo (párrafos separados por línea en blanco)',
       type: 'internationalizedArrayText',
-      description: 'Texto principal en verde. Ej: "EN PIPO NO HACEMOS COSAS DISTINTAS..."',
+      description: 'Cada párrafo separado por una línea en blanco. El último párrafo se muestra en negrita.',
       validation: (rule) => rule.required(),
     }),
   ],
@@ -19,8 +25,8 @@ export const sobreMiSection = defineType({
     select: {
       statement: 'statement',
     },
-    prepare({statement}) {
-      const text = Array.isArray(statement) ? statement[0]?.value || 'Sobre Pipo' : 'Sobre Pipo'
+    prepare({title}: {title: unknown}) {
+      const text = Array.isArray(title) ? (title[0] as {value?: string})?.value || 'Sobre Pipo' : 'Sobre Pipo'
       return {
         title: text.slice(0, 60),
         subtitle: 'Sobre Pipo Section',

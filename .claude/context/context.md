@@ -187,6 +187,28 @@ Las secciones dentro del mueble usan Tailwind v4 con tokens del `@theme` en `glo
 
 ---
 
+## CursosSection — detalles de implementación
+
+- **Campos Sanity:** `title` (i18n string), `youtubeLabel` / `instagramLabel` (i18n string), `youtubeVideo` / `instagramVideo` (file, `accept: video/*`), `youtubeUrl` / `instagramUrl` (url)
+- **Layout:** título grande verde + dos tarjetas de vídeo 9:16 lado a lado
+- **Vídeos:** `VIDEO_W=160px`, `VIDEO_H=Math.round(160*16/9)=284px`, `autoPlay loop muted playsInline`, `objectFit: cover`
+- **Links:** si hay URL configurada, la tarjeta entera se envuelve en `<a target="_blank">`
+- **planeH override en SectionOverlays:** `3.5`
+
+---
+
+## SobreMiSection — detalles de implementación
+
+- **Campos Sanity:** `title` (i18n string), `body` (i18n text — párrafos separados por línea en blanco)
+- **Schema type:** `"SobreMiSection"` con S mayúscula (distinto al patrón camelCase del resto) ⚠️
+- **Layout:** título grande verde + contenedor con fondo `rgba(228,229,224,0.7)` (Clean Grey semitransparente, `borderRadius: 6px`) + párrafos en `text-[11px]` verde centrado
+- **Último párrafo:** siempre en `font-bold` automáticamente
+- **FUGU CGCA:** la cadena exacta `"FUGU CGCA"` se linkea automáticamente a `https://www.byfugu.com/` con `font-bold underline`
+- **Ancho sección:** `w-10/12 mx-auto` (centrado, sin ocupar el ancho completo)
+- **planeH override en SectionOverlays:** `2.5`
+
+---
+
 ## AlgunaIdeaSection — detalles de implementación
 
 - **Formulario:** 5 campos (IDEA textarea, FOTOS file, NOMBRE, EMAIL, TELÉFONO) — todos required
