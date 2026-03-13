@@ -308,6 +308,39 @@ const refH = Math.round(REF_W * (effectivePlaneH / PLANE_W));
 
 ---
 
+## 16. Cola de animaciones — reemplazo en vez de acumulación
+
+**Problema:** Al scrollear rápido de ida y vuelta, las animaciones se apilaban en `animationQueue`. Si el usuario bajaba 3 secciones y subía 2, la cola acumulaba todas las transiciones intermedias (ej. `[Scroll 01-D, Scroll 02-D, Scroll 02-U, Scroll 03-U]`). Pipo las ejecutaba todas en secuencia aunque el usuario ya se hubiera parado, dando la sensación de que "no para".
+
+**Causa:** `navigateToSection` y `scrollToSection` usaban `[...animationQueue, nuevaAnimacion]` — acumulación ciega independientemente de si las animaciones previas seguían siendo necesarias.
+
+**Fix en `navigationStore.ts`:**
+
+1. **`computeIdlePath` helper** (añadida antes del store):
+```ts
+function computeIdlePath(from: IdleState, to: IdleState): QueuedAnimation[] {
+  // Calcula el camino mínimo secuencial: Idle 01 ↔ 02 ↔ 03 ↔ 04
+  // Ej: computeIdlePath("Idle 01", "Idle 03") → [Scroll 01-D, Scroll 02-D]
+  // Ej: computeIdlePath("Idle 03", "Idle 01") → [Scroll 02-U, Scroll 03-U]
+}
+```
+
+2. **`navigateToSection`** — reemplaza cola en vez de apendear:
+```ts
+// ANTES: const newQueue = [...animationQueue, { animation, targetIdle: exitIdle }];
+// AHORA:
+const baseIdle = isAnimationSequenceActive && pendingIdle ? pendingIdle : currentIdle;
+const newQueue = computeIdlePath(baseIdle, exitIdle); // REEMPLAZA la cola
+```
+
+3. **`scrollToSection`** (nav del header) — misma lógica: determina `finalIdle` recorriendo las secciones hasta el destino, luego `computeIdlePath(baseIdle, finalIdle)` da el camino directo, y REEMPLAZA la cola.
+
+**Por qué es seguro:** La animación que está sonando en ese momento (`pendingIdle`) NO puede cancelarse — tiene que terminar. La cola se reemplaza para todo lo que viene DESPUÉS de esa animación. Cuando termina, `onAnimationComplete` llama `processAnimationQueue()` con la cola nueva (ya recalculada).
+
+**Resultado:** Con un scroll alocado de ida y vuelta, el usuario nunca ve más animaciones de las estrictamente necesarias para llegar al idle correcto desde donde Pipo está actualmente. Si el usuario invierte dirección mientras Pipo está en medio de una animación, las animaciones futuras se recalculan desde donde Pipo aterrizará, no desde el final de la cola acumulada.
+
+---
+
 ## 7. Acceso a Sanity Studio
 
 **Situación:** El proyecto existe en `manage.sanity.io` con project ID `kzek939n`, dataset activo con 21 documentos. Pero `SANITY_STUDIO_STUDIO_HOST` está vacío → el studio no está deployado online.

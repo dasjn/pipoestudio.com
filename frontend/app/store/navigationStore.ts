@@ -65,6 +65,25 @@ interface QueuedAnimation {
   targetIdle: IdleState;
 }
 
+// Calcula el camino mínimo de animaciones entre dos idles.
+// La cola se REEMPLAZA (no se acumula) para que el usuario no vea animaciones obsoletas.
+function computeIdlePath(from: IdleState, to: IdleState): QueuedAnimation[] {
+  if (from === to) return [];
+  const idles: IdleState[] = ["Idle 01", "Idle 02", "Idle 03", "Idle 04"];
+  const fromIdx = idles.indexOf(from);
+  const toIdx = idles.indexOf(to);
+  const step = fromIdx < toIdx ? 1 : -1;
+  const path: QueuedAnimation[] = [];
+  for (let i = fromIdx; i !== toIdx; i += step) {
+    const cur = idles[i] as IdleState;
+    const nxt = idles[i + step] as IdleState;
+    const key = `${cur}->${nxt}`;
+    const anim = transitionAnimations[key];
+    if (anim) path.push({ animation: anim, targetIdle: nxt });
+  }
+  return path;
+}
+
 // Configuración de animaciones (para loop settings)
 // NOTA: Los nombres deben coincidir EXACTAMENTE con los del modelo GLB
 const animationSettings: Record<
@@ -306,21 +325,15 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
     sectionId: SectionId,
     direction: NavigationDirection = null,
   ) => {
-    const { currentSection, animationQueue } = get();
+    const { currentSection, currentIdle, pendingIdle, isAnimationSequenceActive } = get();
 
-    // Calcular el idle "virtual" actual (considerando animaciones en cola)
-    // Es el idle final después de que todas las animaciones en cola se completen
-    let virtualIdle = get().currentIdle;
-    if (animationQueue.length > 0) {
-      virtualIdle = animationQueue[animationQueue.length - 1].targetIdle;
-    } else if (get().pendingIdle) {
-      virtualIdle = get().pendingIdle!;
-    }
+    // Idle base: donde aterrizará la animación que se está reproduciendo ahora.
+    // Si no hay animación activa, es el idle actual.
+    const baseIdle: IdleState =
+      isAnimationSequenceActive && pendingIdle ? pendingIdle : currentIdle;
 
-    // Obtener configuración de transición para la sección ORIGEN
+    // Idle destino al SALIR de la sección actual
     const originConfig = sectionTransitions[currentSection];
-
-    // Determinar el idle destino al SALIR de la sección actual
     const exitIdle =
       direction === "down"
         ? originConfig.exitDown
@@ -328,51 +341,31 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
           ? originConfig.exitUp
           : null;
 
-    console.log(`[NAV] ${currentSection} → ${sectionId} (${direction})`);
-    console.log(
-      `[NAV] virtualIdle: ${virtualIdle}, exitIdle: ${exitIdle}, queue length: ${animationQueue.length}`,
-    );
+    console.log(`[NAV] ${currentSection} → ${sectionId} (${direction}), baseIdle: ${baseIdle}, exitIdle: ${exitIdle}`);
 
-    // Si hay transición necesaria Y el idle virtual es diferente al destino
-    if (exitIdle && virtualIdle !== exitIdle) {
-      const transitionKey = `${virtualIdle}->${exitIdle}`;
-      const animation = transitionAnimations[transitionKey];
-      console.log(`[NAV] Queueing: ${transitionKey} → Animation: ${animation}`);
+    if (exitIdle && baseIdle !== exitIdle) {
+      // Camino mínimo desde baseIdle hasta exitIdle — REEMPLAZA la cola
+      const newQueue = computeIdlePath(baseIdle, exitIdle);
+      console.log(`[NAV] Queue replaced: [${newQueue.map(q => q.animation).join(", ")}]`);
 
-      if (animation) {
-        // Añadir animación a la cola
-        const newQueue = [
-          ...animationQueue,
-          { animation, targetIdle: exitIdle },
-        ];
-        set({
-          isTransitioning: true,
-          currentSection: sectionId,
-          navigationDirection: direction,
-          animationQueue: newQueue,
-        });
-
-        // Si no hay animación reproduciéndose, procesar la cola
-        if (!get().isAnimationSequenceActive) {
-          get().processAnimationQueue();
-        }
-      } else {
-        // No hay animación definida → cambiar sección, idle se actualizará cuando sea posible
-        set({
-          isTransitioning: true,
-          currentSection: sectionId,
-          navigationDirection: direction,
-        });
-      }
-    } else {
-      // No hay transición necesaria → solo cambiar sección
-      console.log(
-        `[NAV] No transition needed, keeping virtualIdle: ${virtualIdle}`,
-      );
       set({
         isTransitioning: true,
         currentSection: sectionId,
         navigationDirection: direction,
+        animationQueue: newQueue,
+      });
+
+      // Arrancar solo si no hay animación reproduciéndose
+      if (!isAnimationSequenceActive && newQueue.length > 0) {
+        get().processAnimationQueue();
+      }
+    } else {
+      console.log(`[NAV] No transition needed, clearing queue`);
+      set({
+        isTransitioning: true,
+        currentSection: sectionId,
+        navigationDirection: direction,
+        animationQueue: [], // Limpia cualquier cola obsoleta
       });
     }
 
@@ -384,14 +377,11 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
         block: "start",
       });
     }
-
-    // The transition will be unlocked when camera animation completes
   },
 
   scrollToSection: (sectionId: SectionId) => {
-    const { currentSection, sections, animationQueue } = get();
+    const { currentSection, sections, currentIdle, pendingIdle, isAnimationSequenceActive } = get();
 
-    // Find indices to determine direction
     const currentIndex = sections.findIndex((s) => s.id === currentSection);
     const targetIndex = sections.findIndex((s) => s.id === sectionId);
 
@@ -399,86 +389,46 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
 
     const direction = targetIndex > currentIndex ? "down" : "up";
 
-    console.log(`[HEADER NAV] ${currentSection} → ${sectionId} (${direction})`);
+    // Idle base: donde aterrizará la animación actual (o currentIdle si no hay ninguna)
+    const baseIdle: IdleState =
+      isAnimationSequenceActive && pendingIdle ? pendingIdle : currentIdle;
 
-    // Calculate virtualIdle considering current queue
-    let virtualIdle = get().currentIdle;
-    if (animationQueue.length > 0) {
-      virtualIdle = animationQueue[animationQueue.length - 1].targetIdle;
-    } else if (get().pendingIdle) {
-      virtualIdle = get().pendingIdle!;
-    }
-
-    // Build queue of all transitions needed to reach the target section
-    const newAnimationsToQueue: QueuedAnimation[] = [];
-
+    // Determinar el idle final recorriendo las secciones hasta el destino
+    let finalIdle: IdleState = baseIdle;
     if (direction === "down") {
-      // Going down: iterate from current to target-1 (exit transitions)
       for (let i = currentIndex; i < targetIndex; i++) {
-        const traverseSection = sections[i].id;
-        const config = sectionTransitions[traverseSection];
-        const exitIdle = config.exitDown;
-
-        if (exitIdle && virtualIdle !== exitIdle) {
-          const transitionKey = `${virtualIdle}->${exitIdle}`;
-          const animation = transitionAnimations[transitionKey];
-
-          if (animation) {
-            console.log(`[HEADER NAV] Queue: ${transitionKey} → ${animation}`);
-            newAnimationsToQueue.push({ animation, targetIdle: exitIdle });
-            virtualIdle = exitIdle; // Update virtualIdle for next iteration
-          }
-        }
+        const exitIdle = sectionTransitions[sections[i].id].exitDown;
+        if (exitIdle) finalIdle = exitIdle;
       }
     } else {
-      // Going up: iterate from current to target+1 (exit transitions)
       for (let i = currentIndex; i > targetIndex; i--) {
-        const traverseSection = sections[i].id;
-        const config = sectionTransitions[traverseSection];
-        const exitIdle = config.exitUp;
-
-        if (exitIdle && virtualIdle !== exitIdle) {
-          const transitionKey = `${virtualIdle}->${exitIdle}`;
-          const animation = transitionAnimations[transitionKey];
-
-          if (animation) {
-            console.log(`[HEADER NAV] Queue: ${transitionKey} → ${animation}`);
-            newAnimationsToQueue.push({ animation, targetIdle: exitIdle });
-            virtualIdle = exitIdle; // Update virtualIdle for next iteration
-          }
-        }
+        const exitIdle = sectionTransitions[sections[i].id].exitUp;
+        if (exitIdle) finalIdle = exitIdle;
       }
     }
 
-    // Merge new animations with existing queue
-    const finalQueue = [...animationQueue, ...newAnimationsToQueue];
+    // Camino mínimo desde baseIdle hasta finalIdle — REEMPLAZA la cola
+    const newQueue = computeIdlePath(baseIdle, finalIdle);
+    console.log(`[HEADER NAV] ${currentSection} → ${sectionId} (${direction}), queue: [${newQueue.map(q => q.animation).join(", ")}]`);
 
     set({
       isScrolling: true,
       isTransitioning: true,
       currentSection: sectionId,
       navigationDirection: direction,
-      animationQueue: finalQueue,
+      animationQueue: newQueue,
     });
 
-    // Start processing queue if not already active
-    if (newAnimationsToQueue.length > 0 && !get().isAnimationSequenceActive) {
+    if (!isAnimationSequenceActive && newQueue.length > 0) {
       get().processAnimationQueue();
     }
 
-    // Scroll to HTML element
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
-    // Desbloquear el observer después del scroll
-    setTimeout(() => {
-      set({ isScrolling: false });
-    }, 1000);
+    setTimeout(() => set({ isScrolling: false }), 1000);
   },
 
   registerSection: (sectionId: SectionId, element: HTMLElement) => {
