@@ -341,6 +341,18 @@ const newQueue = computeIdlePath(baseIdle, exitIdle); // REEMPLAZA la cola
 
 ---
 
+## 17. ContactoSection — botones mismo ancho con width: max-content
+
+**Problema:** Los 5 botones del panel de contacto tenían anchos distintos (cada uno del tamaño de su texto) o se extendían al 100% del slot.
+
+**Fix:** Contenedor de botones con `width: "max-content"` en un flex-column. CSS calcula primero el ancho intrínseco máximo de todos los hijos (el botón más ancho: "FORMULARIO DE CONTACTO"), luego aplica `align-self: stretch` por defecto → todos los hijos se igualan a ese ancho. `whiteSpace: "nowrap"` en los labels evita que el texto se parta durante el cálculo.
+
+**Componente usado:** `Button` (`as="link" size="sm"`) — su `inline-flex justify-center` interno centra el texto dentro del ancho estirado.
+
+**Por qué no usar width: 100%:** Crearía dependencia circular (hijos al 100% del padre, padre al 100% del abuelo = slot completo).
+
+---
+
 ## 7. Acceso a Sanity Studio
 
 **Situación:** El proyecto existe en `manage.sanity.io` con project ID `kzek939n`, dataset activo con 21 documentos. Pero `SANITY_STUDIO_STUDIO_HOST` está vacío → el studio no está deployado online.

@@ -9,28 +9,64 @@ export const contactoSection = defineType({
   fields: [
     defineField({
       name: 'title',
-      title: 'Title',
+      title: 'Título',
       type: 'internationalizedArrayString',
       validation: (rule) => rule.required(),
     }),
     defineField({
-      name: 'description',
-      title: 'Description',
-      type: 'internationalizedArrayText',
+      name: 'instagramLabel',
+      title: 'Label Instagram',
+      type: 'internationalizedArrayString',
     }),
     defineField({
-      name: 'backgroundColor',
-      title: 'Background Color',
+      name: 'instagramUrl',
+      title: 'URL Instagram',
+      type: 'url',
+    }),
+    defineField({
+      name: 'youtubeLabel',
+      title: 'Label YouTube',
+      type: 'internationalizedArrayString',
+    }),
+    defineField({
+      name: 'youtubeUrl',
+      title: 'URL YouTube',
+      type: 'url',
+    }),
+    defineField({
+      name: 'formularioLabel',
+      title: 'Label Formulario de Contacto',
+      type: 'internationalizedArrayString',
+    }),
+    defineField({
+      name: 'formularioUrl',
+      title: 'URL del Formulario (página interna)',
+      type: 'url',
+    }),
+    defineField({
+      name: 'whatsappLabel',
+      title: 'Label WhatsApp',
+      type: 'internationalizedArrayString',
+    }),
+    defineField({
+      name: 'whatsappNumber',
+      title: 'Número WhatsApp (ej: 34612345678, sin + ni espacios)',
       type: 'string',
-      options: {
-        list: [
-          {title: 'Purple 200', value: 'bg-purple-200'},
-          {title: 'Gray 100', value: 'bg-gray-100'},
-          {title: 'White', value: 'bg-white'},
-          {title: 'Clean Gray', value: 'bg-clean-gray'},
-        ],
-      },
-      initialValue: 'bg-purple-200',
+    }),
+    defineField({
+      name: 'emailLabel',
+      title: 'Label Email (texto visible en el botón)',
+      type: 'internationalizedArrayString',
+    }),
+    defineField({
+      name: 'email',
+      title: 'Email',
+      type: 'string',
+    }),
+    defineField({
+      name: 'footerText',
+      title: 'Texto de pie (ej: PIPO. HECHO DESDE 2022 EN ARUCAS...)',
+      type: 'internationalizedArrayText',
     }),
   ],
   preview: {

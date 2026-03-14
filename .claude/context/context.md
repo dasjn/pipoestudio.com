@@ -228,6 +228,18 @@ Las secciones dentro del mueble usan Tailwind v4 con tokens del `@theme` en `glo
 
 ---
 
+## ContactoSection — detalles de implementación
+
+- **Campos Sanity:** `title` (i18n string), `instagramLabel`/`instagramUrl`, `youtubeLabel`/`youtubeUrl`, `formularioLabel`/`formularioUrl`, `whatsappLabel`/`whatsappNumber` (string sin `+`, ej: `34612345678`), `emailLabel`/`email`, `footerText` (i18n text multiline)
+- **Layout:** título grande verde + 5 botones `Button` component (`as="link" size="sm"`) apilados + caja gris pie con `whiteSpace: pre-line`
+- **Ancho botones:** contenedor `width: max-content` en flex-col → todos los botones hacen `align-self: stretch` y se igualan al más ancho (FORMULARIO DE CONTACTO)
+- **URLs generadas:** whatsapp → `https://wa.me/${whatsappNumber}`, email → `mailto:${email}`
+- **Formulario de contacto:** `formularioUrl` abre en la misma pestaña (`target` omitido) — apunta a una página separada con el form
+- **Defaults hardcodeados:** funciona sin datos de Sanity (muestra labels y footerText en español)
+- **planeH override en SectionOverlays:** `3.2`
+
+---
+
 ## AlgunaIdeaSection — detalles de implementación
 
 - **Formulario:** 5 campos (IDEA textarea, FOTOS file, NOMBRE, EMAIL, TELÉFONO) — todos required

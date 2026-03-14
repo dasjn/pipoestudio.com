@@ -126,12 +126,18 @@ export default function SectionOverlays({
     },
     {
       id: "tienda",
-      content: <TiendaSection data={sectionsData?.tienda} products={sectionsData?.products} />,
+      content: (
+        <TiendaSection
+          data={sectionsData?.tienda}
+          products={sectionsData?.products}
+        />
+      ),
       planeH: 3.2,
     },
     {
       id: "contacto",
       content: <ContactoSection data={sectionsData?.contacto} />,
+      planeH: 3.2,
     },
     {
       id: "footer",
