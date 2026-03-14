@@ -1,0 +1,431 @@
+{
+  "faq": [
+    {
+      "id": "materiales",
+      "language": "es",
+      "question": "¿Qué tipos de madera utilizan para los muebles?",
+      "answer": "Trabajo con lo que encuentro: roble, nogal, cerezo... También maderas que otros descartan. Por suerte no hay dos iguales!",
+      "keywords": ["madera", "materiales", "tipos", "reciclado", "único"]
+    },
+    {
+      "id": "materiales",
+      "language": "en",
+      "question": "What types of wood do you use for furniture?",
+      "answer": "I work with what I find: oak, walnut, cherry... Also woods that others discard. Luckily no two are alike!",
+      "keywords": ["wood", "materials", "types", "recycled", "unique"]
+    },
+    {
+      "id": "tiempos",
+      "language": "es",
+      "question": "¿Cuánto tiempo toma fabricar un mueble personalizado?",
+      "answer": "Yo diría que alrededor de un mes, pero cada pieza es única. Háblanos y te decimos!",
+      "keywords": ["tiempo", "fabricación", "personalizado", "único", "depende"]
+    },
+    {
+      "id": "tiempos",
+      "language": "en",
+      "question": "How long does it take to manufacture a custom piece of furniture?",
+      "answer": "I'd say around a month, but each piece is unique. Talk to us and we'll tell you!",
+      "keywords": ["time", "manufacturing", "custom", "unique", "depends"]
+    },
+    {
+      "id": "precios",
+      "language": "es",
+      "question": "¿Cuáles son los rangos de precios para muebles a medida?",
+      "answer": "Cada pieza es única, aquí no hay catálogo. ¿Tienes una idea? Si me gusta, la hacemos!",
+      "keywords": ["precios", "único", "historia", "idea", "esfuerzo"]
+    },
+    {
+      "id": "precios",
+      "language": "en",
+      "question": "What are the price ranges for custom furniture?",
+      "answer": "Each piece is unique, there's no catalog here. Do you have an idea? If I like it, we'll do it!",
+      "keywords": ["prices", "unique", "story", "idea", "effort"]
+    },
+    {
+      "id": "envios",
+      "language": "es",
+      "question": "¿Hacen envíos a domicilio y cuánto cuesta?",
+      "answer": "Depende de dónde estés. Avísame y cuadramos entrega o vienes a recoger. Déjame a mí!",
+      "keywords": ["envío", "domicilio", "depende", "ubicación", "contacto"]
+    },
+    {
+      "id": "envios",
+      "language": "en",
+      "question": "Do you offer home delivery and how much does it cost?",
+      "answer": "Depends on where you are. Let me know and we'll arrange delivery or you can pick up. Leave it to me!",
+      "keywords": ["delivery", "shipping", "depends", "location", "contact"]
+    },
+    {
+      "id": "garantia",
+      "language": "es",
+      "question": "¿Qué garantía ofrecen en sus muebles?",
+      "answer": "Mis muebles están hechos para durar. Si se rompe por defecto mío, yo me hago cargo.",
+      "keywords": ["garantía", "durar", "cariño", "defecto", "responsabilidad"]
+    },
+    {
+      "id": "garantia",
+      "language": "en",
+      "question": "What warranty do you offer on your furniture?",
+      "answer": "My furniture is made to last. If it breaks due to my defect, I take care of it.",
+      "keywords": ["warranty", "last", "love", "defect", "responsibility"]
+    },
+    {
+      "id": "proceso",
+      "language": "es",
+      "question": "¿Cómo funciona el proceso de diseño personalizado?",
+      "answer": "Tengas idea o no, yo te ayudo! Hablamos, veo qué tienes en mente y hago mis cosas.",
+      "keywords": ["proceso", "diseño", "personalizado", "ayuda", "bocetos"]
+    },
+    {
+      "id": "proceso",
+      "language": "en",
+      "question": "How does the custom design process work?",
+      "answer": "Whether you have an idea or not, I'll help you! We talk, I see what you have in mind and do my thing.",
+      "keywords": ["process", "design", "custom", "help", "sketches"]
+    },
+    {
+      "id": "pagos",
+      "language": "es",
+      "question": "¿Qué métodos de pago aceptan?",
+      "answer": "Efectivo, transferencia, tarjeta... lo que sea más fácil para ti.",
+      "keywords": ["pago", "métodos", "efectivo", "transferencia", "sentido común"]
+    },
+    {
+      "id": "pagos",
+      "language": "en",
+      "question": "What payment methods do you accept?",
+      "answer": "Cash, transfer, card... whatever's easiest for you.",
+      "keywords": ["payment", "methods", "cash", "transfer", "common sense"]
+    },
+    {
+      "id": "showroom",
+      "language": "es",
+      "question": "¿Puedo visitar el taller o showroom?",
+      "answer": "Por supuesto! Pero avísame antes. Te enseño el taller y mis proyectos.",
+      "keywords": ["showroom", "taller", "visita", "horarios", "ubicación", "cita"]
+    },
+    {
+      "id": "showroom",
+      "language": "en",
+      "question": "Can I visit the workshop or showroom?",
+      "answer": "Of course! But let me know first. I'll show you the workshop and my projects.",
+      "keywords": ["showroom", "workshop", "visit", "hours", "location", "appointment"]
+    },
+    {
+      "id": "horarios",
+      "language": "es",
+      "question": "¿Cuáles son los horarios de atención?",
+      "answer": "De 9 a 5, lunes a viernes. Si necesitas algo urgente, escríbeme y vemos.",
+      "keywords": ["horarios", "atención", "urgente", "flexible", "trabajo"]
+    },
+    {
+      "id": "horarios",
+      "language": "en",
+      "question": "What are the service hours?",
+      "answer": "9 to 5, Monday to Friday. If you need something urgent, write to me and we'll see.",
+      "keywords": ["hours", "service", "urgent", "flexible", "work"]
+    },
+    {
+      "id": "cursos",
+      "language": "es",
+      "question": "¿Das cursos?",
+      "answer": "Claro! Tengas el nivel que tengas te enseño a que conserves todos tus dedos trabajando con madera.",
+      "keywords": ["cursos", "enseñar", "dedos", "seguridad", "nivel"]
+    },
+    {
+      "id": "cursos",
+      "language": "en",
+      "question": "Do you give courses?",
+      "answer": "Sure! Whatever level you have, I'll teach you to keep all your fingers working with wood.",
+      "keywords": ["courses", "teach", "fingers", "safety", "level"]
+    },
+    {
+      "id": "reparaciones",
+      "language": "es",
+      "question": "¿Hacen reparaciones de muebles existentes?",
+      "answer": "Restauración emocional en proceso! Si tienes algo roto, tráelo. No lo tires!",
+      "keywords": ["reparación", "restauración", "modificación", "evaluación", "servicios"]
+    },
+    {
+      "id": "reparaciones",
+      "language": "en",
+      "question": "Do you repair existing furniture?",
+      "answer": "Emotional restoration in progress! If you have something broken, bring it. Don't throw it away!",
+      "keywords": ["repair", "restoration", "modification", "evaluation", "services"]
+    },
+    {
+      "id": "satisfaccion",
+      "language": "es",
+      "question": "¿Qué pasa si no me gusta el resultado final?",
+      "answer": "Eh! ¿A dónde vas? Hablamos y vemos qué pasó. Lo arreglamos si puedo.",
+      "keywords": ["satisfacción", "resultado", "cambios", "aprobación", "modificaciones"]
+    },
+    {
+      "id": "satisfaccion",
+      "language": "en",
+      "question": "What happens if I don't like the final result?",
+      "answer": "Hey! Where are you going? We talk and see what happened. We'll fix it if I can.",
+      "keywords": ["satisfaction", "result", "changes", "approval", "modifications"]
+    },
+    {
+      "id": "tipos_muebles",
+      "language": "es",
+      "question": "¿Qué tipos de muebles fabrican o venden?",
+      "answer": "Fabricamos todo tipo de muebles a medida: mesas, armarios, cocinas... cualquier diseño que necesites.",
+      "keywords": ["tipos", "muebles", "fabrican", "venden", "mesas", "armarios", "sala", "dormitorio"]
+    },
+    {
+      "id": "tipos_muebles",
+      "language": "en",
+      "question": "What types of furniture do you manufacture or sell?",
+      "answer": "We manufacture all types of custom furniture: tables, wardrobes, kitchens... any design you need.",
+      "keywords": ["types", "furniture", "manufacture", "sell", "tables", "wardrobes", "living", "bedroom"]
+    },
+    {
+      "id": "catalogo",
+      "language": "es",
+      "question": "¿Tienen catálogo de productos?",
+      "answer": "Aquí no hay catálogo, hay historias! Revisa nuestra web e instagram para verlas.",
+      "keywords": ["catálogo", "historias", "web", "instagram", "proyectos"]
+    },
+    {
+      "id": "catalogo",
+      "language": "en",
+      "question": "Do you have a product catalog?",
+      "answer": "There's no catalog here, there are stories! Check our website and instagram to see them.",
+      "keywords": ["catalog", "stories", "website", "instagram", "projects"]
+    },
+    {
+      "id": "inspiracion",
+      "language": "es",
+      "question": "¿De dónde sacas las ideas?",
+      "answer": "No sé cómo lo hago pero solo me salen cosas guays! Las mejores vienen teniendo mucho sueño y sin café.",
+      "keywords": ["inspiración", "ideas", "sueño", "café", "creatividad"]
+    },
+    {
+      "id": "inspiracion",
+      "language": "en",
+      "question": "Where do you get your ideas from?",
+      "answer": "I don't know how I do it but I only come up with cool stuff! The best ones come when I'm very sleepy and without coffee.",
+      "keywords": ["inspiration", "ideas", "sleepy", "coffee", "creativity"]
+    },
+    {
+      "id": "competencia",
+      "language": "es",
+      "question": "¿Qué os diferencia de otros talleres?",
+      "answer": "Que soy outsider! Transformo lo descartado en valor. Lo que otros tiran, yo lo hago especial.",
+      "keywords": ["diferencia", "outsider", "independiente", "descartado", "valor"]
+    },
+    {
+      "id": "competencia",
+      "language": "en",
+      "question": "What differentiates you from other workshops?",
+      "answer": "That I'm an outsider! I transform the discarded into value. What others throw away, I make special.",
+      "keywords": ["difference", "outsider", "independent", "discarded", "value"]
+    },
+    {
+      "id": "materiales_reciclados",
+      "language": "es",
+      "question": "¿Trabajas con materiales reciclados?",
+      "answer": "Esa es mi especialidad! Puertas que son estanterías, ventanas que son mesas. Déjamelo!",
+      "keywords": ["reciclado", "segunda vida", "historia", "puertas", "ventanas"]
+    },
+    {
+      "id": "materiales_reciclados",
+      "language": "en",
+      "question": "Do you work with recycled materials?",
+      "answer": "That's my specialty! Doors that are shelves, windows that are tables. Leave it to me!",
+      "keywords": ["recycled", "second life", "history", "doors", "windows"]
+    },
+    {
+      "id": "consejos",
+      "language": "es",
+      "question": "¿Tienes algún consejo para cuidar los muebles?",
+      "answer": "Sentido común! Trátalos con cariño, un poco de aceite y sobre todo... úsalos!",
+      "keywords": ["consejos", "cuidar", "cariño", "aceite", "usar"]
+    },
+    {
+      "id": "consejos",
+      "language": "en",
+      "question": "Do you have any advice for caring for furniture?",
+      "answer": "Common sense! Treat them with love, a little oil and above all... use them!",
+      "keywords": ["advice", "care", "love", "oil", "use"]
+    },
+    {
+      "id": "identidad",
+      "language": "es",
+      "question": "¿Cómo te llamas o quién eres?",
+      "answer": "Soy Pipo! Tu compañero de aventuras en el mundo de la madera. Hablo sin rodeos!",
+      "keywords": ["nombre", "identidad", "quién", "asistente", "ayuda"]
+    },
+    {
+      "id": "identidad",
+      "language": "en",
+      "question": "What's your name or who are you?",
+      "answer": "I'm Pipo! Your adventure companion in the world of wood. I speak without beating around the bush!",
+      "keywords": ["name", "identity", "who", "assistant", "help"]
+    },
+    {
+      "id": "filosofia",
+      "language": "es",
+      "question": "¿Cuál es tu filosofía de trabajo?",
+      "answer": "Seguimos el instinto, el material y la conversación. Cada proyecto es la mejor excusa para resolver algo distinto.",
+      "keywords": ["filosofía", "instinto", "material", "conversación", "proyecto"]
+    },
+    {
+      "id": "filosofia",
+      "language": "en",
+      "question": "What's your work philosophy?",
+      "answer": "We follow instinct, material and conversation. Each project is the best excuse to solve something different.",
+      "keywords": ["philosophy", "instinct", "material", "conversation", "project"]
+    },
+    {
+      "id": "que_hacen",
+      "language": "es",
+      "question": "¿Qué hacen?",
+      "answer": "Creamos muebles únicos a medida. Transformamos ideas en objetos con alma, usando maderas que otros descartan.",
+      "keywords": ["qué hacen", "crear", "únicos", "medida", "alma"]
+    },
+    {
+      "id": "que_hacen",
+      "language": "en",
+      "question": "What do you do?",
+      "answer": "We create unique custom furniture. We transform ideas into objects with soul, using woods that others discard.",
+      "keywords": ["what do", "create", "unique", "custom", "soul"]
+    },
+    {
+      "id": "por_que_lo_hacen",
+      "language": "es",
+      "question": "¿Por qué lo hacen?",
+      "answer": "Porque no sabemos hacerlo de otra manera. Creamos objetos con historia, alma y propósito. Lo único es lo normal.",
+      "keywords": ["por qué", "historia", "alma", "propósito", "único", "normal"]
+    },
+    {
+      "id": "por_que_lo_hacen",
+      "language": "en",
+      "question": "Why do you do it?",
+      "answer": "Because we don't know how to do it any other way. We create objects with history, soul and purpose. The unique is normal.",
+      "keywords": ["why do", "history", "soul", "purpose", "unique", "normal"]
+    },
+    {
+      "id": "alma_proposito",
+      "language": "es",
+      "question": "¿Qué hace especial vuestros muebles?",
+      "answer": "No estamos aquí para producir un mueble más. Creamos objetos con historia, con alma y con propósito.",
+      "keywords": ["especial", "historia", "alma", "propósito", "objetos"]
+    },
+    {
+      "id": "alma_proposito",
+      "language": "en",
+      "question": "What makes your furniture special?",
+      "answer": "We're not here to produce just another piece of furniture. We create objects with history, soul and purpose.",
+      "keywords": ["special", "history", "soul", "purpose", "objects"]
+    },
+    {
+      "id": "contacto",
+      "language": "es",
+      "question": "¿Cómo os contacto?",
+      "answer": "Escríbenos! Si me gusta tu idea, la hacemos. Si no tienes idea, también te ayudo.",
+      "keywords": ["contacto", "escribir", "idea", "ayuda", "colaboración"]
+    },
+    {
+      "id": "contacto",
+      "language": "en",
+      "question": "How do I contact you?",
+      "answer": "Write to us! If I like your idea, we'll do it. If you don't have an idea, I'll help you too.",
+      "keywords": ["contact", "write", "idea", "help", "collaboration"]
+    },
+    {
+      "id": "ubicacion",
+      "language": "es",
+      "question": "¿Dónde estáis ubicados?",
+      "answer": "Estamos en nuestro taller. Avísame si quieres venir y te digo cómo llegar.",
+      "keywords": ["ubicación", "taller", "avisar", "venir", "llegar"]
+    },
+    {
+      "id": "ubicacion",
+      "language": "en",
+      "question": "Where are you located?",
+      "answer": "We're at our workshop. Let me know if you want to come and I'll tell you how to get here.",
+      "keywords": ["location", "workshop", "notify", "come", "arrive"]
+    },
+    {
+      "id": "saludo_hola",
+      "language": "es",
+      "question": "Hola",
+      "answer": "Hola! Soy Pipo. ¿Tienes alguna idea loca para un mueble o solo vienes a curiosear?",
+      "keywords": ["hola", "saludo", "bienvenida"]
+    },
+    {
+      "id": "saludo_hola",
+      "language": "en",
+      "question": "Hello",
+      "answer": "Hello! I'm Pipo. Do you have some crazy idea for furniture or are you just browsing around?",
+      "keywords": ["hello", "greeting", "welcome"]
+    },
+    {
+      "id": "saludo_que_tal",
+      "language": "es",
+      "question": "¿Qué tal?",
+      "answer": "Todo bien! Aquí en el taller, transformando cosas descartadas en algo especial. ¿Y tú qué tal?",
+      "keywords": ["qué tal", "cómo estás", "conversación"]
+    },
+    {
+      "id": "saludo_que_tal",
+      "language": "en",
+      "question": "How's it going?",
+      "answer": "All good! Here in the workshop, transforming discarded things into something special. How about you?",
+      "keywords": ["how's it going", "how are you", "conversation"]
+    },
+    {
+      "id": "despedida_adios",
+      "language": "es",
+      "question": "Adiós",
+      "answer": "Adiós! Si se te ocurre alguna idea loca, ya sabes dónde encontrarme. Que tengas buen día!",
+      "keywords": ["adiós", "despedida", "hasta luego"]
+    },
+    {
+      "id": "despedida_adios",
+      "language": "en",
+      "question": "Goodbye",
+      "answer": "Goodbye! If you come up with any crazy ideas, you know where to find me. Have a good day!",
+      "keywords": ["goodbye", "farewell", "see you later"]
+    },
+    {
+      "id": "despedida_gracias",
+      "language": "es",
+      "question": "Gracias",
+      "answer": "De nada! Ha sido un placer hablar contigo. Vuelve cuando quieras con ideas o sin ellas!",
+      "keywords": ["gracias", "de nada", "placer"]
+    },
+    {
+      "id": "despedida_gracias",
+      "language": "en",
+      "question": "Thank you",
+      "answer": "You're welcome! It's been a pleasure talking to you. Come back anytime with ideas or without them!",
+      "keywords": ["thank you", "you're welcome", "pleasure"]
+    },
+    {
+      "id": "consulta_generica",
+      "language": "es",
+      "question": "No entiendo o consulta poco clara",
+      "answer": "Eh! No he pillado qué me quieres decir. Reformula la pregunta y vemos qué pasa.",
+      "keywords": ["no entiendo", "ayuda", "información", "reformular", "consulta"]
+    },
+    {
+      "id": "consulta_generica",
+      "language": "en",
+      "question": "I don't understand or unclear query",
+      "answer": "Hey! I didn't catch what you want to tell me. Rephrase the question and let's see what happens.",
+      "keywords": ["don't understand", "help", "information", "rephrase", "query"]
+    }
+  ],
+  "metadata": {
+    "version": "3.2",
+    "last_updated": "2025-07-14",
+    "total_questions": 56,
+    "business_name": "Pipo Studio - Taller de Madera Artesanal",
+    "languages": ["es", "en"]
+  }
+}

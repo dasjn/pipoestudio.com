@@ -291,6 +291,55 @@ Las secciones dentro del mueble usan Tailwind v4 con tokens del `@theme` en `glo
 
 ---
 
+## Chatbot — Worker de Cloudflare
+
+- **Ubicación en repo:** `worker/` (carpeta hermana de `frontend/` y `studio/`)
+- **URL desplegada:** `https://pipo-chat.pipoestudioweb.workers.dev`
+- **Runtime:** Cloudflare Workers + Workers AI binding (`env.AI`)
+- **Modelo:** `@cf/meta/llama-3.1-8b-instruct`
+- **Free tier:** 10,000 neurons/día — suficiente para un portfolio
+
+### Estructura del worker
+
+```
+worker/
+  src/
+    index.ts            ← Handler principal
+    knowledge_base.json ← FAQs bilingüe (es/en) con 28 topics
+  wrangler.toml
+  tsconfig.json
+  package.json
+```
+
+### Cómo funciona
+
+1. Recibe `POST` con `{ messages: Message[], language: "es"|"en" }`
+2. Filtra las FAQs del JSON por idioma y las inyecta como system prompt
+3. Llama a Workers AI con streaming habilitado
+4. Devuelve `text/event-stream` — cada chunk es `data: {"response":"..."}`
+
+### CORS
+
+- Permite `http://localhost:3000` y `https://pipoestudio.com` / `https://www.pipoestudio.com`
+- Responde a `OPTIONS` con 204 para preflight
+
+### Commands
+
+```bash
+cd worker
+npm run dev      # wrangler dev --port 8787 (usa remote AI)
+npm run deploy   # wrangler deploy
+```
+
+### knowledge_base.json
+
+- **Formato:** `{ faq: [{ id, language, question, answer, keywords }], metadata }`
+- **Versión original:** `pipo_knowledge_base_old.json` (Downloads)
+- Cubre: materiales, tiempos, precios, envíos, garantía, proceso, pagos, cursos, reparaciones, etc.
+- **Para actualizar el sistema prompt:** editar directamente el JSON — no hay base vectorial
+
+---
+
 ## TODO — al final del proyecto
 
 - **SEO de contenido de secciones:** El texto de manifiesto, trabajos, etc. solo existe client-side (dentro del canvas R3F). Para indexación, añadir en `[locale]/page.tsx` (server component) un bloque hidden con el contenido plano de cada sección. Usar `sr-only` de Tailwind (no `display:none`) para que Google lo indexe sin penalización. El portable text de Sanity habría que serializar a string plano. No afecta al responsive ni al canvas.
