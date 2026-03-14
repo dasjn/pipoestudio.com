@@ -41,15 +41,15 @@ export const useWheelNavigation = () => {
       }
     };
 
-    // Check if touch is in UI areas (header or mobile menu)
+    // Check if touch is in UI areas (header, mobile menu, or chat)
     const isInUIArea = (element: HTMLElement): boolean => {
       const header = document.querySelector('header');
       const mobileMenu = document.querySelector('[class*="fixed"][class*="inset-0"][class*="z-50"]');
-      
-      return (header && header.contains(element)) || 
+
+      return (header && header.contains(element)) ||
              (mobileMenu && mobileMenu.contains(element)) ||
              element.closest('header') !== null ||
-             element.closest('[class*="fixed"][class*="z-50"]') !== null;
+             element.closest('[data-no-nav-scroll]') !== null;
     };
 
     // Mobile touch navigation

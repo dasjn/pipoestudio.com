@@ -1,4 +1,4 @@
-import { type PortableTextBlock } from "next-sanity";
+import { type PortableTextBlock } from "@portabletext/types";
 
 import PortableText from "@/app/components/PortableText";
 import { InfoSection } from "@/sanity.types";

@@ -1,6 +1,6 @@
 "use client";
 
-import { SanityDocument } from "next-sanity";
+import { SanityDocument } from "@sanity/client";
 import { useOptimistic } from "next-sanity/hooks";
 import Link from "next/link";
 

@@ -365,6 +365,60 @@ const newQueue = computeIdlePath(baseIdle, exitIdle); // REEMPLAZA la cola
 
 ---
 
+## 19. PipoChat — touch/click no funcionaba en mobile (framer-motion onTap)
+
+**Problema:** En mobile/tablet (Chrome DevTools device simulation), clickar botones dentro del chat no hacía nada aunque la animación `whileTap` sí se veía.
+
+**Causa:** `onClick` en `motion.button` no se dispara correctamente en touch porque framer-motion maneja pointer events internamente. Además, `useWheelNavigation` llamaba `e.preventDefault()` en `touchend` para elementos que no reconocía como "UI area", cancelando el click sintético del browser.
+
+**Fix:**
+1. Cambiar todos los `onClick` de `motion.button` a `onTap` (evento nativo de framer-motion, funciona en touch + mouse)
+2. Añadir atributo `data-no-nav-scroll` al wrapper del chat
+3. En `useWheelNavigation.ts`, `isInUIArea` ahora incluye: `element.closest('[data-no-nav-scroll]') !== null`
+
+---
+
+## 20. PipoChat — scroll dentro del historial capturado por navegación de página
+
+**Problema:** Al hacer scroll dentro del historial de mensajes, el gesto era capturado por el handler de navegación de la página (swipe entre secciones).
+
+**Causa 1:** El evento `wheel`/`touchmove` burbujeaba hasta el listener en `window` de `useWheelNavigation`.
+
+**Fix 1:** `onWheel={(e) => e.stopPropagation()}` y `onTouchMove={(e) => e.stopPropagation()}` en el container del historial.
+
+**Causa 2 (scroll chaining):** Cuando el container del historial llega al límite de scroll (top/bottom), el browser propaga el scroll al padre aunque hayamos detenido el evento.
+
+**Fix 2:** Añadir al container del historial:
+```css
+overscrollBehavior: "contain"  /* no propaga al padre al llegar al límite */
+touchAction: "pan-y"           /* declara que este elemento maneja scroll vertical */
+```
+
+---
+
+## 21. PipoChat — input de texto no recibía foco en mobile
+
+**Problema:** Al tocar el campo de texto en mobile, no se activaba el foco ni aparecía el teclado.
+
+**Causa:** `useWheelNavigation` llama `e.preventDefault()` en `touchend` para cualquier elemento fuera de las "UI areas" conocidas. `preventDefault()` en `touchend` cancela el evento `click` sintético que el browser genera después de un tap, y es ese `click` el que da foco a un `<input>`.
+
+**Fix:** El atributo `data-no-nav-scroll` en el wrapper del chat (fix #19) es suficiente — `isInUIArea` retorna `true` para cualquier elemento dentro del chat, incluyendo el input, por lo que `handleTouchEnd` no llama `preventDefault()`.
+
+---
+
+## 22. Markdown en respuestas del chatbot
+
+**Problema:** El modelo LLM devolvía markdown (`**bold**`, `* lista`) que se mostraba como texto plano con asteriscos.
+
+**Fix frontend:** Parser inline en `PipoChat.tsx`:
+- `renderMarkdown()`: divide por párrafos (`\n\n`), detecta listas `* /- `, listas numeradas `1.`, headings `#`
+- `inlineMarkdown()`: convierte `**bold**` → `<strong>`, `*italic*` → `<em>`
+- `listStyleType: "disc"/"decimal"` explícito en `<ul>`/`<ol>` para overridear el reset de Tailwind preflight
+
+**Fix worker:** Se eliminó la instrucción de "no usar markdown" del system prompt para que el modelo use markdown libremente y el frontend lo renderice enriquecido.
+
+---
+
 ## 7. Acceso a Sanity Studio
 
 **Situación:** El proyecto existe en `manage.sanity.io` con project ID `kzek939n`, dataset activo con 21 documentos. Pero `SANITY_STUDIO_STUDIO_HOST` está vacío → el studio no está deployado online.

@@ -11,6 +11,7 @@ interface Message {
 
 const ALLOWED_ORIGINS = [
   "http://localhost:3000",
+  "http://localhost:3001",
   "https://pipoestudio.com",
   "https://www.pipoestudio.com",
 ];
@@ -32,6 +33,8 @@ IMPORTANT RULES:
 - Keep answers short and with your own voice. No corporate text.
 - If you don't know something specific (like exact address), say you don't have it at hand and suggest they contact you.
 - You can respond in the language the user writes in.
+- Always finish your answer completely. Never cut off mid-sentence. If you need to shorten, do it by saying less, not by stopping abruptly.
+- Never include technical terms, code words, programming jargon, or any word that doesn't belong in a natural spoken conversation.
 
 KNOWLEDGE BASE:
 ${faqEntries}`;
@@ -45,6 +48,8 @@ REGLAS IMPORTANTES:
 - Respuestas cortas y con tu propia voz. Sin texto corporativo.
 - Si no sabes algo concreto (como la dirección exacta), di que no lo tienes a mano y sugiere que te contacten.
 - Puedes responder en el idioma en que te escriba el usuario.
+- Termina siempre la respuesta completamente. Nunca te cortes a mitad de frase. Si necesitas acortar, di menos cosas, pero siempre acaba bien.
+- Nunca incluyas términos técnicos, palabras en código, jerga de programación ni ninguna palabra que no pertenezca a una conversación natural hablada.
 
 BASE DE CONOCIMIENTO:
 ${faqEntries}`;
@@ -93,7 +98,7 @@ export default {
     const response = await env.AI.run("@cf/meta/llama-3.1-8b-instruct", {
       messages: [{ role: "system", content: systemPrompt }, ...messages],
       stream: true,
-      max_tokens: 300,
+      max_tokens: 500,
     } as Parameters<typeof env.AI.run>[1]);
 
     return new Response(response as ReadableStream, {

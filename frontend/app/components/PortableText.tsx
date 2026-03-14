@@ -8,11 +8,8 @@
  *
  */
 
-import {
-  PortableText,
-  type PortableTextComponents,
-  type PortableTextBlock,
-} from "next-sanity";
+import { PortableText, type PortableTextComponents } from "next-sanity";
+import { type PortableTextBlock } from "@portabletext/types";
 
 import ResolvedLink from "@/app/components/ResolvedLink";
 

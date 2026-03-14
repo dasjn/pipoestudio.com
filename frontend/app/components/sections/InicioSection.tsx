@@ -34,7 +34,7 @@ export default function InicioSection({ data }: InicioSectionProps) {
   return (
     <section
       id="inicio"
-      className="min-h-screen bg-transparent flex items-start justify-center px-4 sm:px-6 lg:px-8 pt-16 pointer-events-none"
+      className="relative min-h-screen bg-transparent flex items-start justify-center px-4 sm:px-6 lg:px-8 pt-16 pointer-events-none"
     >
       <AnimatePresence>
         {currentSection === "inicio" && (
@@ -46,8 +46,10 @@ export default function InicioSection({ data }: InicioSectionProps) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35, ease: "easeInOut" }}
           >
-            <h1 className="font-bold text-green-pipo text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl flex flex-col items-center uppercase">
-              <span className="block mb-10">{content.title}</span>
+            <h1 className="font-bold text-green-pipo text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl flex flex-col items-center uppercase">
+              <span className="block mt-10 mb-10 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl capitalize">
+                {content.title}
+              </span>
               <span className="block">{content.subtitle1}</span>
               <span className="block">{content.subtitle2}</span>
               <span className="flex items-center gap-2 sm:gap-4">

@@ -9,6 +9,7 @@ import { sanityFetch } from "@/sanity/lib/live";
 import { i18n, type Locale } from "@/i18n.config";
 import { InicioSection, PlaygroundSection } from "../components/sections";
 import ThreeDCanvas from "../components/ThreeDCanvas";
+import PipoChat from "../components/PipoChat";
 import type { SectionsData } from "../components/Shelves";
 
 function findSectionData(sections: any[], type: string) {
@@ -58,6 +59,7 @@ export default async function Page({ params }: Props) {
       <InicioSection data={sectionsData.inicio} />
       <PlaygroundSection />
       <ThreeDCanvas sectionsData={sectionsData} />
+      <PipoChat />
     </>
   );
 }

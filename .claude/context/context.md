@@ -340,6 +340,44 @@ npm run deploy   # wrangler deploy
 
 ---
 
+## Chatbot PipoChat — estado actual del componente
+
+**Archivo:** `frontend/app/components/PipoChat.tsx` (cliente) + `worker/src/index.ts` (Cloudflare Worker)
+
+### Lo que está implementado y funcionando
+
+- **Botón flotante** (verde) en sección `inicio`, posición `fixed` bottom-right (desktop) / bottom-center (mobile)
+- **Panel expandible** con historial de conversación, chips de acceso rápido, input de texto y disclaimer
+- **Streaming SSE** del worker → se va mostrando el texto mientras el modelo responde
+- **Markdown parser** inline: `**bold**`, `*italic*`, listas `*`/`-`, listas numeradas `1.`, headings `#`/`##`/`###`
+- **Scroll aislado** del historial: `overscrollBehavior: contain` + `touchAction: pan-y` + `onWheel stopPropagation`
+- **Responsive:** `useIsMobile()` (useSyncExternalStore, SSR-safe) — breakpoint 639px
+- **Backdrop mobile** semitransparente cuando el panel está abierto
+- **Bloqueo de touch navigation** en el chat: atributo `data-no-nav-scroll` en el wrapper + `useWheelNavigation.ts` lo excluye de `preventDefault`
+- **Worker config:** `max_tokens: 500`, instrucción de no cortarse a mitad de frase, sin restricción de markdown
+- **PipoChat montado en `[locale]/page.tsx`** directamente (no en InicioSection)
+
+### Pendiente / bugs conocidos
+
+- **El chat no se abre mientras Shelves está cargando** — se puede clickar el botón y el panel abre solo cuando la carga 3D termina. Causa sin determinar: se descartaron `visible`/`currentSection`, `AnimatePresence mode="wait"`, bundling, estado montado/desmontado. Posibles causas restantes: hilo JS bloqueado por Three.js impidiendo que React procese el re-render, o algo relacionado con la hidratación del componente.
+- **Cerrar al tocar fuera (mobile):** el backdrop cierra con `onClick`, pero en algunos devices puede no funcionar por conflicto entre el `pointerdown` del handler de navegación y el `onClick`. Hay un `useEffect` con `document.addEventListener("pointerdown")` que tampoco funcionó. Pendiente de revisar.
+
+### Worker prompts actuales (ambos idiomas)
+
+```
+- Responde solo sobre Pipo Studio...
+- Termina siempre la respuesta completamente. Nunca te cortes...
+- Nunca incluyas términos técnicos, palabras en código, jerga de programación...
+```
+
+### Proteger la API del worker (pendiente)
+
+- **Paso 1 — Proxy Next.js:** crear `/api/chat` route que actúe de proxy; añade `X-Secret-Token` antes de reenviar al worker
+- **Paso 2 — Worker valida el token:** `wrangler secret put SECRET_TOKEN`
+- **Paso 3 — Rate limiting:** Workers → pipo-chat → Settings → Rate limiting
+
+---
+
 ## TODO — al final del proyecto
 
 - **SEO de contenido de secciones:** El texto de manifiesto, trabajos, etc. solo existe client-side (dentro del canvas R3F). Para indexación, añadir en `[locale]/page.tsx` (server component) un bloque hidden con el contenido plano de cada sección. Usar `sr-only` de Tailwind (no `display:none`) para que Google lo indexe sin penalización. El portable text de Sanity habría que serializar a string plano. No afecta al responsive ni al canvas.
