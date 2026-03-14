@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import Button from "../Button";
 import { enviarContacto, type ContactoState } from "../../actions/contacto";
 import { useNavigationStore } from "../../store/navigationStore";
+import PipoBubble from "../PipoBubble";
 
 // (REF_W - formWidth) / 2 = (600 - 250) / 2
 const FORM_CENTER_OFFSET = 175;
@@ -82,7 +83,7 @@ export default function AlgunaIdeaSection({
     const delays: Record<string, number> = {
       "Scroll 01-D": 6000,
       "Idle 02": 80,
-      "Scroll 02- U": 2000,
+      "Scroll 02- U": 1000,
     };
     const delay = delays[activeAnimation];
     if (delay !== undefined) {
@@ -133,18 +134,22 @@ export default function AlgunaIdeaSection({
   return (
     <section
       id="algunaIdea"
-      className="w-full h-full flex flex-col items-center justify-center px-2 gap-4 mt-6"
+      className="relative w-full h-full flex flex-col items-center justify-center px-2 gap-4 mt-6"
     >
       {title && (
         <p className="font-sans font-bold text-4xl leading-none tracking-normal text-center text-green-pipo">
           {title}
         </p>
       )}
+      <PipoBubble
+        text={"¿Tienes fotos? ¿Un plano?\n¿Un dibujo cutre? ¡Pásamelo!"}
+        style={{ right: "18%", top: "44%" }}
+      />
+
       <motion.div
-        initial={{ x: FORM_CENTER_OFFSET }}
-        animate={{ x: slid ? 0 : FORM_CENTER_OFFSET }}
+        initial={{ x: 0 }}
+        animate={{ x: slid ? -FORM_CENTER_OFFSET : 0 }}
         transition={{ duration: 0.55, ease: [0.25, 0.1, 0.25, 1] }}
-        style={{ alignSelf: "flex-start" }}
       >
         <form
           ref={formRef}

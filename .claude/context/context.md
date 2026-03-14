@@ -139,6 +139,14 @@ Al SALIR de una sección en dirección down/up, el idle destino es:
 - `position: fixed; top: 50%; left: 50%` — siempre centrado en viewport, independiente de la cámara
 - `shouldShow = currentSection === id && !isTransitioning` — aparece cuando la cámara está cerca del destino (threshold: 0.3 unidades)
 - Usa `AnimatePresence` + Framer Motion para fade in/out (0.35s, easeInOut)
+- `SlotLayout` expone `visibleWidth` y `vw` además de `visibleHeight` y `vh`
+
+**Override por slot:** cada entrada de `sectionSlots` acepta `planeH?` y `planeW?`:
+- `planeH` → amplía el canvas verticalmente (secciones con más contenido)
+- `planeW` → amplía el canvas horizontalmente (secciones con `PipoBubble` fuera del slot)
+- `refW = REF_W * (effectivePlaneW / PLANE_W)` y `refH = refW * (effectivePlaneH / effectivePlaneW)` escalan proporcionalmente
+- La escala CSS (`scale = slotWidthPx / refW`) permanece constante independientemente del override
+- Slots con `planeW: 6.5`: `algunaIdea`, `contacto`
 
 ⚠️ **Calibración de PLANE_W:** Si el contenido no llega a los bordes del slot → subir PLANE_W. Si se sale → bajarlo. El valor se define en `SectionOverlays.tsx`.
 
@@ -228,6 +236,20 @@ Las secciones dentro del mueble usan Tailwind v4 con tokens del `@theme` en `glo
 
 ---
 
+## PipoBubble — bocadillo de diálogo de Pipo
+
+- **Archivo:** `frontend/app/components/PipoBubble.tsx`
+- **Propósito:** cuadro de texto que aparece como bocadillo de diálogo de Pipo, posicionado absolutamente dentro de la sección
+- **Visibilidad:** `!isAnimationSequenceActive` → solo visible cuando Pipo está en idle (no durante transiciones de scroll)
+- **La sección debe tener `relative`** en su className para que el `position: absolute` del bubble funcione
+- **Props:** `text` (soporta `\n` vía `whiteSpace: pre-line`), `style` (posicionamiento: `right`, `top`, etc.), `className`
+- **Estilo:** fondo `rgba(228,229,224,0.92)`, `borderRadius: 6`, `maxWidth: 200`, texto verde Pipo, `font-medium`
+- **Animación:** fade + scale sutil (0.3s easeInOut) con `AnimatePresence`
+- **Secciones activas:** `algunaIdea` (`right: "18%", top: "44%"`), `contacto` (`right: "-10%", top: "30%"`)
+- Requiere `planeW` override en SectionOverlays para que el bubble no quede recortado (actualmente `6.5` en ambas secciones)
+
+---
+
 ## ContactoSection — detalles de implementación
 
 - **Campos Sanity:** `title` (i18n string), `instagramLabel`/`instagramUrl`, `youtubeLabel`/`youtubeUrl`, `formularioLabel`/`formularioUrl`, `whatsappLabel`/`whatsappNumber` (string sin `+`, ej: `34612345678`), `emailLabel`/`email`, `footerText` (i18n text multiline)
@@ -244,7 +266,7 @@ Las secciones dentro del mueble usan Tailwind v4 con tokens del `@theme` en `glo
 
 - **Formulario:** 5 campos (IDEA textarea, FOTOS file, NOMBRE, EMAIL, TELÉFONO) — todos required
 - **Ancho del form:** 250px (dentro de REF_W=600px) → `FORM_CENTER_OFFSET = 175px`
-- **Animación slide:** form arranca centrado (`x:175`), desliza a `x:0` cuando `activeAnimation` es `"Scroll 01-D"`, `"Idle 02"` o `"Scroll 02- U"` mientras `currentSection === "algunaIdea"`
+- **Animación slide:** form arranca centrado (`x:0`, centrado por `items-center`), desliza a `x:-175` (izquierda del slot) cuando `activeAnimation` es `"Scroll 01-D"`, `"Idle 02"` o `"Scroll 02- U"` mientras `currentSection === "algunaIdea"`. ⚠️ `alignSelf: flex-start` fue eliminado — el offset negativo funciona para cualquier `refW`
 - **Delays por animación:** configurables en `delays` object dentro del `useEffect` de slide
 - **planeH override en SectionOverlays:** `3.1` (mayor que el estándar 1.889 para dar cabida al form)
 - **Email receptor:** se lee de `settings.contactEmail` en Sanity → fallback a `CONTACTO_TO_EMAIL` env var

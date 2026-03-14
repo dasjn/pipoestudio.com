@@ -55,7 +55,9 @@ interface SlotLayout {
   slotWidthPx: number;
   slotHeightPx: number;
   scale: number;
+  visibleWidth: number;
   visibleHeight: number;
+  vw: number;
   vh: number;
 }
 
@@ -72,7 +74,7 @@ function useSlotLayout(): SlotLayout | null {
     const slotWidthPx = (PLANE_W / visibleWidth) * vw;
     const slotHeightPx = (PLANE_H / visibleHeight) * vh;
     const scale = slotWidthPx / REF_W;
-    setLayout({ slotWidthPx, slotHeightPx, scale, visibleHeight, vh });
+    setLayout({ slotWidthPx, slotHeightPx, scale, visibleWidth, visibleHeight, vw, vh });
   }, []);
 
   useEffect(() => {
@@ -100,6 +102,7 @@ export default function SectionOverlays({
     id: SectionId;
     content: React.ReactNode;
     planeH?: number;
+    planeW?: number;
   }[] = [
     {
       id: "manifiesto",
@@ -113,6 +116,7 @@ export default function SectionOverlays({
       id: "algunaIdea",
       content: <AlgunaIdeaSection data={sectionsData?.algunaIdea} />,
       planeH: 3.1,
+      planeW: 6.5,
     },
     {
       id: "cursos",
@@ -138,6 +142,7 @@ export default function SectionOverlays({
       id: "contacto",
       content: <ContactoSection data={sectionsData?.contacto} />,
       planeH: 3.2,
+      planeW: 6.5,
     },
     {
       id: "footer",
@@ -147,14 +152,19 @@ export default function SectionOverlays({
 
   return (
     <>
-      {sectionSlots.map(({ id, content, planeH: slotPlaneH }) => {
+      {sectionSlots.map(({ id, content, planeH: slotPlaneH, planeW: slotPlaneW }) => {
         const shouldShow = currentSection === id && !isTransitioning;
 
-        // Per-slot height override (for sections taller than the default slot)
+        // Per-slot overrides
         const effectivePlaneH = slotPlaneH ?? PLANE_H;
-        const slotHeightPx =
-          (effectivePlaneH / layout.visibleHeight) * layout.vh;
-        const refH = Math.round(REF_W * (effectivePlaneH / PLANE_W));
+        const effectivePlaneW = slotPlaneW ?? PLANE_W;
+
+        const slotWidthPx = (effectivePlaneW / layout.visibleWidth) * layout.vw;
+        const slotHeightPx = (effectivePlaneH / layout.visibleHeight) * layout.vh;
+
+        // refW scales with planeW so that layout.scale stays constant
+        const refW = Math.round(REF_W * (effectivePlaneW / PLANE_W));
+        const refH = Math.round(refW * (effectivePlaneH / effectivePlaneW));
 
         // Offset Y: el slot mesh está ligeramente por encima de la Y de cámara.
         const slotY = SLOT_Y[id] ?? 0;
@@ -170,9 +180,9 @@ export default function SectionOverlays({
               position: "fixed",
               top: "50%",
               left: "50%",
-              width: layout.slotWidthPx,
+              width: slotWidthPx,
               height: slotHeightPx,
-              marginLeft: -layout.slotWidthPx / 2,
+              marginLeft: -slotWidthPx / 2,
               marginTop: -(slotHeightPx / 2) - yOffsetPx,
               overflow: "hidden",
               pointerEvents: shouldShow ? "auto" : "none",
@@ -193,7 +203,7 @@ export default function SectionOverlays({
                       position: "absolute",
                       top: "50%",
                       left: "50%",
-                      width: REF_W,
+                      width: refW,
                       height: refH,
                       transform: `translate(-50%, -50%) scale(${layout.scale})`,
                       transformOrigin: "center",

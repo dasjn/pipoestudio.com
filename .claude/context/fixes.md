@@ -341,6 +341,18 @@ const newQueue = computeIdlePath(baseIdle, exitIdle); // REEMPLAZA la cola
 
 ---
 
+## 18. AlgunaIdeaSection — slide descentrado al ampliar planeW
+
+**Problema:** Al añadir `planeW: 6.5` en SectionOverlays, el `refW` del canvas pasa de 600 a ~848px. El `motion.div` del form tenía `alignSelf: "flex-start"` + `x: 175` para simular centrado. Con el canvas más ancho, `x: 175` desde el borde izquierdo ya no coincide con el centro del slot.
+
+**Fix:** Eliminar `alignSelf: "flex-start"`. Dejar que `items-center` centre el form. Invertir la dirección del slide:
+- No slid: `x: 0` → centrado por flex (= centro del slot para cualquier refW) ✓
+- Slid: `x: -FORM_CENTER_OFFSET` (`-175`) → 175px a la izquierda del centro = borde izquierdo del slot ✓
+
+**Por qué funciona para cualquier refW:** El slot siempre ocupa los 600px centrales del canvas. El centro del canvas = centro del slot. Mover -175px desde el centro siempre coloca el form (250px) en el borde izquierdo del slot (300 - 125 - 175 = 0 relativo al slot).
+
+---
+
 ## 17. ContactoSection — botones mismo ancho con width: max-content
 
 **Problema:** Los 5 botones del panel de contacto tenían anchos distintos (cada uno del tamaño de su texto) o se extendían al 100% del slot.

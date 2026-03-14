@@ -1,4 +1,5 @@
 import Button from "../Button";
+import PipoBubble from "../PipoBubble";
 
 interface ContactoSectionData {
   title?: string;
@@ -47,8 +48,13 @@ export default function ContactoSection({
   return (
     <section
       id="contacto"
-      className="font-sans w-full h-full flex flex-col items-center justify-center px-2 mt-6"
+      className="relative font-sans w-full h-full flex flex-col items-center justify-center px-2 mt-6"
     >
+      <PipoBubble
+        text={"Si tienes una idea\no sólo quieres saludar,\n¡escríbeme!"}
+        style={{ right: "1%", top: "40%" }}
+      />
+
       {/* Título */}
       <p
         className="font-bold text-green-pipo uppercase leading-none text-center"
