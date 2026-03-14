@@ -45,6 +45,12 @@ export const homeQuery = defineQuery(`
         youtubeUrl,
         "instagramVideo": instagramVideo { "url": asset->url },
         instagramUrl,
+        "presencialLabel": coalesce(presencialLabel[_key == $language][0].value, presencialLabel[_key == "es"][0].value, presencialLabel[0].value),
+        "presencialTitle": coalesce(presencialTitle[_key == $language][0].value, presencialTitle[_key == "es"][0].value, presencialTitle[0].value),
+        "presencialHighlight": coalesce(presencialHighlight[_key == $language][0].value, presencialHighlight[_key == "es"][0].value, presencialHighlight[0].value),
+        "presencialInfo": coalesce(presencialInfo[_key == $language][0].value, presencialInfo[_key == "es"][0].value, presencialInfo[0].value),
+        "presencialButtonText": coalesce(presencialButtonText[_key == $language][0].value, presencialButtonText[_key == "es"][0].value, presencialButtonText[0].value),
+        presencialUrl,
       },
       _type == "tiendaSection" => {
         "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),

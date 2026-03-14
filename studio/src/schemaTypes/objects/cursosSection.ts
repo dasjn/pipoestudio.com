@@ -49,6 +49,36 @@ export const cursosSection = defineType({
       title: 'Link Instagram (perfil o reel)',
       type: 'url',
     }),
+    defineField({
+      name: 'presencialLabel',
+      title: 'Etiqueta curso presencial (ej: "EN PERSONA")',
+      type: 'internationalizedArrayString',
+    }),
+    defineField({
+      name: 'presencialTitle',
+      title: 'Título del curso (ej: "PRÓXIMO CURSO: 13→15 DE NOVIEMBRE DE 2025")',
+      type: 'internationalizedArrayString',
+    }),
+    defineField({
+      name: 'presencialHighlight',
+      title: 'Texto destacado / precio (negrita, ej: "150€/persona.")',
+      type: 'internationalizedArrayString',
+    }),
+    defineField({
+      name: 'presencialInfo',
+      title: 'Descripción del curso (texto regular)',
+      type: 'internationalizedArrayText',
+    }),
+    defineField({
+      name: 'presencialButtonText',
+      title: 'Texto del botón (ej: "Me apunto!")',
+      type: 'internationalizedArrayString',
+    }),
+    defineField({
+      name: 'presencialUrl',
+      title: 'URL de inscripción',
+      type: 'url',
+    }),
   ],
   preview: {
     select: {

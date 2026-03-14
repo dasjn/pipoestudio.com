@@ -197,10 +197,15 @@ Las secciones dentro del mueble usan Tailwind v4 con tokens del `@theme` en `glo
 
 ## CursosSection — detalles de implementación
 
-- **Campos Sanity:** `title` (i18n string), `youtubeLabel` / `instagramLabel` (i18n string), `youtubeVideo` / `instagramVideo` (file, `accept: video/*`), `youtubeUrl` / `instagramUrl` (url)
-- **Layout:** título grande verde + dos tarjetas de vídeo 9:16 lado a lado
-- **Vídeos:** `VIDEO_W=160px`, `VIDEO_H=Math.round(160*16/9)=284px`, `autoPlay loop muted playsInline`, `objectFit: cover`
-- **Links:** si hay URL configurada, la tarjeta entera se envuelve en `<a target="_blank">`
+- **Campos Sanity:** `title` (i18n string), `youtubeLabel` / `instagramLabel` / `presencialLabel` (i18n string), `youtubeVideo` / `instagramVideo` (file, `accept: video/*`), `youtubeUrl` / `instagramUrl` / `presencialUrl` (url), `presencialTitle` / `presencialHighlight` / `presencialButtonText` (i18n string), `presencialInfo` (i18n text)
+- **Layout:** título grande verde + tres tarjetas lado a lado: YouTube | Instagram | En Persona
+- **VideoCard:** `VIDEO_W=160px`, `VIDEO_H=Math.round(160*16/9)=284px`, vídeo `autoPlay loop muted playsInline objectFit:cover`, envuelta en `<a target="_blank">` si hay URL
+- **PresencialCard:** `PRESENCIAL_W=200px`, misma `VIDEO_H`, fondo `#E4E5E0`
+  - Header verde igual que VideoCard
+  - Layout `justifyContent: space-between`: título arriba (fontSize 24, lineHeight 1.05) + grupo {descripción + botón} abajo
+  - Descripción: `presencialHighlight` en `<strong>` + `presencialInfo` en regular, fontSize 12
+  - Botón: `Button as="link" size="sm" className="w-full normal-case"` — `normal-case` overridea el `uppercase` del Button base
+  - Defaults hardcodeados para que se vea sin datos de Sanity
 - **planeH override en SectionOverlays:** `3.5`
 
 ---
