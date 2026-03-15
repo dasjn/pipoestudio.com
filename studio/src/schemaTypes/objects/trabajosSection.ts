@@ -31,7 +31,40 @@ export const trabajosSection = defineType({
       name: 'fotos',
       title: 'Fotos (máx. 4)',
       type: 'array',
-      of: [{type: 'image', options: {hotspot: true}}],
+      of: [
+        {
+          type: 'object',
+          name: 'trabajoFoto',
+          title: 'Foto',
+          fields: [
+            defineField({
+              name: 'image',
+              title: 'Imagen',
+              type: 'image',
+              options: {hotspot: true},
+            }),
+            defineField({
+              name: 'nombre',
+              title: 'Nombre / Título',
+              type: 'internationalizedArrayString',
+            }),
+            defineField({
+              name: 'descripcion',
+              title: 'Descripción',
+              type: 'internationalizedArrayString',
+            }),
+          ],
+          preview: {
+            select: {title: 'nombre', media: 'image'},
+            prepare({title, media}: {title: any; media: any}) {
+              const displayTitle = Array.isArray(title)
+                ? title[0]?.value || 'Sin título'
+                : title || 'Sin título'
+              return {title: displayTitle, media}
+            },
+          },
+        },
+      ],
       validation: (rule) => rule.max(4),
     }),
     // Campos legacy — ocultos para no mostrar "unknown fields"

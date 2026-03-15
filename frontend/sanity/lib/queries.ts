@@ -29,7 +29,9 @@ export const homeQuery = defineQuery(`
         "buttonText": coalesce(buttonText[_key == $language][0].value, buttonText[_key == "es"][0].value, buttonText[0].value),
         buttonUrl,
         "fotos": fotos[]{
-          "url": asset->url,
+          "url": image.asset->url,
+          "nombre": coalesce(nombre[_key == $language][0].value, nombre[_key == "es"][0].value, nombre[0].value),
+          "descripcion": coalesce(descripcion[_key == $language][0].value, descripcion[_key == "es"][0].value, descripcion[0].value),
         },
       },
       _type == "algunaIdeaSection" => {

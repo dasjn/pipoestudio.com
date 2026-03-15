@@ -74,7 +74,15 @@ function useSlotLayout(): SlotLayout | null {
     const slotWidthPx = (PLANE_W / visibleWidth) * vw;
     const slotHeightPx = (PLANE_H / visibleHeight) * vh;
     const scale = slotWidthPx / REF_W;
-    setLayout({ slotWidthPx, slotHeightPx, scale, visibleWidth, visibleHeight, vw, vh });
+    setLayout({
+      slotWidthPx,
+      slotHeightPx,
+      scale,
+      visibleWidth,
+      visibleHeight,
+      vw,
+      vh,
+    });
   }, []);
 
   useEffect(() => {
@@ -111,6 +119,8 @@ export default function SectionOverlays({
     {
       id: "trabajos",
       content: <TrabajosSection data={sectionsData?.trabajos} />,
+      planeW: 6.5,
+      planeH: 3.5,
     },
     {
       id: "algunaIdea",
@@ -152,71 +162,76 @@ export default function SectionOverlays({
 
   return (
     <>
-      {sectionSlots.map(({ id, content, planeH: slotPlaneH, planeW: slotPlaneW }) => {
-        const shouldShow = currentSection === id && !isTransitioning;
+      {sectionSlots.map(
+        ({ id, content, planeH: slotPlaneH, planeW: slotPlaneW }) => {
+          const shouldShow = currentSection === id && !isTransitioning;
 
-        // Per-slot overrides
-        const effectivePlaneH = slotPlaneH ?? PLANE_H;
-        const effectivePlaneW = slotPlaneW ?? PLANE_W;
+          // Per-slot overrides
+          const effectivePlaneH = slotPlaneH ?? PLANE_H;
+          const effectivePlaneW = slotPlaneW ?? PLANE_W;
 
-        const slotWidthPx = (effectivePlaneW / layout.visibleWidth) * layout.vw;
-        const slotHeightPx = (effectivePlaneH / layout.visibleHeight) * layout.vh;
+          const slotWidthPx =
+            (effectivePlaneW / layout.visibleWidth) * layout.vw;
+          const slotHeightPx =
+            (effectivePlaneH / layout.visibleHeight) * layout.vh;
 
-        // refW scales with planeW so that layout.scale stays constant
-        const refW = Math.round(REF_W * (effectivePlaneW / PLANE_W));
-        const refH = Math.round(refW * (effectivePlaneH / effectivePlaneW));
+          // refW scales with planeW so that layout.scale stays constant
+          const refW = Math.round(REF_W * (effectivePlaneW / PLANE_W));
+          const refH = Math.round(refW * (effectivePlaneH / effectivePlaneW));
 
-        // Offset Y: el slot mesh está ligeramente por encima de la Y de cámara.
-        const slotY = SLOT_Y[id] ?? 0;
-        const cameraY =
-          sections.find((s) => s.id === id)?.cameraPosition.position.y ?? slotY;
-        const yOffsetPx =
-          ((slotY - cameraY) / (layout.visibleHeight / 2)) * (layout.vh / 2);
+          // Offset Y: el slot mesh está ligeramente por encima de la Y de cámara.
+          const slotY = SLOT_Y[id] ?? 0;
+          const cameraY =
+            sections.find((s) => s.id === id)?.cameraPosition.position.y ??
+            slotY;
+          const yOffsetPx =
+            ((slotY - cameraY) / (layout.visibleHeight / 2)) * (layout.vh / 2);
 
-        return (
-          <div
-            key={id}
-            style={{
-              position: "fixed",
-              top: "50%",
-              left: "50%",
-              width: slotWidthPx,
-              height: slotHeightPx,
-              marginLeft: -slotWidthPx / 2,
-              marginTop: -(slotHeightPx / 2) - yOffsetPx,
-              overflow: "hidden",
-              pointerEvents: shouldShow ? "auto" : "none",
-            }}
-          >
-            <AnimatePresence>
-              {shouldShow && (
-                <motion.div
-                  key="section"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.35, ease: "easeInOut" }}
-                  style={{ position: "absolute", inset: 0 }}
-                >
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      width: refW,
-                      height: refH,
-                      transform: `translate(-50%, -50%) scale(${layout.scale})`,
-                      transformOrigin: "center",
-                    }}
+          return (
+            <div
+              key={id}
+              style={{
+                position: "fixed",
+                top: "50%",
+                left: "50%",
+                width: slotWidthPx,
+                height: slotHeightPx,
+                marginLeft: -slotWidthPx / 2,
+                marginTop: -(slotHeightPx / 2) - yOffsetPx,
+                overflow: "hidden",
+                pointerEvents: shouldShow ? "auto" : "none",
+              }}
+            >
+              <AnimatePresence>
+                {shouldShow && (
+                  <motion.div
+                    key="section"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.35, ease: "easeInOut" }}
+                    style={{ position: "absolute", inset: 0 }}
                   >
-                    {content}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        );
-      })}
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        width: refW,
+                        height: refH,
+                        transform: `translate(-50%, -50%) scale(${layout.scale})`,
+                        transformOrigin: "center",
+                      }}
+                    >
+                      {content}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          );
+        },
+      )}
     </>
   );
 }

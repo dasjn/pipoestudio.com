@@ -146,7 +146,8 @@ Al SALIR de una sección en dirección down/up, el idle destino es:
 - `planeW` → amplía el canvas horizontalmente (secciones con `PipoBubble` fuera del slot)
 - `refW = REF_W * (effectivePlaneW / PLANE_W)` y `refH = refW * (effectivePlaneH / effectivePlaneW)` escalan proporcionalmente
 - La escala CSS (`scale = slotWidthPx / refW`) permanece constante independientemente del override
-- Slots con `planeW: 6.5`: `algunaIdea`, `contacto`
+- Slots con `planeW: 6.5`: `algunaIdea`, `contacto`, `trabajos`
+- `trabajos`: `planeW: 6.5`, `planeH: 3.5`
 
 ⚠️ **Calibración de PLANE_W:** Si el contenido no llega a los bordes del slot → subir PLANE_W. Si se sale → bajarlo. El valor se define en `SectionOverlays.tsx`.
 

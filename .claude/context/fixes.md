@@ -97,14 +97,22 @@ const PLANE_W = 4.6;  // calibrado visualmente contra el slot del mueble
 **Schema Sanity (`trabajosSection`):**
 - `title`: `internationalizedArrayString` (interno, para preview)
 - `statement`: `internationalizedArrayText` (texto que aparece en el slot del mueble)
-- `fotos`: array de `image` (máx. 4, hotspot activado)
+- `buttonText`/`buttonUrl`: botón con icono `rotate_right`
+- `fotos`: array de objetos `trabajoFoto` (máx. 4) con `image` (hotspot), `nombre` (i18n string), `descripcion` (i18n string)
+- ⚠️ `dotX`/`dotY` eliminados del schema — posiciones hardcodeadas en `DOT_POSITIONS` en TrabajosSection.tsx
 - Campos legacy `description/maxPosts/backgroundColor`: `hidden: true`
 
 **Query GROQ:**
 ```groq
 _type == "trabajosSection" => {
   "statement": coalesce(statement[_key == $language][0].value, ...),
-  "fotos": fotos[]{ "url": asset->url },
+  "buttonText": coalesce(buttonText[...]),
+  buttonUrl,
+  "fotos": fotos[]{
+    "url": image.asset->url,
+    "nombre": coalesce(nombre[_key == $language][0].value, ...),
+    "descripcion": coalesce(descripcion[_key == $language][0].value, ...),
+  },
 }
 ```
 
@@ -416,6 +424,44 @@ touchAction: "pan-y"           /* declara que este elemento maneja scroll vertic
 - `listStyleType: "disc"/"decimal"` explícito en `<ul>`/`<ol>` para overridear el reset de Tailwind preflight
 
 **Fix worker:** Se eliminó la instrucción de "no usar markdown" del system prompt para que el modelo use markdown libremente y el frontend lo renderice enriquecido.
+
+---
+
+## 23. PipoChat — animación de cierre saltaba a la derecha
+
+**Problema:** Al cerrar el chat, el botón "Haz click aquí" saltaba visualmente hacia la derecha.
+
+**Causa:** El `AnimatePresence` interior (que alterna OpenPanel ↔ ClosedPanel) no tenía `mode="wait"`, por lo que ambos paneles coexistían brevemente en el DOM durante la transición. OpenPanel mide 390px y ClosedPanel 370px (desktop), causando un layout shift en el contenedor.
+
+**Fix:** `<AnimatePresence mode="wait">` en el switch interno — OpenPanel termina su exit animation (0.15s) antes de que monte ClosedPanel.
+
+---
+
+## 24. TrabajosSection — WorkDots con animación pill
+
+**Implementación:** Cada foto en la sección trabajos tiene un dot verde interactivo. Al hacer hover, el fondo blanco crece hacia la derecha revelando nombre y descripción de la foto.
+
+**Estructura del componente `WorkDot`:**
+- `PILL_H = 36`, `GREEN = 12`, `GREEN_MARGIN = (PILL_H - GREEN) / 2 = 12`
+- El contenedor se ancla con `transform: translate(-${PILL_H/2}px, -50%)` — mantiene el centro del círculo verde fijo en `dotX/dotY`
+- `motion.div` anima `width: PILL_H → expandedWidth` (spring, stiffness 380, damping 32)
+- `expandedWidth` se mide con `textRef.current.scrollWidth` en `useEffect` — `scrollWidth` da el ancho real aunque el contenedor esté clippeado por `overflow: hidden`
+- El texto hace fade-in con delay 0.18s para esperar a que el pill se abra
+
+**Posiciones hardcodeadas:**
+```ts
+const DOT_POSITIONS = [
+  { x: 40, y: 60 }, // foto 1
+  { x: 60, y: 70 }, // foto 2
+  { x: 75, y: 80 }, // foto 3
+  { x: 25, y: 90 }, // foto 4
+];
+```
+dotX/dotY eliminados de Sanity para evitar lag de posición en el primer render.
+
+**Mover título/botón sin mover dots:**
+- ❌ `mt-X` en el div del texto → mueve los dots (la section crece y cambia el área de referencia de los absolute)
+- ✅ `style={{ transform: "translateY(Xpx)" }}` en el div del texto → puramente visual, no afecta al flujo ni al tamaño de la section
 
 ---
 
