@@ -465,6 +465,30 @@ dotX/dotY eliminados de Sanity para evitar lag de posición en el primer render.
 
 ---
 
+## 25. postFooter — scroll atascado al subir desde el vídeo
+
+**Problema:** Al navegar hacia atrás desde `postFooter`, el HTML scroll se quedaba en ~100vh (el vídeo seguía visible). Las secciones intermedias (footer, contacto…) no tienen elemento DOM → `getElementById` devuelve `null` → no hay `scrollIntoView` → el scroll HTML no cambia. El usuario veía el vídeo permanentemente aunque el sistema navegase correctamente.
+
+**Causa raíz:** Solo `inicio` y `postFooter` tienen elementos `<section>` reales en la página. Las 8 secciones del mueble son virtuales (solo en el store y el canvas 3D).
+
+**Fix en `navigationStore.ts`** (aplicado en `navigateToSection` y `scrollToSection`):
+```ts
+const element = document.getElementById(sectionId);
+if (element) {
+  element.scrollIntoView({ behavior: "smooth", block: "start" });
+} else if (typeof window !== "undefined" && window.scrollY > 0) {
+  // No hay DOM para esta sección virtual. Si venimos de postFooter,
+  // volver al top suavemente (animación inversa al scroll de entrada).
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+```
+
+**Por qué `behavior: "smooth"` y no `"instant"`:** El scroll suave reproduce el reverso visual del scroll de entrada (el vídeo sube y sale de pantalla). Con `"instant"` el vídeo desaparecía de golpe.
+
+**Por qué no hay conflicto con IntersectionObserver:** `isTransitioning: true` se establece sincrónicamente antes del `scrollTo`. Cuando `inicio` entra en viewport, el observer dispara pero lo bloquea `isTransitioning`. Cuando la cámara llega y `isTransitioning = false`, la intersection de `inicio` ya no ha cambiado → el observer no re-dispara → `currentSection` se mantiene en la sección destino correcta.
+
+---
+
 ## 7. Acceso a Sanity Studio
 
 **Situación:** El proyecto existe en `manage.sanity.io` con project ID `kzek939n`, dataset activo con 21 documentos. Pero `SANITY_STUDIO_STUDIO_HOST` está vacío → el studio no está deployado online.

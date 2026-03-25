@@ -64,7 +64,7 @@ frontend/
 
 ## Modelo 3D
 
-- **Archivo:** `/models/Pipo_Todo_Prueba_v25.glb` (public folder)
+- **Archivo:** `/models/Pipo_Todo_Prueba_v29.glb` (public folder)
 - **Materiales:** Pipo Wood Boton, Pipo Caras, Pipo Wood 01/02, Mueble, MaderaCuadros, Imagen01
 - **Módulos del mueble:** Module01 (arriba), Module02/02001-005 (medio), Module03 (abajo)
 - **Armature:** Armature001 con Bone (en posición 1.496, -3.829, 1.977, scale 0.236)
@@ -146,8 +146,9 @@ Al SALIR de una sección en dirección down/up, el idle destino es:
 - `planeW` → amplía el canvas horizontalmente (secciones con `PipoBubble` fuera del slot)
 - `refW = REF_W * (effectivePlaneW / PLANE_W)` y `refH = refW * (effectivePlaneH / effectivePlaneW)` escalan proporcionalmente
 - La escala CSS (`scale = slotWidthPx / refW`) permanece constante independientemente del override
-- Slots con `planeW: 6.5`: `algunaIdea`, `contacto`, `trabajos`
+- Slots con `planeW: 6.5`: `trabajos`, `algunaIdea`, `cursos`, `contacto`
 - `trabajos`: `planeW: 6.5`, `planeH: 3.5`
+- `cursos`: `planeW: 6.5`, `planeH: 3.5`
 
 ⚠️ **Calibración de PLANE_W:** Si el contenido no llega a los bordes del slot → subir PLANE_W. Si se sale → bajarlo. El valor se define en `SectionOverlays.tsx`.
 
@@ -201,13 +202,13 @@ Las secciones dentro del mueble usan Tailwind v4 con tokens del `@theme` en `glo
 - **Campos Sanity:** `title` (i18n string), `youtubeLabel` / `instagramLabel` / `presencialLabel` (i18n string), `youtubeVideo` / `instagramVideo` (file, `accept: video/*`), `youtubeUrl` / `instagramUrl` / `presencialUrl` (url), `presencialTitle` / `presencialHighlight` / `presencialButtonText` (i18n string), `presencialInfo` (i18n text)
 - **Layout:** título grande verde + tres tarjetas lado a lado: YouTube | Instagram | En Persona
 - **VideoCard:** `VIDEO_W=160px`, `VIDEO_H=Math.round(160*16/9)=284px`, vídeo `autoPlay loop muted playsInline objectFit:cover`, envuelta en `<a target="_blank">` si hay URL
-- **PresencialCard:** `PRESENCIAL_W=200px`, misma `VIDEO_H`, fondo `#E4E5E0`
+- **PresencialCard:** `PRESENCIAL_W=250px`, misma `VIDEO_H`, fondo `#E4E5E0`
   - Header verde igual que VideoCard
   - Layout `justifyContent: space-between`: título arriba (fontSize 24, lineHeight 1.05) + grupo {descripción + botón} abajo
   - Descripción: `presencialHighlight` en `<strong>` + `presencialInfo` en regular, fontSize 12
   - Botón: `Button as="link" size="sm" className="w-full normal-case"` — `normal-case` overridea el `uppercase` del Button base
   - Defaults hardcodeados para que se vea sin datos de Sanity
-- **planeH override en SectionOverlays:** `3.5`
+- **planeH override en SectionOverlays:** `3.5`, **planeW override:** `6.5`
 
 ---
 
@@ -376,6 +377,34 @@ npm run deploy   # wrangler deploy
 - **Paso 1 — Proxy Next.js:** crear `/api/chat` route que actúe de proxy; añade `X-Secret-Token` antes de reenviar al worker
 - **Paso 2 — Worker valida el token:** `wrangler secret put SECRET_TOKEN`
 - **Paso 3 — Rate limiting:** Workers → pipo-chat → Settings → Rate limiting
+
+---
+
+## PlaygroundSection (postFooter) — detalles de implementación
+
+- **Archivo:** `frontend/app/components/sections/PlaygroundSection.tsx`
+- **Contenido:** vídeo de fondo en bucle (`/videos/PipoDancing-01.mp4`), 16:9, `objectFit: cover; objectPosition: center` — siempre rellena el viewport recortando desde el centro
+- **Posición en el DOM:** renderizado directamente en `[locale]/page.tsx` (como `InicioSection`), fuera del canvas 3D
+
+### Scroll bidireccional postFooter
+
+Solo `inicio` y `postFooter` tienen elemento DOM real en la página. Las secciones intermedias (manifiesto–footer) son virtuales.
+
+**Bajando (→ postFooter):** `navigateToSection("postFooter")` → `getElementById("postFooter").scrollIntoView({ behavior:"smooth" })` → HTML baja a ~100vh, video aparece animado.
+
+**Subiendo (← postFooter):** el elemento destino (ej. `"footer"`) no existe en DOM → `getElementById` devuelve `null` → se ejecuta `window.scrollTo({ top: 0, behavior: "smooth" })` → HTML sube suavemente a 0, video desaparece en animación inversa.
+
+**Por qué no conflicta con el IntersectionObserver:** `isTransitioning: true` se establece **antes** del scroll. Cuando `inicio` entra en viewport (intersection changed), el observer dispara pero queda bloqueado por `isTransitioning`. Cuando la cámara llega al destino y `isTransitioning = false`, la intersection ya no ha cambiado → el observer no dispara de nuevo → `currentSection` permanece en la sección destino correcta.
+
+**Fix en `navigationStore.ts`** (en `navigateToSection` y `scrollToSection`):
+```ts
+const element = document.getElementById(sectionId);
+if (element) {
+  element.scrollIntoView({ behavior: "smooth", block: "start" });
+} else if (typeof window !== "undefined" && window.scrollY > 0) {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+```
 
 ---
 
