@@ -376,6 +376,13 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
         behavior: "smooth",
         block: "start",
       });
+    } else if (typeof window !== "undefined" && window.scrollY > 0) {
+      // No hay elemento DOM para esta sección (secciones virtuales del mueble 3D).
+      // Si el HTML está desplazado (ej: venimos de postFooter), volver al inicio
+      // con scroll suave (animación inversa al scroll de entrada).
+      // isTransitioning ya es true, así que el IntersectionObserver no
+      // sobreescribirá currentSection cuando inicio vuelva a ser visible.
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   },
 
@@ -426,6 +433,8 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else if (typeof window !== "undefined" && window.scrollY > 0) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
     setTimeout(() => set({ isScrolling: false }), 1000);
