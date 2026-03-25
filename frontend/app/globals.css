@@ -99,6 +99,15 @@
   font-display: swap;
 }
 
+html, body {
+  scrollbar-width: none; /* Firefox */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/Edge */
+}
+
 @utility container {
   margin: 0 auto;
   padding: 0 2rem;
