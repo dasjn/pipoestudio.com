@@ -1,15 +1,24 @@
 export default function Playground() {
   return (
-    <section id="postFooter" className="h-svh bg-green-pipo text-white py-16 flex items-center justify-center">
-      <div className="max-w-[1920px] mx-auto px-5">
-        <div className="text-center">
-          <h3 className="text-2xl font-bold mb-4">PIPO PLAYGROUND</h3>
-          <p className="text-lg">Aquí está el Playground de la página</p>
-          <p className="text-sm mt-4 opacity-70">
-            Cuando llegues aquí, la navegación del header se desactivará
-          </p>
-        </div>
-      </div>
+    <section
+      id="postFooter"
+      className="h-svh relative overflow-hidden"
+    >
+      <video
+        src="/videos/PipoDancing-01.mp4"
+        autoPlay
+        loop
+        muted
+        playsInline
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          objectPosition: "center",
+        }}
+      />
     </section>
   );
 }

@@ -99,7 +99,6 @@ type ActionName =
   | "C-Jugueton";
 type GLTFActions = Record<ActionName, THREE.AnimationAction>;
 
-
 function FotoTexture({
   url,
   geometry,
@@ -140,7 +139,6 @@ function FotoTexture({
   return <meshBasicMaterial map={texture} />;
 }
 
-
 interface ModelProps extends React.ComponentProps<"group"> {
   animationControls?: {
     activeAnimations: { [key: string]: boolean };
@@ -165,7 +163,7 @@ export function Model({
     sectionsData?.trabajos?.fotos?.map((f: any) => f.url as string) ?? [];
   const group = useRef<THREE.Group>();
   const { nodes, materials, animations } = useGLTF(
-    "/models/Pipo_Todo_Prueba_v25.glb",
+    "/models/Pipo_Todo_Prueba_v29.glb",
   ) as unknown as GLTFResult;
   const { actions } = useAnimations(animations, group);
 
@@ -470,7 +468,9 @@ export function Model({
           rotation={[-0.335, -0.337, -0.114]}
           scale={0.651}
         >
-          {fotos[0] && <FotoTexture url={fotos[0]} geometry={nodes.Foto01.geometry} />}
+          {fotos[0] && (
+            <FotoTexture url={fotos[0]} geometry={nodes.Foto01.geometry} />
+          )}
         </mesh>
         <mesh
           name="Marco01001"
@@ -492,7 +492,9 @@ export function Model({
           rotation={[-0.321, 0.191, 0.063]}
           scale={0.651}
         >
-          {fotos[1] && <FotoTexture url={fotos[1]} geometry={nodes.Foto01001.geometry} />}
+          {fotos[1] && (
+            <FotoTexture url={fotos[1]} geometry={nodes.Foto01001.geometry} />
+          )}
         </mesh>
         <mesh
           name="Marco01002"
@@ -514,7 +516,9 @@ export function Model({
           rotation={[-0.321, 0.191, 0.063]}
           scale={0.467}
         >
-          {fotos[2] && <FotoTexture url={fotos[2]} geometry={nodes.Foto01002.geometry} />}
+          {fotos[2] && (
+            <FotoTexture url={fotos[2]} geometry={nodes.Foto01002.geometry} />
+          )}
         </mesh>
         <mesh
           name="Marco01003"
@@ -536,11 +540,13 @@ export function Model({
           rotation={[-0.337, -0.351, -0.12]}
           scale={0.467}
         >
-          {fotos[3] && <FotoTexture url={fotos[3]} geometry={nodes.Foto01003.geometry} />}
+          {fotos[3] && (
+            <FotoTexture url={fotos[3]} geometry={nodes.Foto01003.geometry} />
+          )}
         </mesh>
       </group>
     </group>
   );
 }
 
-useGLTF.preload("/models/Pipo_Todo_Prueba_v25.glb");
+useGLTF.preload("/models/Pipo_Todo_Prueba_v29.glb");

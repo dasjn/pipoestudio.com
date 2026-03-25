@@ -23,7 +23,7 @@ interface CursosSectionProps {
 
 const VIDEO_W = 160;
 const VIDEO_H = Math.round(VIDEO_W * (16 / 9)); // ~284px — 9:16 vertical
-const PRESENCIAL_W = 200; // más ancha que las video cards
+const PRESENCIAL_W = 250; // más ancha que las video cards
 
 function VideoCard({
   label,
