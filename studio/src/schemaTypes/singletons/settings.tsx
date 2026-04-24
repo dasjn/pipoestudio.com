@@ -119,6 +119,12 @@ export const settings = defineType({
       validation: (rule) => rule.email(),
     }),
     defineField({
+      name: 'blogTitle',
+      title: 'Título de la página del blog',
+      description: 'Ej: Bienvenido a mi diario',
+      type: 'internationalizedArrayString',
+    }),
+    defineField({
       name: 'ogImage',
       title: 'Open Graph Image',
       type: 'image',

@@ -38,7 +38,7 @@ function resolveHref(documentType?: string, slug?: string, language?: string): s
   const locale = language || 'es'
   switch (documentType) {
     case 'post':
-      return slug ? `/${locale}/posts/${slug}` : undefined
+      return slug ? `/${locale}/blog/${slug}` : undefined
     case 'page':
       return slug ? `/${locale}/${slug}` : undefined
     default:
@@ -82,7 +82,7 @@ export default defineConfig({
             filter: `_type == "page" && slug.current == $slug || _id == $slug`,
           },
           {
-            route: '/:locale/posts/:slug',
+            route: '/:locale/blog/:slug',
             filter: `_type == "post" && slug.current == $slug || _id == $slug`,
           },
         ]),

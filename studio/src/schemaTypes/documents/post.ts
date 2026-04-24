@@ -37,6 +37,11 @@ export const post = defineType({
       type: 'internationalizedArrayBlockContent',
     }),
     defineField({
+      name: 'label',
+      title: 'Etiqueta (ej: EL BLOG DE PIPO)',
+      type: 'internationalizedArrayString',
+    }),
+    defineField({
       name: 'excerpt',
       title: 'Excerpt',
       type: 'internationalizedArrayText',

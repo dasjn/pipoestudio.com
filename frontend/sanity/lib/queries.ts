@@ -2,6 +2,12 @@ import { defineQuery } from "next-sanity";
 
 export const settingsQuery = defineQuery(`*[_type == "settings"][0]{ ..., contactEmail }`);
 
+export const blogPageQuery = defineQuery(`
+  *[_type == "settings"][0]{
+    "blogTitle": coalesce(blogTitle[_key == $language][0].value, blogTitle[_key == "es"][0].value, blogTitle[0].value)
+  }
+`);
+
 export const homeQuery = defineQuery(`
   *[_type == 'home'][0]{
     _id,
@@ -85,6 +91,7 @@ const postFields = /* groq */ `
   "status": select(_originalId in path("drafts.**") => "draft", "published"),
   "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value, "Untitled"),
   "slug": slug.current,
+  "label": coalesce(label[_key == $language][0].value, label[_key == "es"][0].value, label[0].value),
   "excerpt": coalesce(excerpt[_key == $language][0].value, excerpt[_key == "es"][0].value, excerpt[0].value),
   coverImage,
   "date": coalesce(date, _updatedAt),

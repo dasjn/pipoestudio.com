@@ -1,17 +1,5 @@
 import {defineArrayMember, defineType, defineField} from 'sanity'
 
-/**
- * This is the schema definition for the rich text fields used for
- * for this blog studio. When you import it in schemas.js it can be
- * reused in other parts of the studio with:
- *  {
- *    name: 'someName',
- *    title: 'Some title',
- *    type: 'blockContent'
- *  }
- *
- * Learn more: https://www.sanity.io/docs/block-content
- */
 export const blockContent = defineType({
   title: 'Block Content',
   name: 'blockContent',
@@ -91,6 +79,14 @@ export const blockContent = defineType({
           },
         ],
       },
+    }),
+    defineArrayMember({
+      type: 'image',
+      options: {hotspot: true},
+      fields: [
+        defineField({name: 'alt', type: 'string', title: 'Alt text'}),
+        defineField({name: 'caption', type: 'string', title: 'Caption'}),
+      ],
     }),
   ],
 })
