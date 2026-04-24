@@ -35,21 +35,21 @@ export default function SectionRenderer({
 
         switch (section._type) {
           case "inicioSection":
-            return <InicioSection key={key} data={section} />;
+            return <InicioSection key={key} data={section as any} />;
           case "manifiestoSection":
-            return <ManifiestoSection key={key} data={section} />;
+            return <ManifiestoSection key={key} data={section as any} />;
           case "trabajosSection":
-            return <TrabajosSection key={key} data={section} posts={posts} />;
+            return <TrabajosSection key={key} data={section as any} />;
           case "algunaIdeaSection":
-            return <AlgunaIdeaSection key={key} data={section} />;
+            return <AlgunaIdeaSection key={key} data={section as any} />;
           case "cursosSection":
-            return <CursosSection key={key} data={section} />;
+            return <CursosSection key={key} data={section as any} />;
           case "sobreMiSection":
-            return <SobreMiSection key={key} data={section} />;
+            return <SobreMiSection key={key} data={section as any} />;
           case "tiendaSection":
-            return <TiendaSection key={key} data={section} />;
+            return <TiendaSection key={key} data={section as any} />;
           case "contactoSection":
-            return <ContactoSection key={key} data={section} />;
+            return <ContactoSection key={key} data={section as any} />;
           default:
             console.warn(`Unknown section type: ${section._type}`);
             return null;

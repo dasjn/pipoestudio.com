@@ -46,7 +46,7 @@ export default function ProductsSection({
           query: featuredProductsQuery,
           params: { language: locale, limit: Math.max(maxDesktop, maxMobile) }
         });
-        setProducts(data || []);
+        setProducts((data || []) as Product[]);
       } catch (error) {
         console.error("Error fetching products:", error);
         setProducts([]);

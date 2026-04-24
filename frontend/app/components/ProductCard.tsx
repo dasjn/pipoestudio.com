@@ -105,7 +105,7 @@ export default function ProductCard({ product, onClick }: ProductCardProps) {
           onClick={handleClick}
           size="sm"
           className="font-bold text-xs sm:text-sm px-4 sm:px-6 cursor-pointer"
-          variant={sold ? "outline" : "primary"}
+          variant={sold ? "secondary" : "primary"}
         >
           {buttonText}
         </Button>

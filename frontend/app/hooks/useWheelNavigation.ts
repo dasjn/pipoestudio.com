@@ -108,12 +108,12 @@ export const useWheelNavigation = () => {
     const applyScrollLock = () => {
       // Only apply to main content area, not header
       document.body.style.overscrollBehavior = 'none';
-      document.body.style.webkitOverflowScrolling = 'auto';
+      (document.body.style as any).webkitOverflowScrolling = 'auto';
     };
 
     const removeScrollLock = () => {
       document.body.style.overscrollBehavior = '';
-      document.body.style.webkitOverflowScrolling = '';
+      (document.body.style as any).webkitOverflowScrolling = '';
     };
 
     // Apply scroll locks

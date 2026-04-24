@@ -13,14 +13,6 @@
  */
 
 // Source: schema.json
-export type CallToAction = {
-  _type: "callToAction";
-  heading: string;
-  text?: string;
-  buttonText?: string;
-  link?: Link;
-};
-
 export type Link = {
   _type: "link";
   linkType?: "href" | "page" | "post";
@@ -40,42 +32,136 @@ export type Link = {
   openInNewTab?: boolean;
 };
 
+export type CallToAction = {
+  _type: "callToAction";
+  heading?: string;
+  text?: string;
+  buttonText?: string;
+  link?: Link;
+};
+
+export type SobreMiSection = {
+  _type: "SobreMiSection";
+  title?: InternationalizedArrayString;
+  body?: InternationalizedArrayText;
+};
+
+export type ContactoSection = {
+  _type: "contactoSection";
+  title?: InternationalizedArrayString;
+  instagramLabel?: InternationalizedArrayString;
+  instagramUrl?: string;
+  youtubeLabel?: InternationalizedArrayString;
+  youtubeUrl?: string;
+  formularioLabel?: InternationalizedArrayString;
+  formularioUrl?: string;
+  whatsappLabel?: InternationalizedArrayString;
+  whatsappNumber?: string;
+  emailLabel?: InternationalizedArrayString;
+  email?: string;
+  footerText?: InternationalizedArrayText;
+};
+
+export type TiendaSection = {
+  _type: "tiendaSection";
+  title?: InternationalizedArrayString;
+  description?: InternationalizedArrayString;
+  backgroundColor?: "bg-green-200" | "bg-gray-100" | "bg-white" | "bg-clean-gray";
+};
+
+export type CursosSection = {
+  _type: "cursosSection";
+  title?: InternationalizedArrayString;
+  youtubeLabel?: InternationalizedArrayString;
+  instagramLabel?: InternationalizedArrayString;
+  youtubeVideo?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
+    };
+    media?: unknown;
+    _type: "file";
+  };
+  youtubeUrl?: string;
+  instagramVideo?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
+    };
+    media?: unknown;
+    _type: "file";
+  };
+  instagramUrl?: string;
+  presencialLabel?: InternationalizedArrayString;
+  presencialTitle?: InternationalizedArrayString;
+  presencialHighlight?: InternationalizedArrayString;
+  presencialInfo?: InternationalizedArrayText;
+  presencialButtonText?: InternationalizedArrayString;
+  presencialUrl?: string;
+};
+
+export type AlgunaIdeaSection = {
+  _type: "algunaIdeaSection";
+  title?: InternationalizedArrayString;
+  description?: InternationalizedArrayText;
+  backgroundColor?: "bg-purple-200" | "bg-gray-100" | "bg-white" | "bg-clean-gray";
+};
+
+export type TrabajosSection = {
+  _type: "trabajosSection";
+  title?: InternationalizedArrayString;
+  statement?: InternationalizedArrayText;
+  buttonText?: InternationalizedArrayString;
+  buttonUrl?: string;
+  fotos?: Array<{
+    image?: {
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+    };
+    nombre?: InternationalizedArrayString;
+    descripcion?: InternationalizedArrayString;
+    _type: "trabajoFoto";
+    _key: string;
+  }>;
+  description?: InternationalizedArrayText;
+  maxPosts?: number;
+  backgroundColor?: string;
+};
+
+export type ManifiestoSection = {
+  _type: "manifiestoSection";
+  title?: InternationalizedArrayString;
+  content?: InternationalizedArrayText;
+  backgroundColor?: "bg-blue-200" | "bg-gray-100" | "bg-white" | "bg-clean-gray";
+};
+
+export type InicioSection = {
+  _type: "inicioSection";
+  title?: InternationalizedArrayString;
+  subtitle1?: InternationalizedArrayString;
+  subtitle2?: InternationalizedArrayString;
+  highlightedWord?: InternationalizedArrayString;
+  subtitle3?: InternationalizedArrayString;
+  location?: InternationalizedArrayString;
+};
+
 export type InfoSection = {
   _type: "infoSection";
   heading?: string;
   subheading?: string;
-  content?: Array<{
-    children?: Array<{
-      marks?: Array<string>;
-      text?: string;
-      _type: "span";
-      _key: string;
-    }>;
-    style?: "normal" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "blockquote";
-    listItem?: "bullet" | "number";
-    markDefs?: Array<{
-      linkType?: "href" | "page" | "post";
-      href?: string;
-      page?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "page";
-      };
-      post?: {
-        _ref: string;
-        _type: "reference";
-        _weak?: boolean;
-        [internalGroqTypeReferenceTo]?: "post";
-      };
-      openInNewTab?: boolean;
-      _type: "link";
-      _key: string;
-    }>;
-    level?: number;
-    _type: "block";
-    _key: string;
-  }>;
+  content?: BlockContent;
 };
 
 export type BlockContent = Array<{
@@ -109,7 +195,108 @@ export type BlockContent = Array<{
   level?: number;
   _type: "block";
   _key: string;
+} | {
+  asset?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+  };
+  media?: unknown;
+  hotspot?: SanityImageHotspot;
+  crop?: SanityImageCrop;
+  alt?: string;
+  caption?: string;
+  _type: "image";
+  _key: string;
 }>;
+
+export type Product = {
+  _id: string;
+  _type: "product";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: InternationalizedArrayString;
+  subtitle?: InternationalizedArrayString;
+  image?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: InternationalizedArrayString;
+    _type: "image";
+  };
+  buttonText?: InternationalizedArrayString;
+  priceShippingInfo?: InternationalizedArrayText;
+  isActive?: boolean;
+  sold?: boolean;
+  soldText?: InternationalizedArrayString;
+  sortOrder?: number;
+  slug?: Slug;
+};
+
+export type Slug = {
+  _type: "slug";
+  current?: string;
+  source?: string;
+};
+
+export type InternationalizedArrayString = Array<{
+  _key: string;
+} & InternationalizedArrayStringValue>;
+
+export type InternationalizedArrayText = Array<{
+  _key: string;
+} & InternationalizedArrayTextValue>;
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x?: number;
+  y?: number;
+  height?: number;
+  width?: number;
+};
+
+export type Home = {
+  _id: string;
+  _type: "home";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: InternationalizedArrayString;
+  description?: InternationalizedArrayText;
+  sections?: Array<{
+    _key: string;
+  } & InicioSection | {
+    _key: string;
+  } & ManifiestoSection | {
+    _key: string;
+  } & TrabajosSection | {
+    _key: string;
+  } & AlgunaIdeaSection | {
+    _key: string;
+  } & CursosSection | {
+    _key: string;
+  } & SobreMiSection | {
+    _key: string;
+  } & TiendaSection | {
+    _key: string;
+  } & ContactoSection>;
+};
 
 export type Settings = {
   _id: string;
@@ -117,7 +304,7 @@ export type Settings = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  title: string;
+  title?: string;
   description?: Array<{
     children?: Array<{
       marks?: Array<string>;
@@ -150,6 +337,8 @@ export type Settings = {
     _type: "block";
     _key: string;
   }>;
+  contactEmail?: string;
+  blogTitle?: InternationalizedArrayString;
   ogImage?: {
     asset?: {
       _ref: string;
@@ -162,78 +351,6 @@ export type Settings = {
     crop?: SanityImageCrop;
     alt?: string;
     metadataBase?: string;
-    _type: "image";
-  };
-};
-
-export type Page = {
-  _id: string;
-  _type: "page";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  name: string;
-  slug: Slug;
-  heading: string;
-  subheading?: string;
-  pageBuilder?: Array<{
-    _key: string;
-  } & CallToAction | {
-    _key: string;
-  } & InfoSection>;
-};
-
-export type Post = {
-  _id: string;
-  _type: "post";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title: string;
-  slug: Slug;
-  content?: BlockContent;
-  excerpt?: string;
-  coverImage: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
-    _type: "image";
-  };
-  date?: string;
-  author?: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "person";
-  };
-};
-
-export type Person = {
-  _id: string;
-  _type: "person";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  firstName: string;
-  lastName: string;
-  picture: {
-    asset?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
-    };
-    media?: unknown;
-    hotspot?: SanityImageHotspot;
-    crop?: SanityImageCrop;
-    alt?: string;
     _type: "image";
   };
 };
@@ -274,7 +391,7 @@ export type SanityAssistOutputField = {
 
 export type SanityAssistInstructionContext = {
   _type: "sanity.assist.instruction.context";
-  reference: {
+  reference?: {
     _ref: string;
     _type: "reference";
     _weak?: boolean;
@@ -307,7 +424,7 @@ export type AssistInstructionContext = {
 
 export type SanityAssistInstructionUserInput = {
   _type: "sanity.assist.instruction.userInput";
-  message: string;
+  message?: string;
   description?: string;
 };
 
@@ -359,6 +476,109 @@ export type SanityAssistSchemaTypeField = {
   } & SanityAssistInstruction>;
 };
 
+export type InternationalizedArrayBlockContentValue = {
+  _type: "internationalizedArrayBlockContentValue";
+  value?: BlockContent;
+};
+
+export type InternationalizedArraySlugValue = {
+  _type: "internationalizedArraySlugValue";
+  value?: Slug;
+};
+
+export type InternationalizedArrayTextValue = {
+  _type: "internationalizedArrayTextValue";
+  value?: string;
+};
+
+export type InternationalizedArrayStringValue = {
+  _type: "internationalizedArrayStringValue";
+  value?: string;
+};
+
+export type InternationalizedArrayBlockContent = Array<{
+  _key: string;
+} & InternationalizedArrayBlockContentValue>;
+
+export type Page = {
+  _id: string;
+  _type: "page";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: InternationalizedArrayString;
+  slug?: Slug;
+  heading?: InternationalizedArrayString;
+  subheading?: InternationalizedArrayString;
+  pageBuilder?: Array<{
+    _key: string;
+  } & CallToAction | {
+    _key: string;
+  } & InfoSection | {
+    _key: string;
+  } & InicioSection>;
+};
+
+export type Post = {
+  _id: string;
+  _type: "post";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: InternationalizedArrayString;
+  slug?: Slug;
+  content?: InternationalizedArrayBlockContent;
+  label?: InternationalizedArrayString;
+  excerpt?: InternationalizedArrayText;
+  coverImage?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: InternationalizedArrayString;
+    _type: "image";
+  };
+  date?: string;
+  author?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "person";
+  };
+};
+
+export type Person = {
+  _id: string;
+  _type: "person";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  firstName?: string;
+  lastName?: string;
+  picture?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
+};
+
+export type InternationalizedArraySlug = Array<{
+  _key: string;
+} & InternationalizedArraySlugValue>;
+
 export type SanityImagePaletteSwatch = {
   _type: "sanity.imagePaletteSwatch";
   background?: string;
@@ -385,20 +605,15 @@ export type SanityImageDimensions = {
   aspectRatio?: number;
 };
 
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x?: number;
-  y?: number;
-  height?: number;
-  width?: number;
-};
-
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top?: number;
-  bottom?: number;
-  left?: number;
-  right?: number;
+export type SanityImageMetadata = {
+  _type: "sanity.imageMetadata";
+  location?: Geopoint;
+  dimensions?: SanityImageDimensions;
+  palette?: SanityImagePalette;
+  lqip?: string;
+  blurHash?: string;
+  hasAlpha?: boolean;
+  isOpaque?: boolean;
 };
 
 export type SanityFileAsset = {
@@ -421,6 +636,13 @@ export type SanityFileAsset = {
   path?: string;
   url?: string;
   source?: SanityAssetSourceData;
+};
+
+export type SanityAssetSourceData = {
+  _type: "sanity.assetSourceData";
+  name?: string;
+  id?: string;
+  url?: string;
 };
 
 export type SanityImageAsset = {
@@ -446,17 +668,6 @@ export type SanityImageAsset = {
   source?: SanityAssetSourceData;
 };
 
-export type SanityImageMetadata = {
-  _type: "sanity.imageMetadata";
-  location?: Geopoint;
-  dimensions?: SanityImageDimensions;
-  palette?: SanityImagePalette;
-  lqip?: string;
-  blurHash?: string;
-  hasAlpha?: boolean;
-  isOpaque?: boolean;
-};
-
 export type Geopoint = {
   _type: "geopoint";
   lat?: number;
@@ -464,20 +675,7 @@ export type Geopoint = {
   alt?: number;
 };
 
-export type Slug = {
-  _type: "slug";
-  current: string;
-  source?: string;
-};
-
-export type SanityAssetSourceData = {
-  _type: "sanity.assetSourceData";
-  name?: string;
-  id?: string;
-  url?: string;
-};
-
-export type AllSanitySchemaTypes = CallToAction | Link | InfoSection | BlockContent | Settings | Page | Post | Person | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageHotspot | SanityImageCrop | SanityFileAsset | SanityImageAsset | SanityImageMetadata | Geopoint | Slug | SanityAssetSourceData;
+export type AllSanitySchemaTypes = Link | CallToAction | SobreMiSection | ContactoSection | TiendaSection | CursosSection | AlgunaIdeaSection | TrabajosSection | ManifiestoSection | InicioSection | InfoSection | BlockContent | Product | Slug | InternationalizedArrayString | InternationalizedArrayText | SanityImageCrop | SanityImageHotspot | Home | Settings | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField | InternationalizedArrayBlockContentValue | InternationalizedArraySlugValue | InternationalizedArrayTextValue | InternationalizedArrayStringValue | InternationalizedArrayBlockContent | Page | Post | Person | InternationalizedArraySlug | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./sanity/lib/queries.ts
 // Variable: settingsQuery
@@ -488,7 +686,7 @@ export type SettingsQueryResult = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  title: string;
+  title?: string;
   description?: Array<{
     children?: Array<{
       marks?: Array<string>;
@@ -521,6 +719,8 @@ export type SettingsQueryResult = {
     _type: "block";
     _key: string;
   }>;
+  contactEmail: string | null;
+  blogTitle?: InternationalizedArrayString;
   ogImage?: {
     asset?: {
       _ref: string;
@@ -535,29 +735,117 @@ export type SettingsQueryResult = {
     metadataBase?: string;
     _type: "image";
   };
-  contactEmail: null;
 } | null;
 // Variable: blogPageQuery
 // Query: *[_type == "settings"][0]{    "blogTitle": coalesce(blogTitle[_key == $language][0].value, blogTitle[_key == "es"][0].value, blogTitle[0].value)  }
 export type BlogPageQueryResult = {
-  blogTitle: null;
+  blogTitle: string | null;
 } | null;
 // Variable: homeQuery
 // Query: *[_type == 'home'][0]{    _id,    _type,    "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),    "description": coalesce(description[_key == $language][0].value, description[_key == "es"][0].value, description[0].value),    "sections": sections[]{      ...,      _key,      _type == "inicioSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "subtitle1": coalesce(subtitle1[_key == $language][0].value, subtitle1[_key == "es"][0].value, subtitle1[0].value),        "subtitle2": coalesce(subtitle2[_key == $language][0].value, subtitle2[_key == "es"][0].value, subtitle2[0].value),        "highlightedWord": coalesce(highlightedWord[_key == $language][0].value, highlightedWord[_key == "es"][0].value, highlightedWord[0].value),        "subtitle3": coalesce(subtitle3[_key == $language][0].value, subtitle3[_key == "es"][0].value, subtitle3[0].value),        "location": coalesce(location[_key == $language][0].value, location[_key == "es"][0].value, location[0].value),      },      _type == "manifiestoSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "content": coalesce(content[_key == $language][0].value, content[_key == "es"][0].value, content[0].value),        backgroundColor,      },      _type == "trabajosSection" => {        "statement": coalesce(statement[_key == $language][0].value, statement[_key == "es"][0].value, statement[0].value),        "buttonText": coalesce(buttonText[_key == $language][0].value, buttonText[_key == "es"][0].value, buttonText[0].value),        buttonUrl,        "fotos": fotos[]{          "url": image.asset->url,          "nombre": coalesce(nombre[_key == $language][0].value, nombre[_key == "es"][0].value, nombre[0].value),          "descripcion": coalesce(descripcion[_key == $language][0].value, descripcion[_key == "es"][0].value, descripcion[0].value),        },      },      _type == "algunaIdeaSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "description": coalesce(description[_key == $language][0].value, description[_key == "es"][0].value, description[0].value),        backgroundColor,      },      _type == "cursosSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "youtubeLabel": coalesce(youtubeLabel[_key == $language][0].value, youtubeLabel[_key == "es"][0].value, youtubeLabel[0].value),        "instagramLabel": coalesce(instagramLabel[_key == $language][0].value, instagramLabel[_key == "es"][0].value, instagramLabel[0].value),        "youtubeVideo": youtubeVideo { "url": asset->url },        youtubeUrl,        "instagramVideo": instagramVideo { "url": asset->url },        instagramUrl,        "presencialLabel": coalesce(presencialLabel[_key == $language][0].value, presencialLabel[_key == "es"][0].value, presencialLabel[0].value),        "presencialTitle": coalesce(presencialTitle[_key == $language][0].value, presencialTitle[_key == "es"][0].value, presencialTitle[0].value),        "presencialHighlight": coalesce(presencialHighlight[_key == $language][0].value, presencialHighlight[_key == "es"][0].value, presencialHighlight[0].value),        "presencialInfo": coalesce(presencialInfo[_key == $language][0].value, presencialInfo[_key == "es"][0].value, presencialInfo[0].value),        "presencialButtonText": coalesce(presencialButtonText[_key == $language][0].value, presencialButtonText[_key == "es"][0].value, presencialButtonText[0].value),        presencialUrl,      },      _type == "tiendaSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "subtitle": coalesce(description[_key == $language][0].value, description[_key == "es"][0].value, description[0].value),      },      _type == "contactoSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "instagramLabel": coalesce(instagramLabel[_key == $language][0].value, instagramLabel[_key == "es"][0].value, instagramLabel[0].value),        instagramUrl,        "youtubeLabel": coalesce(youtubeLabel[_key == $language][0].value, youtubeLabel[_key == "es"][0].value, youtubeLabel[0].value),        youtubeUrl,        "formularioLabel": coalesce(formularioLabel[_key == $language][0].value, formularioLabel[_key == "es"][0].value, formularioLabel[0].value),        formularioUrl,        "whatsappLabel": coalesce(whatsappLabel[_key == $language][0].value, whatsappLabel[_key == "es"][0].value, whatsappLabel[0].value),        whatsappNumber,        "emailLabel": coalesce(emailLabel[_key == $language][0].value, emailLabel[_key == "es"][0].value, emailLabel[0].value),        email,        "footerText": coalesce(footerText[_key == $language][0].value, footerText[_key == "es"][0].value, footerText[0].value),      },      _type == "SobreMiSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "body": coalesce(body[_key == $language][0].value, body[_key == "es"][0].value, body[0].value),      },    },  }
-export type HomeQueryResult = null;
+export type HomeQueryResult = {
+  _id: string;
+  _type: "home";
+  title: string | null;
+  description: string | null;
+  sections: Array<{
+    _key: string;
+    _type: "algunaIdeaSection";
+    title: string | null;
+    description: string | null;
+    backgroundColor: "bg-clean-gray" | "bg-gray-100" | "bg-purple-200" | "bg-white" | null;
+  } | {
+    _key: string;
+    _type: "contactoSection";
+    title: string | null;
+    instagramLabel: string | null;
+    instagramUrl: string | null;
+    youtubeLabel: string | null;
+    youtubeUrl: string | null;
+    formularioLabel: string | null;
+    formularioUrl: string | null;
+    whatsappLabel: string | null;
+    whatsappNumber: string | null;
+    emailLabel: string | null;
+    email: string | null;
+    footerText: string | null;
+  } | {
+    _key: string;
+    _type: "cursosSection";
+    title: string | null;
+    youtubeLabel: string | null;
+    instagramLabel: string | null;
+    youtubeVideo: {
+      url: string | null;
+    } | null;
+    youtubeUrl: string | null;
+    instagramVideo: {
+      url: string | null;
+    } | null;
+    instagramUrl: string | null;
+    presencialLabel: string | null;
+    presencialTitle: string | null;
+    presencialHighlight: string | null;
+    presencialInfo: string | null;
+    presencialButtonText: string | null;
+    presencialUrl: string | null;
+  } | {
+    _key: string;
+    _type: "inicioSection";
+    title: string | null;
+    subtitle1: string | null;
+    subtitle2: string | null;
+    highlightedWord: string | null;
+    subtitle3: string | null;
+    location: string | null;
+  } | {
+    _key: string;
+    _type: "manifiestoSection";
+    title: string | null;
+    content: string | null;
+    backgroundColor: "bg-blue-200" | "bg-clean-gray" | "bg-gray-100" | "bg-white" | null;
+  } | {
+    _key: string;
+    _type: "SobreMiSection";
+    title: string | null;
+    body: string | null;
+  } | {
+    _key: string;
+    _type: "tiendaSection";
+    title: string | null;
+    description?: InternationalizedArrayString;
+    backgroundColor?: "bg-clean-gray" | "bg-gray-100" | "bg-green-200" | "bg-white";
+    subtitle: string | null;
+  } | {
+    _key: string;
+    _type: "trabajosSection";
+    title?: InternationalizedArrayString;
+    statement: string | null;
+    buttonText: string | null;
+    buttonUrl: string | null;
+    fotos: Array<{
+      url: string | null;
+      nombre: string | null;
+      descripcion: string | null;
+    }> | null;
+    description?: InternationalizedArrayText;
+    maxPosts?: number;
+    backgroundColor?: string;
+  }> | null;
+} | null;
 // Variable: getPageQuery
 // Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    "name": coalesce(name[_key == $language][0].value, name[_key == "es"][0].value, name[0].value),    slug,    "heading": coalesce(heading[_key == $language][0].value, heading[_key == "es"][0].value, heading[0].value),    "subheading": coalesce(subheading[_key == $language][0].value, subheading[_key == "es"][0].value, subheading[0].value),    "pageBuilder": pageBuilder[]{      ...,      _type == "callToAction" => {          link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }      },      },      _type == "infoSection" => {        content[]{          ...,          markDefs[]{            ...,              _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }          }        }      },      _type == "inicioSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "subtitle1": coalesce(subtitle1[_key == $language][0].value, subtitle1[_key == "es"][0].value, subtitle1[0].value),        "subtitle2": coalesce(subtitle2[_key == $language][0].value, subtitle2[_key == "es"][0].value, subtitle2[0].value),        "highlightedWord": coalesce(highlightedWord[_key == $language][0].value, highlightedWord[_key == "es"][0].value, highlightedWord[0].value),        "subtitle3": coalesce(subtitle3[_key == $language][0].value, subtitle3[_key == "es"][0].value, subtitle3[0].value),        "location": coalesce(location[_key == $language][0].value, location[_key == "es"][0].value, location[0].value),      },    },  }
 export type GetPageQueryResult = {
   _id: string;
   _type: "page";
-  name: null;
-  slug: Slug;
-  heading: null;
-  subheading: null;
+  name: string | null;
+  slug: Slug | null;
+  heading: string | null;
+  subheading: string | null;
   pageBuilder: Array<{
     _key: string;
     _type: "callToAction";
-    heading: string;
+    heading?: string;
     text?: string;
     buttonText?: string;
     link: {
@@ -594,17 +882,41 @@ export type GetPageQueryResult = {
       level?: number;
       _type: "block";
       _key: string;
+    } | {
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      caption?: string;
+      _type: "image";
+      _key: string;
+      markDefs: null;
     }> | null;
+  } | {
+    _key: string;
+    _type: "inicioSection";
+    title: string | null;
+    subtitle1: string | null;
+    subtitle2: string | null;
+    highlightedWord: string | null;
+    subtitle3: string | null;
+    location: string | null;
   }> | null;
 } | null;
 // Variable: sitemapData
 // Query: *[_type == "page" || _type == "post" && defined(slug.current)] | order(_type asc) {    "slug": slug.current,    _type,    _updatedAt,  }
 export type SitemapDataResult = Array<{
-  slug: string;
+  slug: string | null;
   _type: "page";
   _updatedAt: string;
 } | {
-  slug: string;
+  slug: string | null;
   _type: "post";
   _updatedAt: string;
 }>;
@@ -613,10 +925,10 @@ export type SitemapDataResult = Array<{
 export type AllPostsQueryResult = Array<{
   _id: string;
   status: "draft" | "published";
-  title: "Untitled";
-  slug: string;
-  label: null;
-  excerpt: null;
+  title: string | "Untitled";
+  slug: string | null;
+  label: string | null;
+  excerpt: string | null;
   coverImage: {
     asset?: {
       _ref: string;
@@ -627,13 +939,13 @@ export type AllPostsQueryResult = Array<{
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
-    alt?: string;
+    alt?: InternationalizedArrayString;
     _type: "image";
-  };
+  } | null;
   date: string;
   author: {
-    firstName: string;
-    lastName: string;
+    firstName: string | null;
+    lastName: string | null;
     picture: {
       asset?: {
         _ref: string;
@@ -646,7 +958,7 @@ export type AllPostsQueryResult = Array<{
       crop?: SanityImageCrop;
       alt?: string;
       _type: "image";
-    };
+    } | null;
   } | null;
 }>;
 // Variable: morePostsQuery
@@ -654,10 +966,10 @@ export type AllPostsQueryResult = Array<{
 export type MorePostsQueryResult = Array<{
   _id: string;
   status: "draft" | "published";
-  title: "Untitled";
-  slug: string;
-  label: null;
-  excerpt: null;
+  title: string | "Untitled";
+  slug: string | null;
+  label: string | null;
+  excerpt: string | null;
   coverImage: {
     asset?: {
       _ref: string;
@@ -668,13 +980,13 @@ export type MorePostsQueryResult = Array<{
     media?: unknown;
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
-    alt?: string;
+    alt?: InternationalizedArrayString;
     _type: "image";
-  };
+  } | null;
   date: string;
   author: {
-    firstName: string;
-    lastName: string;
+    firstName: string | null;
+    lastName: string | null;
     picture: {
       asset?: {
         _ref: string;
@@ -687,20 +999,34 @@ export type MorePostsQueryResult = Array<{
       crop?: SanityImageCrop;
       alt?: string;
       _type: "image";
-    };
+    } | null;
   } | null;
 }>;
 // Variable: postQuery
 // Query: *[_type == "post" && slug.current == $slug] [0] {    "content": coalesce(content[_key == $language][0].value, content[_key == "es"][0].value, content[0].value)[]{    ...,    markDefs[]{      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }    }  },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value, "Untitled"),  "slug": slug.current,  "label": coalesce(label[_key == $language][0].value, label[_key == "es"][0].value, label[0].value),  "excerpt": coalesce(excerpt[_key == $language][0].value, excerpt[_key == "es"][0].value, excerpt[0].value),  coverImage,  "date": coalesce(date, _updatedAt),  "author": author->{firstName, lastName, picture},  }
 export type PostQueryResult = {
-  content: null;
-  _id: string;
-  status: "draft" | "published";
-  title: "Untitled";
-  slug: string;
-  label: null;
-  excerpt: null;
-  coverImage: {
+  content: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+    listItem?: "bullet" | "number";
+    markDefs: Array<{
+      linkType?: "href" | "page" | "post";
+      href?: string;
+      page: string | null;
+      post: string | null;
+      openInNewTab?: boolean;
+      _type: "link";
+      _key: string;
+    }> | null;
+    level?: number;
+    _type: "block";
+    _key: string;
+  } | {
     asset?: {
       _ref: string;
       _type: "reference";
@@ -711,12 +1037,34 @@ export type PostQueryResult = {
     hotspot?: SanityImageHotspot;
     crop?: SanityImageCrop;
     alt?: string;
+    caption?: string;
     _type: "image";
-  };
+    _key: string;
+    markDefs: null;
+  }> | null;
+  _id: string;
+  status: "draft" | "published";
+  title: string | "Untitled";
+  slug: string | null;
+  label: string | null;
+  excerpt: string | null;
+  coverImage: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: InternationalizedArrayString;
+    _type: "image";
+  } | null;
   date: string;
   author: {
-    firstName: string;
-    lastName: string;
+    firstName: string | null;
+    lastName: string | null;
     picture: {
       asset?: {
         _ref: string;
@@ -729,25 +1077,63 @@ export type PostQueryResult = {
       crop?: SanityImageCrop;
       alt?: string;
       _type: "image";
-    };
+    } | null;
   } | null;
 } | null;
 // Variable: postPagesSlugs
 // Query: *[_type == "post" && defined(slug.current)]  {"slug": slug.current}
 export type PostPagesSlugsResult = Array<{
-  slug: string;
+  slug: string | null;
 }>;
 // Variable: pagesSlugs
 // Query: *[_type == "page" && defined(slug.current)]  {"slug": slug.current}
 export type PagesSlugsResult = Array<{
-  slug: string;
+  slug: string | null;
 }>;
 // Variable: productsQuery
 // Query: *[_type == "product" && isActive == true] | order(sortOrder asc, _createdAt desc) {    _id,    "name": coalesce(name[_key == $language][0].value, name[_key == "es"][0].value, name[0].value),    "subtitle": coalesce(subtitle[_key == $language][0].value, subtitle[_key == "es"][0].value, subtitle[0].value),    image {      asset,      "alt": coalesce(alt[_key == $language][0].value, alt[_key == "es"][0].value, alt[0].value)    },    "buttonText": coalesce(buttonText[_key == $language][0].value, buttonText[_key == "es"][0].value, buttonText[0].value),    "priceShippingInfo": coalesce(priceShippingInfo[_key == $language][0].value, priceShippingInfo[_key == "es"][0].value, priceShippingInfo[0].value),    "soldText": coalesce(soldText[_key == $language][0].value, soldText[_key == "es"][0].value, soldText[0].value),    "slug": slug.current,    sortOrder,    sold  }
-export type ProductsQueryResult = Array<never>;
+export type ProductsQueryResult = Array<{
+  _id: string;
+  name: string | null;
+  subtitle: string | null;
+  image: {
+    asset: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    } | null;
+    alt: string | null;
+  } | null;
+  buttonText: string | null;
+  priceShippingInfo: string | null;
+  soldText: string | null;
+  slug: string | null;
+  sortOrder: number | null;
+  sold: boolean | null;
+}>;
 // Variable: featuredProductsQuery
 // Query: *[_type == "product" && isActive == true] | order(sortOrder asc, _createdAt desc) [0...$limit] {    _id,    "name": coalesce(name[_key == $language][0].value, name[_key == "es"][0].value, name[0].value),    "subtitle": coalesce(subtitle[_key == $language][0].value, subtitle[_key == "es"][0].value, subtitle[0].value),    image {      asset,      "alt": coalesce(alt[_key == $language][0].value, alt[_key == "es"][0].value, alt[0].value)    },    "buttonText": coalesce(buttonText[_key == $language][0].value, buttonText[_key == "es"][0].value, buttonText[0].value),    "priceShippingInfo": coalesce(priceShippingInfo[_key == $language][0].value, priceShippingInfo[_key == "es"][0].value, priceShippingInfo[0].value),    "soldText": coalesce(soldText[_key == $language][0].value, soldText[_key == "es"][0].value, soldText[0].value),    "slug": slug.current,    sortOrder,    sold  }
-export type FeaturedProductsQueryResult = Array<never>;
+export type FeaturedProductsQueryResult = Array<{
+  _id: string;
+  name: string | null;
+  subtitle: string | null;
+  image: {
+    asset: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    } | null;
+    alt: string | null;
+  } | null;
+  buttonText: string | null;
+  priceShippingInfo: string | null;
+  soldText: string | null;
+  slug: string | null;
+  sortOrder: number | null;
+  sold: boolean | null;
+}>;
 
 // Query TypeMap
 import "@sanity/client";
