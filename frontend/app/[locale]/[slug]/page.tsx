@@ -27,11 +27,9 @@ export async function generateStaticParams() {
 
   // Generate params for each locale and slug combination
   const params = [];
-  for (const item of data || []) {
+  for (const item of data ?? []) {
     for (const locale of i18n.locales) {
-      if (item.language === locale) {
-        params.push({ slug: item.slug, locale });
-      }
+      params.push({ slug: item.slug, locale });
     }
   }
   return params;
