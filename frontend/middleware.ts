@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { i18n } from '../i18n.config'
+import { i18n } from './i18n.config'
 
 function getLocale(request: NextRequest): string {
   // Check if there is any supported locale in the pathname
