@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: '20'
 
-      - run: npm install --legacy-peer-deps
+      - run: npm install --legacy-peer-deps --install-strategy=nested
 
       - run: npx sanity deploy
         env:
