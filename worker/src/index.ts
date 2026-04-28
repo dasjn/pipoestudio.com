@@ -12,6 +12,7 @@ interface Message {
 const ALLOWED_ORIGINS = [
   "http://localhost:3000",
   "http://localhost:3001",
+  "https://pipoestudiowebfrontend.vercel.app",
   "https://pipoestudio.com",
   "https://www.pipoestudio.com",
 ];
