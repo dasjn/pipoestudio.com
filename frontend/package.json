@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "pipo-frontend",
   "private": true,
   "scripts": {
     "predev": "npm run typegen",
