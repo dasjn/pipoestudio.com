@@ -27,3 +27,4 @@ jobs:
       - run: npm run deploy
         env:
           SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
+          SANITY_STUDIO_PREVIEW_URL: https://pipoestudiowebfrontend.vercel.app
