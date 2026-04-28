@@ -29,4 +29,6 @@ jobs:
         run: npx sanity deploy
         env:
           SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
+          SANITY_STUDIO_PROJECT_ID: kzek939n
+          SANITY_STUDIO_DATASET: production
           SANITY_STUDIO_PREVIEW_URL: https://pipoestudiowebfrontend.vercel.app
