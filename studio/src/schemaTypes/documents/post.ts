@@ -3,8 +3,7 @@ import {format, parseISO} from 'date-fns'
 import {defineField, defineType} from 'sanity'
 
 /**
- * Post schema.  Define and edit the fields for the 'post' content type.
- * Learn more: https://www.sanity.io/docs/schema-types
+ * Esquema de artículos del blog.
  */
 
 export const post = defineType({
