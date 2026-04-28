@@ -10,7 +10,7 @@ import * as demo from '../../lib/initialValues'
 
 export const settings = defineType({
   name: 'settings',
-  title: 'Settings',
+  title: 'Configuración',
   type: 'document',
   icon: CogIcon,
   fields: [
