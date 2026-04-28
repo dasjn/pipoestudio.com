@@ -25,7 +25,13 @@ export const post = defineType({
       type: 'slug',
       description: 'A slug is required for the post to show up in the preview',
       options: {
-        source: 'title',
+        source: (doc: any) => {
+          if (Array.isArray(doc.title)) {
+            const es = doc.title.find((t: any) => t._key === 'es')
+            return es?.value || doc.title[0]?.value || ''
+          }
+          return doc.title || ''
+        },
         maxLength: 96,
         isUnique: (value, context) => context.defaultIsUnique(value, context),
       },
