@@ -9,9 +9,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: studio
 
     steps:
       - uses: actions/checkout@v4
@@ -20,9 +17,16 @@ jobs:
         with:
           node-version: '20'
 
-      - run: npm install --legacy-peer-deps --install-strategy=nested
+      - name: Install studio dependencies
+        working-directory: studio
+        run: npm install --legacy-peer-deps
 
-      - run: npx sanity deploy
+      - name: Install esbuild at workspace root
+        run: npm install --no-save --legacy-peer-deps esbuild
+
+      - name: Deploy
+        working-directory: studio
+        run: npx sanity deploy
         env:
           SANITY_AUTH_TOKEN: ${{ secrets.SANITY_AUTH_TOKEN }}
           SANITY_STUDIO_PREVIEW_URL: https://pipoestudiowebfrontend.vercel.app
