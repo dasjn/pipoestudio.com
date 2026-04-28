@@ -88,7 +88,7 @@ export const post = defineType({
     }),
     defineField({
       name: 'author',
-      title: 'Autor/a',
+      title: 'Autor',
       type: 'reference',
       to: [{type: 'person'}],
     }),
