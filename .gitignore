@@ -33,3 +33,4 @@ next-env.d.ts
 # 3D models (large binary files)
 *.glb
 *.gltf
+!frontend/public/models/Pipo_Todo_Prueba_v29.glb
