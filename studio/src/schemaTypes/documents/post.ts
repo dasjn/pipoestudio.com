@@ -14,7 +14,7 @@ export const post = defineType({
   fields: [
     defineField({
       name: 'title',
-      title: 'Title',
+      title: 'Título',
       type: 'internationalizedArrayString',
       validation: (rule) => rule.required(),
     }),
@@ -22,7 +22,7 @@ export const post = defineType({
       name: 'slug',
       title: 'Slug',
       type: 'slug',
-      description: 'A slug is required for the post to show up in the preview',
+      description: 'El slug es necesario para que el artículo aparezca en la preview',
       options: {
         source: (doc: any) => {
           if (Array.isArray(doc.title)) {
@@ -38,7 +38,7 @@ export const post = defineType({
     }),
     defineField({
       name: 'content',
-      title: 'Content',
+      title: 'Contenido',
       type: 'internationalizedArrayBlockContent',
     }),
     defineField({
@@ -48,12 +48,12 @@ export const post = defineType({
     }),
     defineField({
       name: 'excerpt',
-      title: 'Excerpt',
+      title: 'Extracto',
       type: 'internationalizedArrayText',
     }),
     defineField({
       name: 'coverImage',
-      title: 'Cover Image',
+      title: 'Imagen de portada',
       type: 'image',
       options: {
         hotspot: true,
@@ -65,8 +65,8 @@ export const post = defineType({
         {
           name: 'alt',
           type: 'internationalizedArrayString',
-          title: 'Alternative text',
-          description: 'Important for SEO and accessibility.',
+          title: 'Texto alternativo',
+          description: 'Importante para SEO y accesibilidad.',
           validation: (rule) => {
             // Custom validation to ensure alt text is provided if the image is present. https://www.sanity.io/docs/validation
             return rule.custom((alt, context) => {
@@ -82,13 +82,13 @@ export const post = defineType({
     }),
     defineField({
       name: 'date',
-      title: 'Date',
+      title: 'Fecha',
       type: 'datetime',
       initialValue: () => new Date().toISOString(),
     }),
     defineField({
       name: 'author',
-      title: 'Author',
+      title: 'Autor',
       type: 'reference',
       to: [{type: 'person'}],
     }),
