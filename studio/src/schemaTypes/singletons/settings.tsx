@@ -125,6 +125,12 @@ export const settings = defineType({
       type: 'internationalizedArrayString',
     }),
     defineField({
+      name: 'blogPostClosing',
+      title: 'Cierre de cada post',
+      description: 'Texto que aparece al final de cada artículo. Ej: ¡Cuéntame tu próximo proyecto!',
+      type: 'internationalizedArrayString',
+    }),
+    defineField({
       name: 'ogImage',
       title: 'Open Graph Image',
       type: 'image',

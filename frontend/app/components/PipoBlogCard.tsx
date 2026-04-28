@@ -34,7 +34,7 @@ export default function PipoBlogCard({ post, locale }: PipoBlogCardProps) {
 
       {/* Cuerpo de tarjeta */}
       <div className="bg-white flex flex-col flex-1 p-3 gap-3">
-        <h2 className="font-sans font-bold text-green-pipo text-sm leading-tight uppercase">
+        <h2 className="font-sans font-bold text-green-pipo text-sm leading-tight uppercase line-clamp-3 min-h-14">
           {title}
         </h2>
         {imageUrl && (

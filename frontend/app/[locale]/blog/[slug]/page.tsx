@@ -4,7 +4,7 @@ import { type PortableTextBlock } from "@portabletext/types";
 import { Suspense } from "react";
 
 import { sanityFetch } from "@/sanity/lib/live";
-import { postPagesSlugs, postQuery } from "@/sanity/lib/queries";
+import { postPagesSlugs, postQuery, blogPageQuery } from "@/sanity/lib/queries";
 import { resolveOpenGraphImage } from "@/sanity/lib/utils";
 import { i18n, type Locale } from "@/i18n.config";
 import BlogHeader from "@/app/components/BlogHeader";
@@ -56,10 +56,10 @@ export async function generateMetadata(
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug, locale } = await params;
-  const { data: post } = await sanityFetch({
-    query: postQuery,
-    params: { slug, language: locale },
-  });
+  const [{ data: post }, { data: settings }] = await Promise.all([
+    sanityFetch({ query: postQuery, params: { slug, language: locale } }),
+    sanityFetch({ query: blogPageQuery, params: { language: locale } }),
+  ]);
 
   if (!post?._id) {
     return notFound();
@@ -69,7 +69,7 @@ export default async function BlogPostPage({ params }: Props) {
     <div className="min-h-screen bg-[#E4E5E0]">
       <BlogHeader />
 
-      <main className="max-w-3xl mx-auto px-6 py-12">
+      <main className="max-w-7xl mx-auto px-6 py-12">
         {/* Volver al blog */}
         <a
           href={`/${locale}/blog`}
@@ -96,10 +96,22 @@ export default async function BlogPostPage({ params }: Props) {
         )}
 
         {/* Footer del post */}
-        <div className="mt-12 pt-8 border-t border-green-pipo/30">
-          <Button as="link" href={`/${locale}/blog`} variant="primary" size="sm">
-            {locale === "es" ? "Ver más posts" : "See more posts"}
-          </Button>
+        <div className="mt-12 pt-8 border-t border-green-pipo/30 flex flex-col items-center gap-8">
+          <p className="font-sans font-extrabold text-green-pipo uppercase text-center"
+             style={{ fontSize: '61px', lineHeight: '73px' }}>
+            {settings?.blogPostClosing ?? (locale === "es" ? "¡Cuéntame tu próximo proyecto!" : "Tell me about your next project!")}
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Button as="link" href={`/${locale}`} variant="primary" size="sm">
+              {locale === "es" ? "Contacta" : "Contact"}
+            </Button>
+            <Button as="link" href={`/${locale}`} variant="primary" size="sm">
+              {locale === "es" ? "Ver página principal" : "Go to main page"}
+            </Button>
+            <Button as="link" href={`/${locale}/blog`} variant="primary" size="sm">
+              {locale === "es" ? "Más artículos" : "More articles"}
+            </Button>
+          </div>
         </div>
       </main>
     </div>

@@ -4,7 +4,8 @@ export const settingsQuery = defineQuery(`*[_type == "settings"][0]{ ..., contac
 
 export const blogPageQuery = defineQuery(`
   *[_type == "settings"][0]{
-    "blogTitle": coalesce(blogTitle[_key == $language][0].value, blogTitle[_key == "es"][0].value, blogTitle[0].value)
+    "blogTitle": coalesce(blogTitle[_key == $language][0].value, blogTitle[_key == "es"][0].value, blogTitle[0].value),
+    "blogPostClosing": coalesce(blogPostClosing[_key == $language][0].value, blogPostClosing[_key == "es"][0].value, blogPostClosing[0].value)
   }
 `);
 
