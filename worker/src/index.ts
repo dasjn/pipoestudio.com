@@ -13,8 +13,8 @@ const ALLOWED_ORIGINS = [
   "http://localhost:3000",
   "http://localhost:3001",
   "https://pipoestudiowebfrontend.vercel.app",
-  "https://pipoestudio.com",
-  "https://www.pipoestudio.com",
+  "https://eltallerdepipo.com",
+  "https://www.eltallerdepipo.com",
 ];
 
 function buildSystemPrompt(language: string): string {
