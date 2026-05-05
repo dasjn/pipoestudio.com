@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@keyframes marquee-bounce {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(var(--marquee-tx, 0px)); }
+}
+
 @font-face {
   font-family: "Delight";
   src:

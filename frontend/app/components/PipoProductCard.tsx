@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import Button from "./Button";
 import { urlForImage } from "@/sanity/lib/utils";
@@ -42,6 +43,18 @@ export default function PipoProductCard({
     priceShippingInfo,
     sold = false,
   } = product;
+
+  const titleContainerRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const [titleOverflow, setTitleOverflow] = useState(0);
+
+  useEffect(() => {
+    const container = titleContainerRef.current;
+    const title = titleRef.current;
+    if (!container || !title) return;
+    const overflow = title.offsetWidth - container.clientWidth;
+    setTitleOverflow(Math.max(0, overflow));
+  }, [name]);
 
   const imageUrl = image?.asset
     ? urlForImage(image)?.width(600).height(800).url()
@@ -135,29 +148,50 @@ export default function PipoProductCard({
             position: "absolute",
             top: 0,
             left: 0,
+            right: 0,
             display: "flex",
             flexDirection: "column",
             alignItems: "flex-start",
           }}
         >
-          <h3
+          {/* Clip wrapper — empieza 2px a la izq para no recortar el margin-left del h3 */}
+          <div
+            ref={titleContainerRef}
             style={{
-              background: CARD_BG,
-              color: GREEN,
-              fontSize: 30,
-              fontWeight: 900,
-              lineHeight: 1,
-              textTransform: "uppercase",
-              marginLeft: -1,
-              paddingRight: 10,
-              paddingBottom: 2,
-              paddingLeft: 2,
-              marginBottom: -1,
-              borderRadius: "0 0 6px 0",
+              overflowX: "clip",
+              overflowY: "visible",
+              marginLeft: -2,
+              width: "calc(100% + 2px)",
             }}
           >
-            {name}
-          </h3>
+            <h3
+              ref={titleRef}
+              style={{
+                background: CARD_BG,
+                color: GREEN,
+                fontSize: 24,
+                fontWeight: 900,
+                lineHeight: 1,
+                textTransform: "uppercase",
+                marginTop: -2,
+                marginBottom: -2,
+                marginRight: -2,
+                marginLeft: 0,
+                paddingRight: 10,
+                paddingBottom: 2,
+                paddingLeft: 2,
+                borderRadius: "0 0 6px 0",
+                whiteSpace: "nowrap",
+                display: "inline-block",
+                ...(titleOverflow > 0 && {
+                  "--marquee-tx": `-${titleOverflow}px`,
+                  animation: "marquee-bounce 2.5s ease-in-out 1s infinite alternate",
+                } as React.CSSProperties),
+              }}
+            >
+              {name}
+            </h3>
+          </div>
           {subtitle && (
             <p
               style={{
@@ -166,8 +200,7 @@ export default function PipoProductCard({
                 fontSize: 9,
                 fontWeight: 700,
                 textTransform: "uppercase",
-                marginLeft: -1,
-                marginTop: -1,
+                margin: -2,
                 paddingRight: 8,
                 paddingBottom: 4,
                 paddingLeft: 2,
@@ -193,8 +226,7 @@ export default function PipoProductCard({
               fontSize: 9,
               fontWeight: 700,
               lineHeight: 1.5,
-              marginLeft: -1,
-              marginBottom: -1,
+              margin: -2,
               textTransform: "uppercase",
               whiteSpace: "pre-line",
               paddingTop: 4,
