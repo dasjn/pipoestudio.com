@@ -14,6 +14,7 @@ export interface SectionsData {
   tienda?: any;
   contacto?: any;
   inicio?: any;
+  postFooter?: any;
   posts: any[];
   products: any[];
 }

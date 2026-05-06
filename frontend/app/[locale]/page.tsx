@@ -49,6 +49,7 @@ export default async function Page({ params }: Props) {
     sobreMi: findSectionData(sanitySections, "SobreMiSection"),
     tienda: findSectionData(sanitySections, "tiendaSection"),
     contacto: findSectionData(sanitySections, "contactoSection"),
+    postFooter: findSectionData(sanitySections, "postFooterSection"),
     posts: posts ?? [],
     products: products ?? [],
   };
@@ -57,7 +58,7 @@ export default async function Page({ params }: Props) {
     <>
       <Header />
       <InicioSection data={sectionsData.inicio} />
-      <PlaygroundSection />
+      <PlaygroundSection data={sectionsData.postFooter} />
       <ThreeDCanvas sectionsData={sectionsData} />
       <PipoChat />
     </>

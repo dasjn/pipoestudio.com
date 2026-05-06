@@ -12,6 +12,7 @@ import {cursosSection} from './objects/cursosSection'
 import {tiendaSection} from './objects/tiendaSection'
 import {contactoSection} from './objects/contactoSection'
 import {sobreMiSection} from './objects/sobreMiSection'
+import {postFooterSection} from './objects/postFooterSection'
 import {settings} from './singletons/settings'
 import {home} from './singletons/home'
 import {link} from './objects/link'
@@ -39,6 +40,7 @@ export const schemaTypes = [
   tiendaSection,
   contactoSection,
   sobreMiSection,
+  postFooterSection,
   callToAction,
   link,
 ]

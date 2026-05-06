@@ -39,6 +39,7 @@ export const home = defineType({
         {type: 'SobreMiSection'},
         {type: 'tiendaSection'},
         {type: 'contactoSection'},
+        {type: 'postFooterSection'},
       ],
       options: {
         insertMenu: {
