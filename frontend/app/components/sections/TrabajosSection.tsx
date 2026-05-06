@@ -32,7 +32,7 @@ interface TrabajosSectionProps {
 
 const DEFAULT_STATEMENT = "PROYECTOS QUE HABLAN POR SÍ SOLOS.";
 
-const PILL_H = 32;
+const PILL_H = 40;
 const GREEN = 12;
 const GREEN_MARGIN = (PILL_H - GREEN) / 2;
 
