@@ -10,6 +10,7 @@ import React, {
 import { AnimatePresence, motion } from "framer-motion";
 import { useNavigationStore } from "@/app/store/navigationStore";
 import { useLocaleStore } from "@/app/store/localeStore";
+import Button from "@/app/components/Button";
 
 // ─── Config ────────────────────────────────────────────────────────────────────
 
@@ -18,6 +19,29 @@ const WORKER_URL = "https://pipo-chat.pipoestudioweb.workers.dev";
 const CHIPS = {
   es: ["Tipos de madera", "Tiempo de fabricación", "Precios"],
   en: ["Types of wood", "Production time", "Prices"],
+};
+
+const STRINGS = {
+  es: {
+    cta: "Haz click aquí para preguntarme",
+    header: "Pregúntame lo que quieras!*",
+    welcome: "Seguro que te puedo ayudar con eso!",
+    thinking: "pensando muy fuerte...",
+    placeholder: "Escribe tu pregunta aquí",
+    disclaimer: "*Pipo a veces se equivoca, si crees que la respuesta no es precisa",
+    disclaimerBtn: "habla con nosotros directamente",
+    error: "Ups, algo salió mal. Inténtalo de nuevo!",
+  },
+  en: {
+    cta: "Click here to ask me",
+    header: "Ask me anything!*",
+    welcome: "I'm sure I can help you with that!",
+    thinking: "thinking really hard...",
+    placeholder: "Write your question here",
+    disclaimer: "*Pipo sometimes makes mistakes, if you think the answer isn't accurate",
+    disclaimerBtn: "talk to us directly",
+    error: "Oops, something went wrong. Try again!",
+  },
 };
 
 // ─── Markdown renderer ─────────────────────────────────────────────────────────
@@ -217,6 +241,7 @@ export default function PipoChat() {
   const locale = useLocaleStore((s) => s.locale) as "es" | "en";
 
   const chips = CHIPS[locale] ?? CHIPS.es;
+  const t = STRINGS[locale] ?? STRINGS.es;
   const hasConversation = messages.length > 0;
 
   async function send(text: string) {
@@ -266,9 +291,7 @@ export default function PipoChat() {
         {
           role: "assistant",
           content:
-            locale === "en"
-              ? "Oops, something went wrong. Try again!"
-              : "Ups, algo salió mal. Inténtalo de nuevo!",
+            t.error,
         },
       ]);
     } finally {
@@ -279,7 +302,6 @@ export default function PipoChat() {
 
   function close() {
     setIsOpen(false);
-    setMessages([]);
     setInput("");
     setStreamed("");
   }
@@ -371,12 +393,19 @@ export default function PipoChat() {
                     onSend={send}
                     onClose={close}
                     onDisclaimer={() => scrollToSection("contacto")}
+                    header={t.header}
+                    welcome={t.welcome}
+                    thinking={t.thinking}
+                    placeholder={t.placeholder}
+                    disclaimer={t.disclaimer}
+                    disclaimerBtn={t.disclaimerBtn}
                   />
                 ) : (
                   <ClosedPanel
                     key="closed"
                     isMobile={isMobile}
                     onOpen={() => setIsOpen(true)}
+                    cta={t.cta}
                   />
                 )}
               </AnimatePresence>
@@ -393,9 +422,11 @@ export default function PipoChat() {
 function ClosedPanel({
   isMobile,
   onOpen,
+  cta,
 }: {
   isMobile: boolean;
   onOpen: () => void;
+  cta: string;
 }) {
   const w = isMobile ? 300 : 370;
   return (
@@ -428,7 +459,7 @@ function ClosedPanel({
           lineHeight: 1.2,
         }}
       >
-        Haz click aquí para preguntarme
+        {cta}
         <ClickIcon />
       </motion.button>
     </motion.div>
@@ -449,6 +480,12 @@ interface OpenPanelProps {
   onSend: (text: string) => void;
   onClose: () => void;
   onDisclaimer: () => void;
+  header: string;
+  welcome: string;
+  thinking: string;
+  placeholder: string;
+  disclaimer: string;
+  disclaimerBtn: string;
 }
 
 function OpenPanel({
@@ -463,6 +500,12 @@ function OpenPanel({
   onSend,
   onClose,
   onDisclaimer,
+  header,
+  welcome,
+  thinking,
+  placeholder,
+  disclaimer,
+  disclaimerBtn,
 }: OpenPanelProps) {
   const historyRef = useRef<HTMLDivElement>(null);
   const w = isMobile ? 300 : 390;
@@ -500,7 +543,7 @@ function OpenPanel({
           className="font-sans font-medium"
           style={{ color: "#00A750", fontSize: isMobile ? 14 : 16 }}
         >
-          Pregúntame lo que quieras!*
+          {header}
         </span>
         <motion.button
           onTap={onClose}
@@ -547,7 +590,7 @@ function OpenPanel({
             className="font-sans font-medium"
             style={{ color: "#00A750", fontSize: fs }}
           >
-            Seguro que te puedo ayudar con eso!
+            {welcome}
           </p>
         ) : (
           <>
@@ -615,7 +658,7 @@ function OpenPanel({
                         lineHeight: 1.45,
                       }}
                     >
-                      pensando muy fuerte...
+                      {thinking}
                     </p>
                   )}
                 </div>
@@ -646,7 +689,7 @@ function OpenPanel({
               if (e.key === "Enter") onSend(input);
             }}
             disabled={isLoading}
-            placeholder="Escribe tu pregunta aquí"
+            placeholder={placeholder}
             className="font-sans"
             style={{
               flex: 1,
@@ -660,28 +703,15 @@ function OpenPanel({
               touchAction: "manipulation",
             }}
           />
-          <button
-            onClick={() => {
-              if (!isLoading) onSend(input);
-            }}
-            style={{
-              background: "rgba(255,255,255,0.18)",
-              border: "none",
-              borderRadius: 4,
-              width: 30,
-              height: 30,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: isLoading ? "not-allowed" : "pointer",
-              color: "#E4E5E0",
-              fontSize: 18,
-              flexShrink: 0,
-              opacity: isLoading ? 0.5 : 1,
-            }}
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => onSend(input)}
+            disabled={isLoading}
+            className="shrink-0"
           >
             →
-          </button>
+          </Button>
         </div>
       </motion.div>
 
@@ -691,48 +721,35 @@ function OpenPanel({
         style={{ display: "flex", gap: 6, flexWrap: "wrap" }}
       >
         {chips.map((chip) => (
-          <motion.button
+          <Button
             key={chip}
-            onTap={() => onSend(chip)}
-            className="font-sans font-medium"
-            style={{
-              background: "#00A750",
-              color: "#E4E5E0",
-              borderRadius: 6,
-              padding: "6px 10px",
-              fontSize: 13,
-              border: "none",
-              cursor: "pointer",
-              whiteSpace: "nowrap",
-            }}
+            variant="primary"
+            size="sm"
+            onClick={() => onSend(chip)}
+            className="normal-case font-medium"
           >
             {chip}
-          </motion.button>
+          </Button>
         ))}
       </motion.div>
 
       {/* Disclaimer */}
-      <motion.p
+      <motion.div
         variants={itemVariants}
-        className="font-sans text-center"
-        style={{ fontSize: 11, color: "#6F6F6F", lineHeight: 1.4 }}
+        className="font-sans text-center flex flex-col items-center gap-2"
       >
-        *Pipo a veces se equivoca, si crees que la respuesta no es precisa,{" "}
-        <motion.button
-          onTap={onDisclaimer}
-          className="font-sans font-medium underline"
-          style={{
-            color: "#00A750",
-            background: "transparent",
-            border: "none",
-            cursor: "pointer",
-            fontSize: 11,
-            padding: 0,
-          }}
+        <p style={{ fontSize: 11, color: "#6F6F6F", lineHeight: 1.4 }}>
+          {disclaimer}
+        </p>
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={onDisclaimer}
+          className="font-medium"
         >
-          habla con nosotros directamente
-        </motion.button>
-      </motion.p>
+          {disclaimerBtn}
+        </Button>
+      </motion.div>
     </motion.div>
   );
 }

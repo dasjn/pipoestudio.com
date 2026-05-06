@@ -2,7 +2,6 @@
   "name": "pipo-frontend",
   "private": true,
   "scripts": {
-    "predev": "npm run typegen",
     "dev": "next dev --turbopack -H 0.0.0.0",
     "prebuild": "npm run typegen",
     "build": "next build",
