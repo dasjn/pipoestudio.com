@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import React, { useRef, useEffect } from "react";
-import { useGLTF, useAnimations, useTexture } from "@react-three/drei";
+import { useGLTF, useAnimations } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 import { useFrame } from "@react-three/fiber";
 import { useFacialAnimations } from "../hooks/useFacialAnimations";
@@ -101,6 +101,58 @@ type ActionName =
   | "C-Jugueton";
 type GLTFActions = Record<ActionName, THREE.AnimationAction>;
 
+const CROSSFADE_SPEED = 1.1;
+
+// Textura negra 1×1 como placeholder — evita que el material quede sin textura válida
+const EMPTY_TEX = (() => {
+  const t = new THREE.DataTexture(new Uint8Array([0, 0, 0, 255]), 1, 1);
+  t.needsUpdate = true;
+  return t;
+})();
+
+const CROSSFADE_VERT = /* glsl */`
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+const CROSSFADE_FRAG = /* glsl */`
+  uniform sampler2D texA;
+  uniform mat3 texAMatrix;
+  uniform sampler2D texB;
+  uniform mat3 texBMatrix;
+  uniform float mixFactor;
+  varying vec2 vUv;
+  void main() {
+    vec2 uvA = (texAMatrix * vec3(vUv, 1.0)).xy;
+    vec2 uvB = (texBMatrix * vec3(vUv, 1.0)).xy;
+    gl_FragColor = mix(texture2D(texA, uvA), texture2D(texB, uvB), mixFactor);
+  }
+`;
+
+function applyTransform(t: THREE.Texture, geometry: THREE.BufferGeometry) {
+  t.flipY = false;
+  geometry.computeBoundingBox();
+  const box = geometry.boundingBox;
+  if (!box) { t.updateMatrix(); return; }
+  const meshAspect = (box.max.x - box.min.x) / (box.max.y - box.min.y);
+  const img = t.image as { width: number; height: number };
+  if (!img?.width || !img?.height) { t.updateMatrix(); return; }
+  const imageAspect = img.width / img.height;
+  if (imageAspect > meshAspect) {
+    const s = meshAspect / imageAspect;
+    t.repeat.set(s, 1);
+    t.offset.set((1 - s) / 2, 0);
+  } else {
+    const s = imageAspect / meshAspect;
+    t.repeat.set(1, s);
+    t.offset.set(0, (1 - s) / 2);
+  }
+  t.updateMatrix();
+  t.needsUpdate = true;
+}
+
 function FotoTexture({
   url,
   geometry,
@@ -108,37 +160,67 @@ function FotoTexture({
   url: string;
   geometry: THREE.BufferGeometry;
 }) {
-  const texture = useTexture(url);
+  const mountedRef = useRef(false);
+  const mixRef = useRef({ active: false, factor: 0 });
+
+  const uniformsRef = useRef({
+    texA: { value: EMPTY_TEX as THREE.Texture },
+    texAMatrix: { value: new THREE.Matrix3() },
+    texB: { value: EMPTY_TEX as THREE.Texture },
+    texBMatrix: { value: new THREE.Matrix3() },
+    mixFactor: { value: 0 },
+  });
+
+  // Material creado una sola vez — nunca se recrea en re-renders
+  const matRef = useRef<THREE.ShaderMaterial | null>(null);
+  if (!matRef.current) {
+    matRef.current = new THREE.ShaderMaterial({
+      uniforms: uniformsRef.current,
+      vertexShader: CROSSFADE_VERT,
+      fragmentShader: CROSSFADE_FRAG,
+    });
+  }
 
   useEffect(() => {
-    texture.flipY = false;
+    let active = true;
+    new THREE.TextureLoader().load(url, (t) => {
+      if (!active) return;
+      applyTransform(t, geometry);
+      const u = uniformsRef.current;
+      if (!mountedRef.current) {
+        // Primera carga: sin transición, muestra directamente
+        mountedRef.current = true;
+        u.texA.value = t;
+        u.texAMatrix.value.copy(t.matrix);
+        u.texB.value = t;
+        u.texBMatrix.value.copy(t.matrix);
+      } else {
+        // Cambio de página: crossfade de A (actual) a B (nueva)
+        u.texB.value = t;
+        u.texBMatrix.value.copy(t.matrix);
+        mixRef.current.factor = 0;
+        mixRef.current.active = true;
+      }
+    });
+    return () => { active = false; };
+  }, [url]); // geometry es estable (nodos del GLB)
 
-    geometry.computeBoundingBox();
-    const box = geometry.boundingBox;
-    if (!box) return;
-
-    const meshAspect = (box.max.x - box.min.x) / (box.max.y - box.min.y);
-    const img = texture.image as { width: number; height: number };
-    if (!img?.width || !img?.height) return;
-    const imageAspect = img.width / img.height;
-
-    // cover: ajusta al margen más pequeño, recorta el grande
-    if (imageAspect > meshAspect) {
-      // imagen más ancha → encaja alto, recorta anchos
-      const s = meshAspect / imageAspect;
-      texture.repeat.set(s, 1);
-      texture.offset.set((1 - s) / 2, 0);
-    } else {
-      // imagen más alta → encaja ancho, recorta altos
-      const s = imageAspect / meshAspect;
-      texture.repeat.set(1, s);
-      texture.offset.set(0, (1 - s) / 2);
+  useFrame((_, delta) => {
+    const mix = mixRef.current;
+    const mat = matRef.current;
+    if (!mat || !mix.active) return;
+    mix.factor = Math.min(1, mix.factor + delta * CROSSFADE_SPEED);
+    mat.uniforms.mixFactor.value = mix.factor;
+    if (mix.factor >= 1) {
+      mat.uniforms.texA.value = mat.uniforms.texB.value;
+      mat.uniforms.texAMatrix.value = mat.uniforms.texBMatrix.value.clone();
+      mat.uniforms.mixFactor.value = 0;
+      mix.active = false;
     }
+  });
 
-    texture.needsUpdate = true;
-  }, [texture, geometry]);
-
-  return <meshBasicMaterial map={texture} />;
+  // Siempre adjunto — sin conditional rendering que cause frames sin material
+  return <primitive object={matRef.current} attach="material" />;
 }
 
 interface ModelProps extends React.ComponentProps<"group"> {

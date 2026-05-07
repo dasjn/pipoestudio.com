@@ -74,6 +74,7 @@ function WorkDot({
       onMouseLeave={() => setHovered(false)}
     >
       <motion.div
+        initial={{ width: PILL_H }}
         animate={{ width: hovered ? expandedWidth : PILL_H }}
         transition={{ type: "spring", stiffness: 380, damping: 32 }}
         style={{
@@ -103,6 +104,7 @@ function WorkDot({
         {/* Texto */}
         <motion.div
           ref={textRef}
+          initial={{ opacity: 0 }}
           animate={{ opacity: hovered ? 1 : 0 }}
           transition={{ duration: 0.1, delay: hovered ? 0.18 : 0 }}
           style={{
@@ -181,7 +183,7 @@ export default function TrabajosSection({ data }: TrabajosSectionProps) {
         )}
       </div>
 
-      <AnimatePresence mode="wait">
+      <AnimatePresence>
         <motion.div
           key={page}
           initial={{ opacity: 0 }}
