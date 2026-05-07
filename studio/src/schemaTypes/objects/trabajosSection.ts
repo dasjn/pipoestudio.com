@@ -29,7 +29,7 @@ export const trabajosSection = defineType({
     }),
     defineField({
       name: 'fotos',
-      title: 'Fotos (máx. 4)',
+      title: 'Fotos',
       type: 'array',
       of: [
         {
@@ -65,7 +65,6 @@ export const trabajosSection = defineType({
           },
         },
       ],
-      validation: (rule) => rule.max(4),
     }),
     // Campos legacy — ocultos para no mostrar "unknown fields"
     defineField({

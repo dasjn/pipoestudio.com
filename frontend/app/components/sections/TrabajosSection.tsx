@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useTrabajosStore } from "@/app/store/trabajosStore";
 import Button from "@/app/components/Button";
 
 interface FotoItem {
@@ -31,6 +32,8 @@ interface TrabajosSectionProps {
 }
 
 const DEFAULT_STATEMENT = "PROYECTOS QUE HABLAN POR SÍ SOLOS.";
+const DEFAULT_BUTTON_TEXT = "Ver más";
+const FOTOS_PER_PAGE = 4;
 
 const PILL_H = 40;
 const GREEN = 12;
@@ -84,7 +87,7 @@ function WorkDot({
           cursor: "pointer",
         }}
       >
-        {/* Círculo verde — no cambia nunca */}
+        {/* Círculo verde */}
         <div
           style={{
             width: GREEN,
@@ -97,7 +100,7 @@ function WorkDot({
           }}
         />
 
-        {/* Texto — whiteSpace nowrap para medir width real */}
+        {/* Texto */}
         <motion.div
           ref={textRef}
           animate={{ opacity: hovered ? 1 : 0 }}
@@ -145,6 +148,14 @@ function WorkDot({
 export default function TrabajosSection({ data }: TrabajosSectionProps) {
   const statement = data?.statement || DEFAULT_STATEMENT;
   const fotos = data?.fotos ?? [];
+  const totalPages = Math.max(1, Math.ceil(fotos.length / FOTOS_PER_PAGE));
+
+  const { page, setPage } = useTrabajosStore();
+  const currentFotos = fotos.slice(page * FOTOS_PER_PAGE, (page + 1) * FOTOS_PER_PAGE);
+
+  function goToNextPage() {
+    setPage((page + 1) % totalPages);
+  }
 
   return (
     <section id="trabajos" className="w-full h-full relative">
@@ -156,9 +167,9 @@ export default function TrabajosSection({ data }: TrabajosSectionProps) {
           {statement}
         </p>
 
-        {data?.buttonText && data?.buttonUrl && (
-          <Button as="link" href={data.buttonUrl} variant="primary" size="sm">
-            {data.buttonText}
+        {totalPages > 1 && (
+          <Button as="button" variant="primary" size="sm" onClick={goToNextPage}>
+            {data?.buttonText ?? DEFAULT_BUTTON_TEXT}
             <span
               className="material-symbols-outlined"
               style={{ fontSize: "16px" }}
@@ -170,15 +181,24 @@ export default function TrabajosSection({ data }: TrabajosSectionProps) {
         )}
       </div>
 
-      <div style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
-        {fotos.map((foto, i) => (
-          <WorkDot
-            key={i}
-            foto={foto}
-            pos={DOT_POSITIONS[i] ?? { x: 50, y: 50 }}
-          />
-        ))}
-      </div>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={page}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25, ease: "easeInOut" }}
+          style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
+        >
+          {currentFotos.map((foto, i) => (
+            <WorkDot
+              key={i}
+              foto={foto}
+              pos={DOT_POSITIONS[i] ?? { x: 50, y: 50 }}
+            />
+          ))}
+        </motion.div>
+      </AnimatePresence>
     </section>
   );
 }

@@ -4,6 +4,7 @@ import { useGLTF, useAnimations, useTexture } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 import { useFrame } from "@react-three/fiber";
 import { useFacialAnimations } from "../hooks/useFacialAnimations";
+import { useTrabajosStore } from "../store/trabajosStore";
 
 export interface SectionsData {
   manifiesto?: any;
@@ -160,8 +161,13 @@ export function Model({
   sectionsData,
   ...props
 }: ModelProps) {
-  const fotos: (string | undefined)[] =
+  const trabajosPage = useTrabajosStore((s) => s.page);
+  const allFotos: string[] =
     sectionsData?.trabajos?.fotos?.map((f: any) => f.url as string) ?? [];
+  const fotos: (string | undefined)[] = allFotos.slice(
+    trabajosPage * 4,
+    trabajosPage * 4 + 4,
+  );
   const group = useRef<THREE.Group>();
   const { nodes, materials, animations } = useGLTF(
     "/models/Pipo_Todo_Prueba_v29.glb",
