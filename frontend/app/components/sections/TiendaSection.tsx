@@ -113,7 +113,7 @@ export default function TiendaSection({
   return (
     <section
       id="tienda"
-      className="font-sans w-full h-full flex flex-col items-center justify-center gap-3 px-2 mt-6"
+      className="font-sans w-full h-full flex flex-col items-center justify-center gap-3 px-2 mt-8"
     >
       <div className="text-center">
         <p className="font-bold text-5xl leading-none text-green-pipo uppercase">
