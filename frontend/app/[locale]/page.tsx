@@ -34,7 +34,7 @@ export default async function Page({ params }: Props) {
     sanityFetch({ query: homeQuery, params: { language: locale } }),
     sanityFetch({
       query: featuredProductsQuery,
-      params: { language: locale, limit: 3 },
+      params: { language: locale, limit: 21 },
     }),
   ]);
 

@@ -214,7 +214,7 @@ export const productsQuery = defineQuery(`
 `);
 
 export const featuredProductsQuery = defineQuery(`
-  *[_type == "product" && isActive == true] | order(sortOrder asc, _createdAt desc) [0...$limit] {
+  *[_type == "product" && isActive != false] | order(sortOrder asc, _createdAt desc) [0...$limit] {
     _id,
     "name": coalesce(name[_key == $language][0].value, name[_key == "es"][0].value, name[0].value),
     "subtitle": coalesce(subtitle[_key == $language][0].value, subtitle[_key == "es"][0].value, subtitle[0].value),

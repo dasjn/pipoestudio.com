@@ -147,7 +147,8 @@ export default function SectionOverlays({
           products={sectionsData?.products}
         />
       ),
-      planeH: 3.2,
+      planeW: 6.5,
+      planeH: 3.6,
     },
     {
       id: "contacto",
