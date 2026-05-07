@@ -103,7 +103,7 @@ export default function PlaygroundSection({ data }: Props) {
       <div
         style={{
           position: "absolute",
-          bottom: "5%",
+          bottom: "8%",
           left: 0,
           right: 0,
           display: "flex",
@@ -134,11 +134,24 @@ export default function PlaygroundSection({ data }: Props) {
         {data?.thankYouText && (
           <p
             className="font-sans font-bold text-6xl leading-none tracking-normal text-center text-white"
-            style={{ textShadow: "0 2px 12px rgba(0,0,0,0.5)" }}
           >
             {data.thankYouText}
           </p>
         )}
+
+        <a
+          href="https://www.byfugu.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-sans text-white hover:underline"
+          style={{ fontSize: 13, opacity: 0.75, display: "flex", alignItems: "center", gap: 4 }}
+        >
+          Made for Pipo with
+          <svg viewBox="0 0 20 19" width="14" height="14" aria-hidden="true" style={{ display: "inline-block", verticalAlign: "middle" }}>
+            <path d="M10 17L2.9 10.1C1.4 8.6 1.4 6.1 2.9 4.6C4.4 3.1 6.9 3.1 8.4 4.6L10 6.2L11.6 4.6C13.1 3.1 15.6 3.1 17.1 4.6C18.6 6.1 18.6 8.6 17.1 10.1L10 17Z" fill="currentColor" />
+          </svg>
+          byfugu
+        </a>
       </div>
     </section>
   );
