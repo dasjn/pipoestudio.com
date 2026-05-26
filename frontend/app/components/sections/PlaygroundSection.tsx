@@ -42,8 +42,8 @@ export default function PlaygroundSection({ data }: Props) {
     audio.play();
     const start = performance.now();
     function tick(now: number) {
-      const t = Math.min((now - start) / FADE_DURATION, 1);
-      audio.volume = Math.min(1, t);
+      const t = Math.min(1, Math.max(0, (now - start) / FADE_DURATION));
+      audio.volume = t;
       if (t < 1) rafRef.current = requestAnimationFrame(tick);
     }
     rafRef.current = requestAnimationFrame(tick);
@@ -54,8 +54,8 @@ export default function PlaygroundSection({ data }: Props) {
     const startVol = audio.volume;
     const start = performance.now();
     function tick(now: number) {
-      const t = Math.min((now - start) / FADE_DURATION, 1);
-      audio.volume = Math.max(0, startVol * (1 - t));
+      const t = Math.min(1, Math.max(0, (now - start) / FADE_DURATION));
+      audio.volume = Math.min(1, Math.max(0, startVol * (1 - t)));
       if (t < 1) {
         rafRef.current = requestAnimationFrame(tick);
       } else {
