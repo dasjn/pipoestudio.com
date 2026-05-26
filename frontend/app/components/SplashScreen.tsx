@@ -40,13 +40,12 @@ export default function SplashScreen() {
     if (isModelReady) exit();
   }, [isModelReady, exit]);
 
-  // Mobile fallback: exit after MIN_MS if no 3D model ever loaded
+  // Mobile fallback: on mobile there's no 3D model, exit after MIN_MS
   useEffect(() => {
-    const id = setTimeout(() => {
-      if (!isModelReady) exit();
-    }, MIN_MS + 400);
+    if (typeof window === "undefined" || window.innerWidth >= 768) return;
+    const id = setTimeout(exit, MIN_MS + 400);
     return () => clearTimeout(id);
-  }, [exit, isModelReady]);
+  }, [exit]);
 
   const display = isModelReady ? 100 : fakeProgress;
 
