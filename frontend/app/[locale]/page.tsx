@@ -49,6 +49,7 @@ export default async function Page({ params }: Props) {
     sobreMi: findSectionData(sanitySections, "SobreMiSection"),
     tienda: findSectionData(sanitySections, "tiendaSection"),
     contacto: findSectionData(sanitySections, "contactoSection"),
+    footer: findSectionData(sanitySections, "footerSection"),
     postFooter: findSectionData(sanitySections, "postFooterSection"),
     posts: posts ?? [],
     products: products ?? [],

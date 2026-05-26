@@ -1,6 +1,7 @@
 "use client";
 import { useLocaleStore } from "@/app/store/localeStore";
 import { useNavigationStore } from "@/app/store/navigationStore";
+import PipoLogo from "@/app/components/PipoLogo";
 import { AnimatePresence, motion } from "framer-motion";
 
 interface InicioSectionData {
@@ -47,9 +48,7 @@ export default function InicioSection({ data }: InicioSectionProps) {
             transition={{ duration: 0.35, ease: "easeInOut" }}
           >
             <h1 className="font-bold text-green-pipo text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl flex flex-col items-center uppercase">
-              <span className="block mt-10 mb-10 text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl capitalize">
-                {content.title}
-              </span>
+              <PipoLogo className="block mt-10 mb-10 h-10 sm:h-12 md:h-14 lg:h-16 xl:h-20 w-auto" fill="currentColor" />
               <span className="block">{content.subtitle1}</span>
               <span className="block">{content.subtitle2}</span>
               <span className="flex items-center gap-2 sm:gap-4">

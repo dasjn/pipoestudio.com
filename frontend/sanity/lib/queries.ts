@@ -83,6 +83,11 @@ export const homeQuery = defineQuery(`
         "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),
         "body": coalesce(body[_key == $language][0].value, body[_key == "es"][0].value, body[0].value),
       },
+      _type == "footerSection" => {
+        "heading": coalesce(heading[_key == $language][0].value, heading[_key == "es"][0].value, heading[0].value),
+        "captionText": coalesce(captionText[_key == $language][0].value, captionText[_key == "es"][0].value, captionText[0].value),
+        captionUrl,
+      },
       _type == "postFooterSection" => {
         "thankYouText": coalesce(thankYouText[_key == $language][0].value, thankYouText[_key == "es"][0].value, thankYouText[0].value),
         "musicButtonText": coalesce(musicButtonText[_key == $language][0].value, musicButtonText[_key == "es"][0].value, musicButtonText[0].value),

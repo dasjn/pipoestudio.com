@@ -158,7 +158,9 @@ export default function SectionOverlays({
     },
     {
       id: "footer",
-      content: <FooterSection />,
+      content: <FooterSection data={sectionsData?.footer} />,
+      planeW: 6.5,
+      planeH: 3.5,
     },
   ];
 

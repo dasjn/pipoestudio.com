@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import PipoLogo from "@/app/components/PipoLogo";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import {
@@ -136,7 +137,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
         }`}
       >
         <div className="flex justify-between items-center p-5 border-b border-green-pipo">
-          <span className="text-clean-gray font-bold text-xl">PIPO LOGO</span>
+          <PipoLogo className="h-6 w-auto text-clean-gray" fill="currentColor" />
           <button
             onClick={handleClose}
             className="text-clean-gray hover:text-green-100 p-1"
@@ -246,10 +247,8 @@ const Header: React.FC<HeaderProps> = ({ currentPath = "" }) => {
     },
   ];
 
-  const handleAnimatedLogoClick = () => {
-    // Acción para el logo animado
-    console.log("Logo animado clicked");
-  };
+  const scrollToSection = useNavigationStore((state) => state.scrollToSection);
+  const handleAnimatedLogoClick = () => scrollToSection("inicio");
 
   return (
     <>
@@ -272,12 +271,11 @@ const Header: React.FC<HeaderProps> = ({ currentPath = "" }) => {
                 </NavLink>
               ))}
 
-              {/* PIPO LOGO ANIMADO */}
-              <button
+                  <button
                 onClick={handleAnimatedLogoClick}
-                className="text-clean-gray font-bold text-base hover:text-green-100 transition-colors"
+                className="text-clean-gray hover:text-green-100 transition-colors"
               >
-                PIPO LOGO ANIMADO
+                <PipoLogo className="h-7 w-auto" fill="currentColor" />
               </button>
             </div>
           </nav>
@@ -304,8 +302,9 @@ const Header: React.FC<HeaderProps> = ({ currentPath = "" }) => {
               </svg>
             </button>
 
-            {/* Logo Mobile */}
-            <span className="text-clean-gray font-bold text-lg">PIPO LOGO</span>
+            <button onClick={handleAnimatedLogoClick} className="text-clean-gray hover:text-green-100 transition-colors">
+              <PipoLogo className="h-6 w-auto" fill="currentColor" />
+            </button>
           </nav>
         </div>
       </header>

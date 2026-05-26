@@ -1,13 +1,45 @@
-export default function Footer() {
+import Image from "next/image";
+
+interface FooterSectionData {
+  _type: "footerSection";
+  heading?: string;
+  captionText?: string;
+  captionUrl?: string;
+}
+
+interface Props {
+  data?: FooterSectionData;
+}
+
+export default function Footer({ data }: Props) {
+  const heading = data?.heading || "LO ÚNICO ES LO NORMAL";
+  const captionText = data?.captionText || "Made for Pipo with love byfugu";
+  const captionUrl = data?.captionUrl || "https://www.byfugu.com";
+
   return (
-    <footer
-      id="footer"
-      className="w-full h-full flex items-center justify-center"
-    >
-      <div className="text-center">
-        <h2 className="text-3xl font-bold mb-4">Footer</h2>
-        <p className="text-lg">Pie de pagina</p>
-      </div>
+    <footer className="w-full h-full flex flex-col items-center justify-center pt-[10%]">
+      <p className="font-bold text-green-pipo text-3xl text-center uppercase leading-tight mb-4">
+        {heading}
+      </p>
+
+      <Image
+        src="/images/Pipo_Imagen_Footer.webp"
+        alt="Pipo"
+        width={900}
+        height={900}
+        className="w-auto object-contain"
+        style={{ maxHeight: "70%" }}
+        priority
+      />
+
+      <a
+        href={captionUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-[10px] font-bold text-green-pipo text-center hover:underline mt-1"
+      >
+        {captionText}
+      </a>
     </footer>
   );
 }
