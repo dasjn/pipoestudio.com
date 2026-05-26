@@ -9,6 +9,7 @@ import { sanityFetch } from "@/sanity/lib/live";
 import { i18n, type Locale } from "@/i18n.config";
 import DeviceRouter from "../components/DeviceRouter";
 import PipoChat from "../components/PipoChat";
+import SplashScreen from "../components/SplashScreen";
 import type { SectionsData } from "../components/Shelves";
 
 function findSectionData(sections: any[], type: string) {
@@ -55,6 +56,7 @@ export default async function Page({ params }: Props) {
 
   return (
     <>
+      <SplashScreen />
       <Header />
       <DeviceRouter sectionsData={sectionsData} />
       <PipoChat />
