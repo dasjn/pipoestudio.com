@@ -5,19 +5,29 @@ import { useNavigationStore } from "../store/navigationStore";
 
 const MIN_MS = 1500;
 
+const MOBILE_IMAGES = [
+  "/images/mobile/bg-mobile-01.webp",
+  "/images/mobile/bg-mobile-02.webp",
+  "/images/mobile/bg-mobile-03.webp",
+  "/images/mobile/bg-mobile-04.webp",
+  "/images/mobile/bg-mobile-05.webp",
+  "/images/mobile/bg-mobile-06.webp",
+  "/images/mobile/bg-mobile-07.webp",
+  "/images/mobile/bg-mobile-08.webp",
+  "/images/mobile/bg-mobile-09.webp",
+];
+
 export default function SplashScreen() {
   const isModelReady = useNavigationStore((s) => s.isModelReady);
-  const [fakeProgress, setFakeProgress] = useState(0);
+  const [progress, setProgress] = useState(0);
   const [visible, setVisible] = useState(true);
   const [fading, setFading] = useState(false);
   const mountTime = useRef(Date.now());
   const exitedRef = useRef(false);
-  const fakeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const exit = useCallback(() => {
     if (exitedRef.current) return;
     exitedRef.current = true;
-    if (fakeIntervalRef.current) clearInterval(fakeIntervalRef.current);
     const wait = Math.max(0, MIN_MS - (Date.now() - mountTime.current));
     setTimeout(() => {
       setFading(true);
@@ -25,29 +35,45 @@ export default function SplashScreen() {
     }, wait);
   }, []);
 
-  // Fake progress for mobile (no 3D model loads)
   useEffect(() => {
-    fakeIntervalRef.current = setInterval(() => {
-      setFakeProgress((p) => (p < 90 ? p + 1.2 : p));
-    }, 20);
-    return () => {
-      if (fakeIntervalRef.current) clearInterval(fakeIntervalRef.current);
-    };
-  }, []);
+    if (typeof window === "undefined") return;
+    const mobile = window.innerWidth < 768;
 
-  // Desktop: exit when Model component has rendered (GLB parsed + in scene)
-  useEffect(() => {
-    if (isModelReady) exit();
-  }, [isModelReady, exit]);
-
-  // Mobile fallback: on mobile there's no 3D model, exit after MIN_MS
-  useEffect(() => {
-    if (typeof window === "undefined" || window.innerWidth >= 768) return;
-    const id = setTimeout(exit, MIN_MS + 400);
-    return () => clearTimeout(id);
+    if (mobile) {
+      // Precargar imágenes de fondo y trackear progreso real
+      let loaded = 0;
+      const total = MOBILE_IMAGES.length;
+      const onSettle = () => {
+        loaded++;
+        setProgress(Math.round((loaded / total) * 100));
+        if (loaded === total) exit();
+      };
+      MOBILE_IMAGES.forEach((src) => {
+        const img = new window.Image();
+        img.onload = onSettle;
+        img.onerror = onSettle; // contar errores para no bloquearse
+        img.src = src;
+      });
+    } else {
+      // Desktop: fake progress mientras carga el GLB
+      let p = 0;
+      const id = setInterval(() => {
+        p = Math.min(p + 1.2, 90);
+        setProgress(p);
+        if (p >= 90) clearInterval(id);
+      }, 20);
+      return () => clearInterval(id);
+    }
   }, [exit]);
 
-  const display = isModelReady ? 100 : fakeProgress;
+  // Desktop: salir cuando el modelo 3D está en escena
+  useEffect(() => {
+    if (isModelReady) {
+      setProgress(100);
+      const id = setTimeout(exit, 150); // pequeña pausa para que se vea el 100%
+      return () => clearTimeout(id);
+    }
+  }, [isModelReady, exit]);
 
   if (!visible) return null;
 
@@ -65,7 +91,7 @@ export default function SplashScreen() {
         <div
           className="h-full bg-white rounded-full"
           style={{
-            width: `${display}%`,
+            width: `${progress}%`,
             transition: "width 150ms ease-out",
           }}
         />
