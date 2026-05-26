@@ -15,7 +15,17 @@
       "Bash(npx tsc:*)",
       "Bash(npm run build:*)",
       "Bash(npm run lint:*)",
-      "Bash(git:*)"
+      "Bash(git:*)",
+      "Bash(node -e \"const deps = ['clsx','tailwind-merge','three','@react-three/fiber','@react-three/drei','@react-three/postprocessing','@sanity/asset-utils']; deps.forEach\\(d => { try { const p = require\\(d+'/package.json'\\); console.log\\(d+'@'+p.version\\) } catch\\(e\\) { console.log\\(d+': NO ENCONTRADO'\\) } }\\)\")",
+      "Bash(node *)",
+      "Bash(npx sanity *)",
+      "Bash(npm run *)",
+      "Bash(vercel env *)",
+      "Bash(vercel *)",
+      "Bash(curl -sI -H \"Origin: https://pipoestudiowebfrontend.vercel.app\" \"https://cdn.sanity.io/images/kzek939n/production/711b98cbfb9008a51548dd5e4b2fe5aec0939cd5-1216x1210.png\")",
+      "Bash(curl -sv \"https://cdn.sanity.io/images/kzek939n/production/711b98cbfb9008a51548dd5e4b2fe5aec0939cd5-1216x1210.png\")",
+      "Bash(curl *)",
+      "WebSearch"
     ],
     "deny": []
   }
