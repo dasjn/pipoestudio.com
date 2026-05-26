@@ -79,7 +79,7 @@ export default function SplashScreen() {
 
   return (
     <div
-      className="fixed inset-0 z-[200] flex flex-col items-center justify-center"
+      className="fixed inset-0 z-[200] flex flex-col items-center justify-center gap-6"
       style={{
         backgroundColor: "#00A750",
         opacity: fading ? 0 : 1,
@@ -87,6 +87,14 @@ export default function SplashScreen() {
         pointerEvents: fading ? "none" : "all",
       }}
     >
+      <video
+        src="/videos/LoopPipoIntro_165%25_v2.mp4"
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="w-48"
+      />
       <div className="w-48 h-[3px] rounded-full overflow-hidden bg-white/30">
         <div
           className="h-full bg-white rounded-full"
