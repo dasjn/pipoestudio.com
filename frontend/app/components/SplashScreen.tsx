@@ -1,19 +1,18 @@
 "use client";
 
-import { useProgress } from "@react-three/drei";
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useNavigationStore } from "../store/navigationStore";
 
 const MIN_MS = 1500;
 
 export default function SplashScreen() {
-  const { progress } = useProgress();
+  const isModelReady = useNavigationStore((s) => s.isModelReady);
   const [fakeProgress, setFakeProgress] = useState(0);
   const [visible, setVisible] = useState(true);
   const [fading, setFading] = useState(false);
   const mountTime = useRef(Date.now());
   const exitedRef = useRef(false);
   const fakeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const loadingStarted = useRef(false);
 
   const exit = useCallback(() => {
     if (exitedRef.current) return;
@@ -26,7 +25,7 @@ export default function SplashScreen() {
     }, wait);
   }, []);
 
-  // Fake progress for mobile (no 3D loading)
+  // Fake progress for mobile (no 3D model loads)
   useEffect(() => {
     fakeIntervalRef.current = setInterval(() => {
       setFakeProgress((p) => (p < 90 ? p + 1.2 : p));
@@ -36,24 +35,20 @@ export default function SplashScreen() {
     };
   }, []);
 
-  // Desktop: exit when GLB is fully loaded + 500ms buffer for GLTF parsing
+  // Desktop: exit when Model component has rendered (GLB parsed + in scene)
   useEffect(() => {
-    if (progress > 0) loadingStarted.current = true;
-    if (progress === 100) {
-      const id = setTimeout(exit, 500);
-      return () => clearTimeout(id);
-    }
-  }, [progress, exit]);
+    if (isModelReady) exit();
+  }, [isModelReady, exit]);
 
-  // Mobile fallback: exit after MIN_MS only if 3D never started loading
+  // Mobile fallback: exit after MIN_MS if no 3D model ever loaded
   useEffect(() => {
     const id = setTimeout(() => {
-      if (!loadingStarted.current) exit();
+      if (!isModelReady) exit();
     }, MIN_MS + 400);
     return () => clearTimeout(id);
-  }, [exit]);
+  }, [exit, isModelReady]);
 
-  const display = progress > 0 ? progress : fakeProgress;
+  const display = isModelReady ? 100 : fakeProgress;
 
   if (!visible) return null;
 

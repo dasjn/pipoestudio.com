@@ -169,6 +169,8 @@ interface NavigationState {
   onAnimationComplete: (animationName: string) => void;
   setAnimationSequenceActive: (active: boolean) => void;
   processAnimationQueue: () => void;
+  isModelReady: boolean;
+  setModelReady: () => void;
 }
 
 // Store de navegación
@@ -177,6 +179,8 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
   isScrolling: false,
   isTransitioning: false,
   isAnimationSequenceActive: false,
+  isModelReady: false,
+  setModelReady: () => set({ isModelReady: true }),
   navigationDirection: null,
   currentIdle: "Idle 01",
   activeAnimation: "Idle 01",

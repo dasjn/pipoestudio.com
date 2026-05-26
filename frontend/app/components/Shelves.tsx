@@ -5,6 +5,7 @@ import { GLTF } from "three-stdlib";
 import { useFrame } from "@react-three/fiber";
 import { useFacialAnimations } from "../hooks/useFacialAnimations";
 import { useTrabajosStore } from "../store/trabajosStore";
+import { useNavigationStore } from "../store/navigationStore";
 
 export interface SectionsData {
   manifiesto?: any;
@@ -255,6 +256,9 @@ export function Model({
     "/models/Pipo_Todo_Prueba_v29.glb",
   ) as unknown as GLTFResult;
   const { actions } = useAnimations(animations, group);
+
+  const setModelReady = useNavigationStore((s) => s.setModelReady);
+  useEffect(() => { setModelReady(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // State for animation blending
   const animationMixer = useRef<THREE.AnimationMixer | null>(null);
