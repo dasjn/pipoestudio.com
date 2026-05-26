@@ -88,7 +88,7 @@ export default function SplashScreen() {
       }}
     >
       <video
-        src="/videos/LoopPipoIntro_165%25_v2.mp4"
+        src="/videos/LoopPipoIntro_165%25_v2_fs.mp4"
         autoPlay
         muted
         playsInline

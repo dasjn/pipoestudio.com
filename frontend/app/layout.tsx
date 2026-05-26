@@ -70,7 +70,7 @@ export default async function RootLayout({
         <link
           rel="preload"
           as="video"
-          href="/videos/LoopPipoIntro_165%25_v2.mp4"
+          href="/videos/LoopPipoIntro_165%25_v2_fs.mp4"
         />
         <link
           rel="stylesheet"
