@@ -90,11 +90,14 @@ export default function SplashScreen() {
       <video
         src="/videos/LoopPipoIntro_165%25_v2.mp4"
         autoPlay
-        loop
         muted
         playsInline
         preload="auto"
         className="w-48"
+        onEnded={(e) => {
+          e.currentTarget.currentTime = 0;
+          e.currentTarget.play().catch(() => {});
+        }}
       />
       <div className="w-48 h-[3px] rounded-full overflow-hidden bg-white/30">
         <div
