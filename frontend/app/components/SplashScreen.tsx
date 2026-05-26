@@ -36,10 +36,13 @@ export default function SplashScreen() {
     };
   }, []);
 
-  // Desktop: exit when GLB is fully loaded
+  // Desktop: exit when GLB is fully loaded + 500ms buffer for GLTF parsing
   useEffect(() => {
     if (progress > 0) loadingStarted.current = true;
-    if (progress === 100) exit();
+    if (progress === 100) {
+      const id = setTimeout(exit, 500);
+      return () => clearTimeout(id);
+    }
   }, [progress, exit]);
 
   // Mobile fallback: exit after MIN_MS only if 3D never started loading
