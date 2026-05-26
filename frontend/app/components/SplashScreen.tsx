@@ -93,6 +93,7 @@ export default function SplashScreen() {
         loop
         muted
         playsInline
+        preload="auto"
         className="w-48"
       />
       <div className="w-48 h-[3px] rounded-full overflow-hidden bg-white/30">

@@ -68,6 +68,11 @@ export default async function RootLayout({
     <html lang="en" className={`${inter.variable} bg-white text-black`}>
       <head>
         <link
+          rel="preload"
+          as="video"
+          href="/videos/LoopPipoIntro_165%25_v2.mp4"
+        />
+        <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=pause,play_arrow,rotate_right"
         />
