@@ -489,6 +489,87 @@ if (element) {
 
 ---
 
+## 26. Mobile layout no se cargaba al contraer ventana
+
+**Problema:** Si el usuario redimensionaba la ventana del browser a menos de 768px después de cargar, el layout no cambiaba a mobile.
+
+**Causa:** `DeviceRouter` solo detectaba el tamaño en el mount inicial, sin listener de resize.
+
+**Fix:** Añadido resize listener con debounce de 400ms en `DeviceRouter.tsx`:
+```tsx
+useEffect(() => {
+  const check = () => setIsMobile(window.innerWidth < 768);
+  check();
+  let timer: ReturnType<typeof setTimeout>;
+  const onResize = () => { clearTimeout(timer); timer = setTimeout(check, 400); };
+  window.addEventListener("resize", onResize);
+  return () => { window.removeEventListener("resize", onResize); clearTimeout(timer); };
+}, []);
+```
+**Por qué debounce:** Evita que el Canvas se remonte en cada pixel de resize. 400ms da margen suficiente para que el usuario suelte la ventana.
+
+---
+
+## 27. SplashScreen salía antes de que el modelo 3D apareciese en escena
+
+**Problema:** `useProgress` de drei reporta 100% cuando el GLB termina de **descargar**, no cuando está **parseado y renderizado**. El tiempo de parseo del GLB (especialmente en dispositivos lentos) hacía que la splash desapareciera mostrando una pantalla en negro.
+
+**Causa:** `useProgress` trackea `DefaultLoadingManager` de THREE.js — sus eventos `onLoad`/`onProgress` se disparan cuando el XHR termina, no cuando `useGLTF` resuelve y el componente `Model` hace su primer render.
+
+**Fix:** Eliminado `useProgress`. Añadido `isModelReady: boolean` a Zustand. El componente `Model` en `Shelves.tsx` llama `setModelReady()` en su propio `useEffect`:
+```tsx
+useEffect(() => { setModelReady(); }, []); // dispara tras el primer render del GLB
+```
+La SplashScreen espera indefinidamente hasta que `isModelReady === true`.
+
+---
+
+## 28. GLB double download (preload + Three.js)
+
+**Problema:** Al añadir `<link rel="preload" as="fetch" href="/models/...glb">` en `layout.tsx`, el navegador descargaba el GLB dos veces (una por el preload del browser y otra por el XHR de Three.js).
+
+**Causa:** El modo CORS/cache del `preload` del browser no coincide con el del XHR de Three.js. El browser no reutiliza la descarga cacheada porque los headers de la petición son distintos.
+
+**Fix:** Eliminado el `<link rel="preload">` del GLB. No hay solución limpia para precargarlo sin double download en este setup.
+
+---
+
+## 29. IndexSizeError — volumen de audio fuera de rango [0, 1]
+
+**Problema:** `HTMLMediaElement.volume` lanzaba `IndexSizeError: The volume provided (-0.0022675) is outside the range [0, 1]` en `PlaygroundSection.tsx`.
+
+**Causa:** `performance.now()` en Firefox y algunos Chrome tiene precisión reducida por privacidad (se redondea a ms). En `fadeIn`, `t = (now - start) / FADE_DURATION` podía ser ligeramente negativo si `now < start` por el redondeo, asignando `audio.volume = t < 0`.
+
+**Fix:** Double clamp `Math.min(1, Math.max(0, value))` en ambas funciones de fade:
+```tsx
+// fadeIn:
+const t = Math.min(1, Math.max(0, (now - start) / FADE_DURATION));
+audio.volume = t;
+// fadeOut:
+audio.volume = Math.min(1, Math.max(0, startVol * (1 - t)));
+```
+
+---
+
+## 30. Vídeo splash se congelaba en el loop
+
+**Problema:** El vídeo `LoopPipoIntro_165%_v2.mp4` reproducía el primer loop correctamente, después se congelaba varios segundos antes de volver a arrancar.
+
+**Causa:** El átomo `moov` (metadatos de reproducción) del MP4 estaba al final del archivo. Cuando el vídeo termina y el browser intenta hacer seek a `currentTime=0` para el loop, necesita releer el `moov` — que ya no está en el buffer, forzando una re-descarga parcial.
+
+**Fix:** Re-encode con ffmpeg para mover el `moov` al inicio (faststart):
+```bash
+ffmpeg -i "LoopPipoIntro_165%_v2.mp4" -movflags +faststart -c copy "LoopPipoIntro_165%_v2_fs.mp4"
+```
+Loop manual en el componente (sin attr `loop`, usando `onEnded`):
+```tsx
+onEnded={(e) => { e.currentTarget.currentTime = 0; e.currentTarget.play().catch(() => {}); }}
+```
+
+**Nota de URL:** el `%` del nombre debe codificarse como `%25` en `src` y `href` → `/videos/LoopPipoIntro_165%25_v2_fs.mp4`
+
+---
+
 ## 7. Acceso a Sanity Studio
 
 **Situación:** El proyecto existe en `manage.sanity.io` con project ID `kzek939n`, dataset activo con 21 documentos. Pero `SANITY_STUDIO_STUDIO_HOST` está vacío → el studio no está deployado online.

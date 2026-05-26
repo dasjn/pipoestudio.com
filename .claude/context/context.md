@@ -380,6 +380,70 @@ npm run deploy   # wrangler deploy
 
 ---
 
+## SplashScreen — pantalla de carga inicial
+
+- **Archivo:** `frontend/app/components/SplashScreen.tsx`
+- **Montado en:** `[locale]/page.tsx` antes de `Header` y `DeviceRouter`
+- **Fondo:** `#00A750` (verde Pipo), `position: fixed; z-index: 200`
+- **Contenido:** vídeo animado centrado + barra de progreso blanca (`h-[3px]`, `w-48`, redondeada)
+- **Vídeo:** `/videos/LoopPipoIntro_165%25_v2_fs.mp4` — `%25` en URL por el `%` en el nombre. Versión faststart (`-movflags +faststart`) para loop sin freeze. Loop manual via `onEnded` (no attr `loop`). Preload en `<head>` con `<link rel="preload" as="video">`.
+- **Mínimo visible:** `MIN_MS = 1500ms` desde mount
+- **Fade out:** opacidad 0 en 700ms → `visible=false` → unmount
+
+### Lógica de progreso por dispositivo
+
+**Desktop:** fake progress hasta 90% con `setInterval` (1.2% cada 20ms). Se detiene en 90% hasta que `isModelReady=true` (Zustand). Al detectar model ready → progress=100 → exit tras 150ms.
+
+**Mobile** (`window.innerWidth < 768`): preload real de las 9 imágenes de fondo via `new Image()`. Progreso = imágenes cargadas / total × 100. Exit al terminar todas (`onload`/`onerror`).
+
+### isModelReady — flag de Zustand
+
+- En `navigationStore.ts`: `isModelReady: boolean`, `setModelReady: () => void`
+- En `Shelves.tsx` (`Model` component): `useEffect(() => { setModelReady(); }, [])` — se dispara tras el primer render del modelo (GLB parseado + en escena)
+- La SplashScreen suscribe a `isModelReady` y sale solo cuando es `true`
+
+---
+
+## DeviceRouter — detección de dispositivo con resize
+
+- **Archivo:** `frontend/app/components/DeviceRouter.tsx`
+- **Propósito:** decide si renderizar layout desktop (canvas 3D) o mobile (imágenes estáticas)
+- **Breakpoint:** `window.innerWidth < 768`
+- **Resize:** listener con debounce de 400ms para evitar remounts del Canvas al redimensionar
+
+---
+
+## PipoLogo — logo animado SVG
+
+- **Archivo:** `frontend/app/components/PipoLogo.tsx`
+- **SVG:** `viewBox="0 0 340.71 155.42"` — 4 letras: P, I, P, O
+- **Animación:** la O cicla entre 6 variantes de path distintas en loop automático
+- **Intervalo:** `INTERVAL_MS = 800ms` — swap instantáneo (sin fade)
+- **Props:** `className` (para tamaño/color via Tailwind), `fill` (default `"currentColor"`)
+- **Usado en:**
+  - `Header.tsx` — desktop (h-7) y móvil (h-6), click navega a `inicio`
+  - `InicioSection.tsx` — reemplaza el texto "Pipo" encima del subtítulo (h-10 a h-20 responsivo)
+- **Color:** hereda del padre via `currentColor` — en Header usa `text-clean-gray`, en InicioSection hereda `text-green-pipo` del `h1`
+
+---
+
+## Footer — detalles de implementación
+
+- **Archivo:** `frontend/app/components/sections/Footer.tsx`
+- **Campos Sanity (`footerSection`):** `heading` (i18n string), `captionText` (i18n string), `captionUrl` (url)
+- **Defaults:** heading → `"LO ÚNICO ES LO NORMAL"`, captionText → `"Made for Pipo with love byfugu"`, captionUrl → `"https://www.byfugu.com"`
+- **Layout:** flex-col centrado con `pt-[10%]`
+  - Título: `text-3xl font-bold text-green-pipo uppercase`, `mb-4`
+  - Imagen: `/images/Pipo_Imagen_Footer.webp`, `maxHeight: "70%"`, `w-auto object-contain`
+  - Pie link: `text-[10px] font-bold text-green-pipo`, `hover:underline`, `mt-1`, abre en nueva pestaña
+- **planeW/planeH override en SectionOverlays:** `planeW: 6.5`, `planeH: 3.5`
+- **Schema Sanity:** `studio/src/schemaTypes/objects/footerSection.ts`
+- **En home.ts:** añadido `{type: 'footerSection'}` al array de secciones
+- **Query GROQ:** `_type == "footerSection"` con coalesce i18n para heading y captionText, captionUrl directo
+- **En page.tsx:** `footer: findSectionData(sanitySections, "footerSection")`
+
+---
+
 ## PlaygroundSection (postFooter) — detalles de implementación
 
 - **Archivo:** `frontend/app/components/sections/PlaygroundSection.tsx`
@@ -405,6 +469,19 @@ if (element) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 ```
+
+---
+
+## Assets estáticos en git
+
+- `*.glb` y `*.gltf` ignorados globalmente en `.gitignore`
+- Excepción: `!frontend/public/models/Pipo_Todo_Prueba_v29.glb` (6.4MB, en git)
+- `*.mp4` NO está en `.gitignore` — vídeos incluidos en git directamente:
+  - `frontend/public/videos/PipoDancing-01.mp4` (4.4MB) — postFooter background
+  - `frontend/public/videos/LoopPipoIntro_165%_v2_fs.mp4` (2.4MB) — splash screen (faststart)
+  - `LoopPipoIntro_165%_v2.mp4` (original sin faststart) — NO incluido (redundante)
+- Imágenes mobile: `frontend/public/images/mobile/bg-mobile-01..09.webp`
+- Footer image: `frontend/public/images/Pipo_Imagen_Footer.webp`
 
 ---
 

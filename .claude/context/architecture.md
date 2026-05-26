@@ -42,6 +42,8 @@ isTransitioning: boolean         // bloquea navegación durante camera lerp
 isScrolling: boolean             // bloquea observer durante scroll programático
 isAnimationSequenceActive: bool  // bloquea animaciones de cara
 navigationDirection: 'down'|'up'|null
+isModelReady: boolean            // true cuando Model ha hecho su primer render (GLB en escena)
+setModelReady: () => void        // llamado por Model.useEffect → desbloquea SplashScreen
 
 // Animation state machine
 currentIdle: IdleState           // idle actualmente activo en el modelo
@@ -197,7 +199,7 @@ Mobile:  touchstart/move/end (passive:false, preventDefault en move/end)
 - **Queries** en `sanity/lib/queries.ts`
 - **sanityFetch** wrapper con soporte draft mode
 - **SanityLive** en layout.tsx para actualizaciones en tiempo real
-- Tipos de sección en home.sections: `inicioSection`, `manifiestoSection`, `trabajosSection`, `algunaIdeaSection`, `cursosSection`, `SobreMiSection` ← ojo mayúscula, `tiendaSection`, `contactoSection`
+- Tipos de sección en home.sections: `inicioSection`, `manifiestoSection`, `trabajosSection`, `algunaIdeaSection`, `cursosSection`, `SobreMiSection` ← ojo mayúscula, `tiendaSection`, `contactoSection`, `footerSection`, `postFooterSection`
 
 ---
 
