@@ -7,7 +7,6 @@ import {
 } from "@/sanity/lib/queries";
 import { sanityFetch } from "@/sanity/lib/live";
 import { i18n, type Locale } from "@/i18n.config";
-import { InicioSection, PlaygroundSection } from "../components/sections";
 import DeviceRouter from "../components/DeviceRouter";
 import PipoChat from "../components/PipoChat";
 import type { SectionsData } from "../components/Shelves";
@@ -57,10 +56,6 @@ export default async function Page({ params }: Props) {
   return (
     <>
       <Header />
-      <div className="hidden md:block">
-        <InicioSection data={sectionsData.inicio} />
-        <PlaygroundSection data={sectionsData.postFooter} />
-      </div>
       <DeviceRouter sectionsData={sectionsData} />
       <PipoChat />
     </>

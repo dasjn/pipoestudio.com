@@ -207,6 +207,11 @@ export default function ThreeDCanvas({
         camera={{ position: [0, 20, 9], fov: 30 }}
         className="w-full h-full"
         style={{ pointerEvents: "none" }}
+        onCreated={({ gl }) => {
+          gl.domElement.addEventListener("webglcontextlost", (e) => {
+            e.preventDefault();
+          });
+        }}
       >
         <CameraController
           targetPosition={targetPosition}

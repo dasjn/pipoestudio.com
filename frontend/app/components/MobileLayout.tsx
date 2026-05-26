@@ -28,7 +28,7 @@ export default function MobileLayout({
           src="/images/mobile/bg-mobile-01.webp"
           alt=""
           fill
-          className="object-cover"
+          className="object-cover sm:object-contain"
           priority
         />
         <div className="relative z-10 h-full">
@@ -42,7 +42,7 @@ export default function MobileLayout({
             src={bg}
             alt=""
             fill
-            className="object-cover"
+            className="object-cover sm:object-contain"
             priority={i < 1}
           />
         </section>
