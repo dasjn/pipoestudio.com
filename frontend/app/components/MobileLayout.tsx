@@ -29,7 +29,7 @@ export default function MobileLayout({
           priority
         />
         <div className="relative z-10 h-full">
-          <InicioSection data={sectionsData.inicio} />
+          <InicioSection data={sectionsData.inicio} mobile />
         </div>
       </section>
 

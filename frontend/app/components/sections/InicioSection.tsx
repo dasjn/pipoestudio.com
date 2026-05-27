@@ -2,7 +2,13 @@
 import { useLocaleStore } from "@/app/store/localeStore";
 import { useNavigationStore } from "@/app/store/navigationStore";
 import PipoLogo from "@/app/components/PipoLogo";
+import Button from "@/app/components/Button";
 import { AnimatePresence, motion } from "framer-motion";
+
+const STRINGS = {
+  es: { cta: "CREEMOS ALGO ÚNICO" },
+  en: { cta: "LET'S CREATE SOMETHING UNIQUE" },
+};
 
 interface InicioSectionData {
   _type: "inicioSection";
@@ -16,11 +22,13 @@ interface InicioSectionData {
 
 interface InicioSectionProps {
   data?: InicioSectionData;
+  mobile?: boolean;
 }
 
-export default function InicioSection({ data }: InicioSectionProps) {
+export default function InicioSection({ data, mobile = false }: InicioSectionProps) {
   const locale = useLocaleStore((state) => state.locale);
-  const { currentSection } = useNavigationStore();
+  const { currentSection, navigateToSection } = useNavigationStore();
+  const t = STRINGS[locale] ?? STRINGS.es;
 
   // Default content if no data is provided
   const content = {
@@ -47,7 +55,10 @@ export default function InicioSection({ data }: InicioSectionProps) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35, ease: "easeInOut" }}
           >
-            <h1 className="font-bold text-green-pipo text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl flex flex-col items-center uppercase">
+            <h1
+              className={`font-bold text-green-pipo flex flex-col items-center uppercase ${mobile ? "" : "text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"}`}
+              style={mobile ? { fontSize: "clamp(2rem, 11vw, 3rem)", lineHeight: 1 } : undefined}
+            >
               <PipoLogo className="block mt-10 mb-10 h-10 sm:h-12 md:h-14 lg:h-16 xl:h-20 w-auto" fill="currentColor" />
               <span className="block">{content.subtitle1}</span>
               <span className="block">{content.subtitle2}</span>
@@ -59,6 +70,22 @@ export default function InicioSection({ data }: InicioSectionProps) {
               </span>
               <span className="block">{content.location}</span>
             </h1>
+
+            <div className="mt-6 pointer-events-auto">
+              <Button
+                as="button"
+                size="sm"
+                onClick={() => {
+                  if (mobile) {
+                    document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth" });
+                  } else {
+                    navigateToSection("contacto", "down");
+                  }
+                }}
+              >
+                {t.cta}
+              </Button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
