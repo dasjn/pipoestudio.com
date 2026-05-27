@@ -18,9 +18,9 @@ export default function ManifiestoSection({ data }: ManifiestoSectionProps) {
   return (
     <section
       id="manifiesto"
-      className="w-full h-full flex items-center justify-center px-2"
+      className="w-full h-full flex items-center justify-center px-12"
     >
-      <p className="font-sans font-bold text-4xl leading-none tracking-normal text-center text-green-pipo">
+      <p className="font-sans font-bold text-3xl leading-none tracking-normal text-center text-green-pipo">
         {content}
       </p>
     </section>
