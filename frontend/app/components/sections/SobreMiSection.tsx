@@ -6,6 +6,7 @@ interface SobreMiSectionData {
 
 interface SobreMiSectionProps {
   data?: SobreMiSectionData;
+  mobile?: boolean;
 }
 
 const DEFAULT_TITLE = "SOBRE PIPO";
@@ -42,7 +43,7 @@ function renderWithFuguLink(text: string) {
   );
 }
 
-export default function SobreMiSection({ data }: SobreMiSectionProps) {
+export default function SobreMiSection({ data, mobile = false }: SobreMiSectionProps) {
   const title = data?.title ?? DEFAULT_TITLE;
   const body = data?.body ?? DEFAULT_BODY;
 
@@ -53,18 +54,22 @@ export default function SobreMiSection({ data }: SobreMiSectionProps) {
   return (
     <section
       id="sobreMi"
-      className="w-10/12 h-full flex flex-col items-center px-4 pt-4 gap-3 mx-auto"
+      className="w-10/12 h-full flex flex-col items-center justify-center mx-auto gap-3"
+      style={{ paddingTop: mobile ? "5vh" : "16px", paddingBottom: mobile ? "5vh" : 0, paddingLeft: "16px", paddingRight: "16px" }}
     >
-      <p className="font-sans font-bold text-5xl leading-none tracking-normal text-center text-green-pipo">
+      <p
+        className={`font-sans font-bold leading-none tracking-normal text-center text-green-pipo flex-shrink-0 ${mobile ? "text-3xl" : "text-5xl"}`}
+      >
         {title}
       </p>
 
       <div
-        className="flex flex-col gap-2 text-center text-green-pipo font-sans text-[11px] leading-snug w-full"
+        className="flex flex-col gap-2 text-center text-green-pipo font-sans leading-snug w-full"
         style={{
           background: "rgba(228, 229, 224, 0.7)",
           padding: "10px",
           borderRadius: "6px",
+          fontSize: mobile ? 15 : 11,
         }}
       >
         {bodyParagraphs.map((p, i) => (
