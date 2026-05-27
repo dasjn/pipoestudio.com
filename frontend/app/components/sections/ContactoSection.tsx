@@ -29,8 +29,10 @@ const DEFAULTS = {
 
 export default function ContactoSection({
   data,
+  mobile = false,
 }: {
   data?: ContactoSectionData;
+  mobile?: boolean;
 } = {}) {
   const title = data?.title ?? DEFAULTS.title;
   const instagramLabel = data?.instagramLabel ?? DEFAULTS.instagramLabel;
@@ -50,26 +52,28 @@ export default function ContactoSection({
       id="contacto"
       className="relative font-sans w-full h-full flex flex-col items-center justify-center px-2 mt-6"
     >
-      <PipoBubble
-        text={"Si tienes una idea\no sólo quieres saludar,\n¡escríbeme!"}
-        style={{ right: "1%", top: "40%" }}
-      />
+      {!mobile && (
+        <PipoBubble
+          text={"Si tienes una idea\no sólo quieres saludar,\n¡escríbeme!"}
+          style={{ right: "1%", top: "40%" }}
+        />
+      )}
 
       {/* Título */}
       <p
-        className="font-bold text-green-pipo uppercase leading-none text-center"
-        style={{ fontSize: 72, marginBottom: 12 }}
+        className={`font-bold text-green-pipo uppercase leading-none text-center ${mobile ? "text-3xl" : ""}`}
+        style={mobile ? { marginBottom: 16 } : { fontSize: 72, marginBottom: 12 }}
       >
         {title}
       </p>
 
-      {/* Botones + footer — ancho = botón más ancho */}
+      {/* Botones + footer */}
       <div
         style={{
           display: "flex",
           flexDirection: "column",
           gap: 6,
-          width: "max-content",
+          width: mobile ? "70vw" : "max-content",
         }}
       >
         <Button
@@ -77,6 +81,7 @@ export default function ContactoSection({
           size="sm"
           href={data?.instagramUrl ?? "#"}
           target="_blank"
+          className={mobile ? "w-full justify-center" : ""}
         >
           {instagramLabel}
         </Button>
@@ -85,16 +90,17 @@ export default function ContactoSection({
           size="sm"
           href={data?.youtubeUrl ?? "#"}
           target="_blank"
+          className={mobile ? "w-full justify-center" : ""}
         >
           {youtubeLabel}
         </Button>
-        <Button as="link" size="sm" href={data?.formularioUrl ?? "#"}>
+        <Button as="link" size="sm" href={data?.formularioUrl ?? "#"} className={mobile ? "w-full justify-center" : ""}>
           {formularioLabel}
         </Button>
-        <Button as="link" size="sm" href={whatsappHref} target="_blank">
+        <Button as="link" size="sm" href={whatsappHref} target="_blank" className={mobile ? "w-full justify-center" : ""}>
           {whatsappLabel}
         </Button>
-        <Button as="link" size="sm" href={emailHref}>
+        <Button as="link" size="sm" href={emailHref} className={mobile ? "w-full justify-center" : ""}>
           {emailLabel}
         </Button>
 

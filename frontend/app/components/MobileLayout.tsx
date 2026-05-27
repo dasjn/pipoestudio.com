@@ -9,6 +9,7 @@ import AlgunaIdeaSection from "./sections/AlgunaIdeaSection";
 import CursosSection from "./sections/CursosSection";
 import SobreMiSection from "./sections/SobreMiSection";
 import TiendaSection from "./sections/TiendaSection";
+import ContactoSection from "./sections/ContactoSection";
 
 export default function MobileLayout({
   sectionsData,
@@ -169,6 +170,9 @@ export default function MobileLayout({
           fill
           className="object-cover"
         />
+        <div className="relative z-10 h-full">
+          <ContactoSection data={sectionsData.contacto} mobile />
+        </div>
       </section>
 
       {/* FOOTER */}
