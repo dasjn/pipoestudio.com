@@ -18,7 +18,7 @@ export default function MobileLayout({
   sectionsData: SectionsData;
 }) {
   return (
-    <div>
+    <div style={{ overflowX: "hidden" }}>
       {/* INICIO */}
       <section id="inicio" className="relative w-full h-screen">
         <Image
