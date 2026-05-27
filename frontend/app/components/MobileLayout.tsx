@@ -54,12 +54,13 @@ export default function MobileLayout({
           fill
           className="object-cover"
         />
-        <div className="relative z-10 h-full flex flex-col justify-center gap-6 items-center">
+        <div className="relative z-10 h-full flex flex-col justify-center gap-6 items-center overflow-hidden">
           <p className="font-sans font-bold text-3xl leading-none tracking-normal text-center text-green-pipo px-12">
             {sectionsData.trabajos?.statement || "PROYECTOS QUE HABLAN POR SÍ SOLOS."}
           </p>
           <div
             style={{
+              width: "100%",
               height: "55vh",
               display: "flex",
               overflowX: "auto",
