@@ -10,6 +10,7 @@ import CursosSection from "./sections/CursosSection";
 import SobreMiSection from "./sections/SobreMiSection";
 import TiendaSection from "./sections/TiendaSection";
 import ContactoSection from "./sections/ContactoSection";
+import Footer from "./sections/Footer";
 
 export default function MobileLayout({
   sectionsData,
@@ -183,6 +184,9 @@ export default function MobileLayout({
           fill
           className="object-cover"
         />
+        <div className="relative z-10 h-full">
+          <Footer data={sectionsData.footer} mobile />
+        </div>
       </section>
 
       <PlaygroundSection data={sectionsData.postFooter} />

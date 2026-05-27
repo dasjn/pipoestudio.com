@@ -9,16 +9,20 @@ interface FooterSectionData {
 
 interface Props {
   data?: FooterSectionData;
+  mobile?: boolean;
 }
 
-export default function Footer({ data }: Props) {
+export default function Footer({ data, mobile = false }: Props) {
   const heading = data?.heading || "LO ÚNICO ES LO NORMAL";
   const captionText = data?.captionText || "Made for Pipo with love byfugu";
   const captionUrl = data?.captionUrl || "https://www.byfugu.com";
 
   return (
     <footer className="w-full h-full flex flex-col items-center justify-center pt-[10%]">
-      <p className="font-bold text-green-pipo text-3xl text-center uppercase leading-tight mb-4">
+      <p
+        className="font-bold text-green-pipo text-3xl text-center uppercase leading-tight mb-4"
+        style={mobile ? { maxWidth: "60vw" } : undefined}
+      >
         {heading}
       </p>
 
@@ -28,7 +32,7 @@ export default function Footer({ data }: Props) {
         width={900}
         height={900}
         className="w-auto object-contain"
-        style={{ maxHeight: "70%" }}
+        style={{ maxHeight: mobile ? "45%" : "70%" }}
         priority
       />
 
