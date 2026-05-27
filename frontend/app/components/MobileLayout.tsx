@@ -59,9 +59,8 @@ export default function MobileLayout({
             {sectionsData.trabajos?.statement || "PROYECTOS QUE HABLAN POR SÍ SOLOS."}
           </p>
           <div
-            className="w-full"
-            style={{ height: "55vh" }}
             style={{
+              height: "55vh",
               display: "flex",
               overflowX: "auto",
               gap: 12,
