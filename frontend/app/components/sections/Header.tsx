@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import PipoLogo from "@/app/components/PipoLogo";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -25,7 +26,7 @@ interface NavLinkProps {
   onClick?: () => void;
   isActive?: boolean;
   className?: string;
-  type?: "scroll" | "external" | "action";
+  type?: "scroll" | "external" | "link" | "action";
 }
 
 const NavLink: React.FC<NavLinkProps> = ({
@@ -57,7 +58,14 @@ const NavLink: React.FC<NavLinkProps> = ({
     onClick?.();
   };
 
-  // Si es un enlace externo (para páginas externas)
+  if (href && type === "link") {
+    return (
+      <Link href={href} className={cn(combinedClasses, "block text-center")} onClick={onClick}>
+        {children}
+      </Link>
+    );
+  }
+
   if (href && type === "external") {
     return (
       <a
@@ -189,7 +197,7 @@ interface NavItem {
   sectionId?: SectionId;
   href?: string;
   onClick?: () => void;
-  type?: "scroll" | "external" | "action";
+  type?: "scroll" | "external" | "link" | "action";
 }
 
 interface HeaderProps {
@@ -232,9 +240,11 @@ const Header: React.FC<HeaderProps> = ({ currentPath = "" }) => {
   }, [initializeSections]);
 
   // Configuración de navegación usando el store y diccionario i18n
+  const EXCLUDED_FROM_NAV: SectionId[] = ["postFooter", "manifiesto", "sobreMi", "footer"];
+
   const navItems: NavItem[] = [
     ...sections
-      .filter((section) => section.id !== "postFooter") // Excluir postFooter del header
+      .filter((section) => !EXCLUDED_FROM_NAV.includes(section.id))
       .map((section) => ({
         label: getNavigationLabel(section.id, locale),
         sectionId: section.id,
@@ -244,6 +254,11 @@ const Header: React.FC<HeaderProps> = ({ currentPath = "" }) => {
       label: getNavigationLabel("language", locale),
       onClick: toggleLanguage,
       type: "action" as const,
+    },
+    {
+      label: getNavigationLabel("blog", locale),
+      href: `/${locale}/blog`,
+      type: "link" as const,
     },
   ];
 

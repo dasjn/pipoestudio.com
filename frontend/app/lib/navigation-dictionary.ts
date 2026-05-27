@@ -13,7 +13,8 @@ export const navigationLabels = {
     contacto: "Contacta",
     footer: "Footer",
     postFooter: "Post Footer",
-    language: "EN/ES"
+    language: "EN/ES",
+    blog: "Mi Blog",
   },
   en: {
     inicio: "Home",
@@ -26,10 +27,11 @@ export const navigationLabels = {
     contacto: "Contact",
     footer: "Footer",
     postFooter: "Post Footer",
-    language: "ES/EN"
+    language: "ES/EN",
+    blog: "My Blog",
   }
 } as const;
 
-export function getNavigationLabel(sectionId: SectionId | "language", locale: Locale): string {
+export function getNavigationLabel(sectionId: SectionId | "language" | "blog", locale: Locale): string {
   return navigationLabels[locale]?.[sectionId] || navigationLabels.es[sectionId];
 }
