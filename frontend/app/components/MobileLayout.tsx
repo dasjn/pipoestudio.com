@@ -28,7 +28,7 @@ export default function MobileLayout({
           className="object-cover"
           priority
         />
-        <div className="relative z-10 h-full">
+        <div className="absolute inset-0 z-10">
           <InicioSection data={sectionsData.inicio} mobile />
         </div>
       </section>
@@ -41,20 +41,20 @@ export default function MobileLayout({
           fill
           className="object-cover"
         />
-        <div className="relative z-10 h-full">
+        <div className="absolute inset-0 z-10">
           <ManifiestoSection data={sectionsData.manifiesto} />
         </div>
       </section>
 
       {/* TRABAJOS */}
-      <section id="trabajos" className="relative w-full h-screen">
+      <section id="trabajos" className="relative w-full h-screen overflow-hidden">
         <Image
           src="/images/mobile/bg-mobile-03.webp"
           alt=""
           fill
           className="object-cover"
         />
-        <div className="relative z-10 h-full flex flex-col justify-center gap-6 items-center overflow-hidden">
+        <div className="absolute inset-0 z-10 flex flex-col justify-center gap-6 items-center overflow-hidden">
           <p className="font-sans font-bold text-3xl leading-none tracking-normal text-center text-green-pipo px-12">
             {sectionsData.trabajos?.statement || "PROYECTOS QUE HABLAN POR SÍ SOLOS."}
           </p>
@@ -119,7 +119,7 @@ export default function MobileLayout({
           fill
           className="object-cover"
         />
-        <div className="relative z-10 h-full">
+        <div className="absolute inset-0 z-10">
           <AlgunaIdeaSection data={sectionsData.algunaIdea} mobile />
         </div>
       </section>
@@ -132,7 +132,7 @@ export default function MobileLayout({
           fill
           className="object-cover"
         />
-        <div className="relative z-10 h-full">
+        <div className="absolute inset-0 z-10">
           <CursosSection data={sectionsData.cursos} mobile />
         </div>
       </section>
@@ -145,20 +145,20 @@ export default function MobileLayout({
           fill
           className="object-cover"
         />
-        <div className="relative z-10 h-full">
+        <div className="absolute inset-0 z-10">
           <SobreMiSection data={sectionsData.sobreMi} mobile />
         </div>
       </section>
 
       {/* TIENDA */}
-      <section id="tienda" className="relative w-full h-screen">
+      <section id="tienda" className="relative w-full h-screen overflow-hidden">
         <Image
           src="/images/mobile/bg-mobile-07.webp"
           alt=""
           fill
           className="object-cover"
         />
-        <div className="relative z-10 h-full">
+        <div className="absolute inset-0 z-10">
           <TiendaSection data={sectionsData.tienda} products={sectionsData.products} mobile />
         </div>
       </section>
@@ -171,7 +171,7 @@ export default function MobileLayout({
           fill
           className="object-cover"
         />
-        <div className="relative z-10 h-full">
+        <div className="absolute inset-0 z-10">
           <ContactoSection data={sectionsData.contacto} mobile />
         </div>
       </section>
@@ -184,7 +184,7 @@ export default function MobileLayout({
           fill
           className="object-cover"
         />
-        <div className="relative z-10 h-full">
+        <div className="absolute inset-0 z-10">
           <Footer data={sectionsData.footer} mobile />
         </div>
       </section>
