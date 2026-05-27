@@ -425,14 +425,14 @@
       "id": "contacto",
       "language": "es",
       "question": "¿Cómo os contacto?",
-      "answer": "Escríbeme por WhatsApp al 626 116 916 (https://wa.me/34626116916) o pásate por Instagram (https://www.instagram.com/pipo_estudio/). Cuéntame tu idea y lo vemos.",
+      "answer": "Escríbeme por WhatsApp al 626 116 916 o pásate por Instagram (@pipo_estudio). Cuéntame tu idea y lo vemos.",
       "keywords": ["contacto", "escribir", "idea", "ayuda", "colaboración"]
     },
     {
       "id": "contacto",
       "language": "en",
       "question": "How do I contact you?",
-      "answer": "Message me on WhatsApp at 626 116 916 (https://wa.me/34626116916) or find me on Instagram (https://www.instagram.com/pipo_estudio/). Tell me your idea and we'll figure it out.",
+      "answer": "Message me on WhatsApp at 626 116 916 or find me on Instagram (@pipo_estudio). Tell me your idea and we'll figure it out.",
       "keywords": ["contact", "write", "idea", "help", "collaboration"]
     },
     {
