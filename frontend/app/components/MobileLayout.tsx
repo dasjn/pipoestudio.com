@@ -8,6 +8,7 @@ import ManifiestoSection from "./sections/ManifiestoSection";
 import AlgunaIdeaSection from "./sections/AlgunaIdeaSection";
 import CursosSection from "./sections/CursosSection";
 import SobreMiSection from "./sections/SobreMiSection";
+import TiendaSection from "./sections/TiendaSection";
 
 export default function MobileLayout({
   sectionsData,
@@ -155,6 +156,9 @@ export default function MobileLayout({
           fill
           className="object-cover"
         />
+        <div className="relative z-10 h-full">
+          <TiendaSection data={sectionsData.tienda} products={sectionsData.products} mobile />
+        </div>
       </section>
 
       {/* CONTACTO */}

@@ -13,6 +13,7 @@ interface TiendaSectionData {
 interface TiendaSectionProps {
   data?: TiendaSectionData;
   products?: PipoProductCardData[];
+  mobile?: boolean;
 }
 
 const DEFAULT_TITLE = "TIENDA";
@@ -79,6 +80,7 @@ function NavArrow({
 export default function TiendaSection({
   data,
   products = [],
+  mobile = false,
 }: TiendaSectionProps) {
   const title = data?.title ?? DEFAULT_TITLE;
   const subtitle = data?.subtitle ?? DEFAULT_SUBTITLE;
@@ -109,6 +111,46 @@ export default function TiendaSection({
     page * CARDS_PER_PAGE,
     (page + 1) * CARDS_PER_PAGE,
   );
+
+  if (mobile) {
+    return (
+      <section
+        id="tienda"
+        className="font-sans w-full h-full flex flex-col items-center justify-center gap-4"
+      >
+        <div className="text-center">
+          <p className="font-bold text-3xl leading-none text-green-pipo uppercase">{title}</p>
+          <p className="font-bold text-[10px] text-green-pipo uppercase">{subtitle}</p>
+        </div>
+
+        {products.length > 0 ? (
+          <div
+            style={{
+              display: "flex",
+              width: "100%",
+              overflowX: "auto",
+              gap: 12,
+              paddingLeft: "calc((100% - 70vw) / 2)",
+              paddingRight: "calc((100% - 70vw) / 2)",
+              scrollSnapType: "x mandatory",
+              scrollbarWidth: "none",
+            }}
+          >
+            {products.map((product) => (
+              <div
+                key={product._id}
+                style={{ flexShrink: 0, width: "70vw", scrollSnapAlign: "center" }}
+              >
+                <PipoProductCard product={product} />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-green-pipo font-bold text-xs">Cargando…</p>
+        )}
+      </section>
+    );
+  }
 
   return (
     <section
