@@ -5,6 +5,7 @@ import type { SectionsData } from "./Shelves";
 import InicioSection from "./sections/InicioSection";
 import PlaygroundSection from "./sections/PlaygroundSection";
 import ManifiestoSection from "./sections/ManifiestoSection";
+import AlgunaIdeaSection from "./sections/AlgunaIdeaSection";
 
 export default function MobileLayout({
   sectionsData,
@@ -113,6 +114,9 @@ export default function MobileLayout({
           fill
           className="object-cover"
         />
+        <div className="relative z-10 h-full">
+          <AlgunaIdeaSection data={sectionsData.algunaIdea} mobile />
+        </div>
       </section>
 
       {/* CURSOS */}

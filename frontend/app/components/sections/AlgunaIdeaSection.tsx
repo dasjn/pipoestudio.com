@@ -58,10 +58,12 @@ async function compressImage(file: File): Promise<File> {
 
 interface AlgunaIdeaSectionProps {
   data?: { title?: string; [key: string]: unknown };
+  mobile?: boolean;
 }
 
 export default function AlgunaIdeaSection({
   data,
+  mobile = false,
 }: AlgunaIdeaSectionProps = {}) {
   const { currentSection, activeAnimation } = useNavigationStore();
   const [slid, setSlid] = useState(false);
@@ -124,10 +126,8 @@ export default function AlgunaIdeaSection({
     startTransition(() => dispatch(formData));
   };
 
-  const labelBar =
-    "block w-full bg-[#00A750] text-white font-bold uppercase text-[10px] px-2 ";
-  const inputBase =
-    "w-full bg-transparent border-none outline-none text-xs px-2 py-1 text-[#3a3a3a] placeholder-[#6F6F6F]";
+  const labelBar = `block w-full bg-[#00A750] text-white font-bold uppercase ${mobile ? "text-xs" : "text-[10px]"} px-2 `;
+  const inputBase = `w-full bg-transparent border-none outline-none ${mobile ? "text-sm" : "text-xs"} px-2 py-1 text-[#3a3a3a] placeholder-[#6F6F6F]`;
 
   const title = data?.title ?? "¿TIENES UNA IDEA?";
 
@@ -141,10 +141,12 @@ export default function AlgunaIdeaSection({
           {title}
         </p>
       )}
-      <PipoBubble
-        text={"¿Tienes fotos? ¿Un plano?\n¿Un dibujo cutre? ¡Pásamelo!"}
-        style={{ right: "18%", top: "44%" }}
-      />
+      {!mobile && (
+        <PipoBubble
+          text={"¿Tienes fotos? ¿Un plano?\n¿Un dibujo cutre? ¡Pásamelo!"}
+          style={{ right: "18%", top: "44%" }}
+        />
+      )}
 
       <motion.div
         initial={{ x: 0 }}
@@ -156,14 +158,14 @@ export default function AlgunaIdeaSection({
           onSubmit={handleSubmit}
           style={{
             display: "flex",
-            width: "250px",
-            padding: "10px",
+            width: mobile ? "75vw" : "250px",
+            padding: mobile ? "16px" : "10px",
             flexDirection: "column",
             alignItems: "flex-start",
             height: "fit-content",
             borderRadius: "6px",
             background: "#E4E5E0",
-            gap: "4px",
+            gap: mobile ? "8px" : "4px",
           }}
         >
           {/* IDEA */}
@@ -176,7 +178,7 @@ export default function AlgunaIdeaSection({
               name="idea"
               placeholder="Me encantaría restaurar la mesa de pino de casa de mi abuela"
               required
-              rows={2}
+              rows={mobile ? 4 : 2}
               className={`${inputBase} resize-none`}
             />
           </div>
