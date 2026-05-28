@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigationStore } from "../store/navigationStore";
 
 const MIN_MS = 1500;
+const SPLASH_KEY = "pipo_splash_shown";
 
 const MOBILE_IMAGES = [
   "/images/mobile/bg-mobile-01.webp",
@@ -19,28 +20,47 @@ const MOBILE_IMAGES = [
 
 export default function SplashScreen() {
   const isModelReady = useNavigationStore((s) => s.isModelReady);
+  // Empieza en false: el efecto decide si mostrar según sessionStorage
+  const [visible, setVisible] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [visible, setVisible] = useState(true);
   const [fading, setFading] = useState(false);
   const mountTime = useRef(Date.now());
   const exitedRef = useRef(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Decidir si mostrar: solo si no se ha mostrado ya en esta sesión
+  useEffect(() => {
+    if (!sessionStorage.getItem(SPLASH_KEY)) {
+      mountTime.current = Date.now();
+      setVisible(true);
+    }
+  }, []);
 
   const exit = useCallback(() => {
     if (exitedRef.current) return;
     exitedRef.current = true;
+    // Detener el fake progress para que no sobreescriba el 100%
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    setProgress(100);
     const wait = Math.max(0, MIN_MS - (Date.now() - mountTime.current));
     setTimeout(() => {
       setFading(true);
-      setTimeout(() => setVisible(false), 700);
+      setTimeout(() => {
+        setVisible(false);
+        sessionStorage.setItem(SPLASH_KEY, "1");
+      }, 700);
     }, wait);
   }, []);
 
+  // Arrancar lógica de progreso solo cuando visible es true
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (!visible) return;
     const mobile = window.innerWidth < 768;
 
     if (mobile) {
-      // Precargar imágenes de fondo y trackear progreso real
       let loaded = 0;
       const total = MOBILE_IMAGES.length;
       const onSettle = () => {
@@ -51,29 +71,32 @@ export default function SplashScreen() {
       MOBILE_IMAGES.forEach((src) => {
         const img = new window.Image();
         img.onload = onSettle;
-        img.onerror = onSettle; // contar errores para no bloquearse
+        img.onerror = onSettle;
         img.src = src;
       });
     } else {
-      // Desktop: fake progress mientras carga el GLB
       let p = 0;
-      const id = setInterval(() => {
+      intervalRef.current = setInterval(() => {
         p = Math.min(p + 1.2, 90);
         setProgress(p);
-        if (p >= 90) clearInterval(id);
+        if (p >= 90) {
+          clearInterval(intervalRef.current!);
+          intervalRef.current = null;
+        }
       }, 20);
-      return () => clearInterval(id);
+      return () => {
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+          intervalRef.current = null;
+        }
+      };
     }
-  }, [exit]);
+  }, [visible, exit]);
 
   // Desktop: salir cuando el modelo 3D está en escena
   useEffect(() => {
-    if (isModelReady) {
-      setProgress(100);
-      const id = setTimeout(exit, 150); // pequeña pausa para que se vea el 100%
-      return () => clearTimeout(id);
-    }
-  }, [isModelReady, exit]);
+    if (isModelReady && visible) exit();
+  }, [isModelReady, visible, exit]);
 
   if (!visible) return null;
 
@@ -87,17 +110,15 @@ export default function SplashScreen() {
         pointerEvents: fading ? "none" : "all",
       }}
     >
+      {/* loop nativo funciona sin freeze porque el .mp4 tiene faststart (moov al inicio) */}
       <video
         src="/videos/LoopPipoIntro_165%25_v2_fs.mp4"
         autoPlay
+        loop
         muted
         playsInline
         preload="auto"
         className="w-48"
-        onEnded={(e) => {
-          e.currentTarget.currentTime = 0;
-          e.currentTarget.play().catch(() => {});
-        }}
       />
       <div className="w-48 h-[3px] rounded-full overflow-hidden bg-white/30">
         <div
