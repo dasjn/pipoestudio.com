@@ -4,7 +4,10 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigationStore } from "../store/navigationStore";
 
 const MIN_MS = 1500;
-const SPLASH_KEY = "pipo_splash_shown";
+
+// Variable de módulo: false en hard reload, true tras mostrar el splash una vez.
+// No se resetea en navegación SPA (blog→home), sí en Ctrl+R o nueva pestaña.
+let splashHasShown = false;
 
 const MOBILE_IMAGES = [
   "/images/mobile/bg-mobile-01.webp",
@@ -20,26 +23,16 @@ const MOBILE_IMAGES = [
 
 export default function SplashScreen() {
   const isModelReady = useNavigationStore((s) => s.isModelReady);
-  // Empieza en false: el efecto decide si mostrar según sessionStorage
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(!splashHasShown);
   const [progress, setProgress] = useState(0);
   const [fading, setFading] = useState(false);
   const mountTime = useRef(Date.now());
   const exitedRef = useRef(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Decidir si mostrar: solo si no se ha mostrado ya en esta sesión
-  useEffect(() => {
-    if (!sessionStorage.getItem(SPLASH_KEY)) {
-      mountTime.current = Date.now();
-      setVisible(true);
-    }
-  }, []);
-
   const exit = useCallback(() => {
     if (exitedRef.current) return;
     exitedRef.current = true;
-    // Detener el fake progress para que no sobreescriba el 100%
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
@@ -49,13 +42,12 @@ export default function SplashScreen() {
     setTimeout(() => {
       setFading(true);
       setTimeout(() => {
+        splashHasShown = true;
         setVisible(false);
-        sessionStorage.setItem(SPLASH_KEY, "1");
       }, 700);
     }, wait);
   }, []);
 
-  // Arrancar lógica de progreso solo cuando visible es true
   useEffect(() => {
     if (!visible) return;
     const mobile = window.innerWidth < 768;
@@ -93,7 +85,6 @@ export default function SplashScreen() {
     }
   }, [visible, exit]);
 
-  // Desktop: salir cuando el modelo 3D está en escena
   useEffect(() => {
     if (isModelReady && visible) exit();
   }, [isModelReady, visible, exit]);
@@ -110,7 +101,6 @@ export default function SplashScreen() {
         pointerEvents: fading ? "none" : "all",
       }}
     >
-      {/* loop nativo funciona sin freeze porque el .mp4 tiene faststart (moov al inicio) */}
       <video
         src="/videos/LoopPipoIntro_165%25_v2_fs.mp4"
         autoPlay
