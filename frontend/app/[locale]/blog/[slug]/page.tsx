@@ -7,7 +7,7 @@ import { sanityFetch } from "@/sanity/lib/live";
 import { postPagesSlugs, postQuery, blogPageQuery } from "@/sanity/lib/queries";
 import { resolveOpenGraphImage } from "@/sanity/lib/utils";
 import { i18n, type Locale } from "@/i18n.config";
-import BlogHeader from "@/app/components/BlogHeader";
+import Header from "@/app/components/sections/Header";
 import PipoPortableText from "@/app/components/PipoPortableText";
 import CoverImage from "@/app/components/CoverImage";
 import Button from "@/app/components/Button";
@@ -67,7 +67,7 @@ export default async function BlogPostPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-[#E4E5E0]">
-      <BlogHeader />
+      <Header blogMode />
 
       <main className="max-w-7xl mx-auto px-6 py-12">
         {/* Volver al blog */}

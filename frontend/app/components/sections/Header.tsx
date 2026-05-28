@@ -201,10 +201,11 @@ interface NavItem {
 }
 
 interface HeaderProps {
-  currentPath?: string; // Para determinar qué enlace está activo
+  currentPath?: string;
+  blogMode?: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ currentPath = "" }) => {
+const Header: React.FC<HeaderProps> = ({ currentPath = "", blogMode = false }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
@@ -247,8 +248,9 @@ const Header: React.FC<HeaderProps> = ({ currentPath = "" }) => {
       .filter((section) => !EXCLUDED_FROM_NAV.includes(section.id))
       .map((section) => ({
         label: getNavigationLabel(section.id, locale),
-        sectionId: section.id,
-        type: "scroll" as const,
+        sectionId: blogMode ? undefined : section.id,
+        href: blogMode ? `/${locale}?section=${section.id}` : undefined,
+        type: blogMode ? ("link" as const) : ("scroll" as const),
       })),
     {
       label: getNavigationLabel("language", locale),
@@ -263,7 +265,31 @@ const Header: React.FC<HeaderProps> = ({ currentPath = "" }) => {
   ];
 
   const scrollToSection = useNavigationStore((state) => state.scrollToSection);
-  const handleAnimatedLogoClick = () => scrollToSection("inicio");
+  const isModelReady = useNavigationStore((state) => state.isModelReady);
+
+  // Cuando venimos del blog con ?section=xxx, navegar a esa sección en cuanto el modelo esté listo
+  useEffect(() => {
+    if (blogMode) return;
+    const params = new URLSearchParams(window.location.search);
+    const targetSection = params.get("section") as SectionId | null;
+    if (!targetSection || !isModelReady) return;
+
+    const timer = setTimeout(() => {
+      scrollToSection(targetSection);
+      const url = new URL(window.location.href);
+      url.searchParams.delete("section");
+      window.history.replaceState({}, "", url.toString());
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [isModelReady, blogMode]);
+
+  const handleAnimatedLogoClick = () => {
+    if (blogMode) {
+      router.push(`/${locale}`);
+    } else {
+      scrollToSection("inicio");
+    }
+  };
 
   return (
     <>

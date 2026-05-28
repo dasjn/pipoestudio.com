@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { type Locale } from "@/i18n.config";
 import { sanityFetch } from "@/sanity/lib/live";
 import { allPostsQuery, blogPageQuery } from "@/sanity/lib/queries";
-import BlogHeader from "@/app/components/BlogHeader";
+import Header from "@/app/components/sections/Header";
 import PipoBlogCard from "@/app/components/PipoBlogCard";
 import Button from "@/app/components/Button";
 
@@ -23,7 +23,7 @@ export default async function BlogIndexPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-[#E4E5E0]">
-      <BlogHeader />
+      <Header blogMode />
 
       <main className="max-w-6xl mx-auto px-6 py-16">
         {/* Título */}
