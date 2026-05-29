@@ -246,10 +246,16 @@ function MobileCard({
 
 export default function CursosSection({ data, mobile = false }: CursosSectionProps) {
   const navigateToSection = useNavigationStore((s) => s.navigateToSection);
+  const setIdeaPrefill = useNavigationStore((s) => s.setIdeaPrefill);
 
-  const handlePresencialClick = mobile
-    ? () => document.getElementById("algunaIdea")?.scrollIntoView({ behavior: "smooth" })
-    : () => navigateToSection("algunaIdea", "up");
+  const handlePresencialClick = () => {
+    setIdeaPrefill(`¡Hola! Me gustaría apuntarme al próximo curso presencial. `);
+    if (mobile) {
+      document.getElementById("algunaIdea")?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      navigateToSection("algunaIdea", "up");
+    }
+  };
 
   const title = data?.title ?? "APRENDE CON PIPO";
   const youtubeLabel = data?.youtubeLabel ?? "EN YOUTUBE";

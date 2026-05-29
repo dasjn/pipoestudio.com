@@ -171,6 +171,8 @@ interface NavigationState {
   processAnimationQueue: () => void;
   isModelReady: boolean;
   setModelReady: () => void;
+  ideaPrefill: string | null;
+  setIdeaPrefill: (text: string | null) => void;
 }
 
 // Store de navegación
@@ -181,6 +183,8 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
   isAnimationSequenceActive: false,
   isModelReady: false,
   setModelReady: () => set({ isModelReady: true }),
+  ideaPrefill: null,
+  setIdeaPrefill: (text) => set({ ideaPrefill: text }),
   navigationDirection: null,
   currentIdle: "Idle 01",
   activeAnimation: "Idle 01",

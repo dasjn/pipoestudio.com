@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import PipoProductCard, { type PipoProductCardData } from "../PipoProductCard";
 import Button from "../Button";
+import { useNavigationStore } from "@/app/store/navigationStore";
 
 interface TiendaSectionData {
   title?: string;
@@ -82,6 +83,18 @@ export default function TiendaSection({
   products = [],
   mobile = false,
 }: TiendaSectionProps) {
+  const scrollToSection = useNavigationStore((s) => s.scrollToSection);
+  const setIdeaPrefill = useNavigationStore((s) => s.setIdeaPrefill);
+
+  const handleProductClick = (productName: string) => {
+    setIdeaPrefill(`¡Hola! He visto "${productName}" en la tienda y me gustaría saber más. `);
+    if (mobile) {
+      document.getElementById("algunaIdea")?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      scrollToSection("algunaIdea");
+    }
+  };
+
   const title = data?.title ?? DEFAULT_TITLE;
   const subtitle = data?.subtitle ?? DEFAULT_SUBTITLE;
 
@@ -141,7 +154,11 @@ export default function TiendaSection({
                 key={product._id}
                 style={{ flexShrink: 0, width: "70vw", scrollSnapAlign: "center" }}
               >
-                <PipoProductCard product={product} />
+                <PipoProductCard
+                  product={product}
+                  onBuyClick={() => handleProductClick(product.name ?? "este producto")}
+                  onContactClick={() => handleProductClick(product.name ?? "este producto")}
+                />
               </div>
             ))}
           </div>
@@ -196,7 +213,13 @@ export default function TiendaSection({
                         className="w-48"
                         style={{ visibility: product ? "visible" : "hidden" }}
                       >
-                        {product && <PipoProductCard product={product} />}
+                        {product && (
+                          <PipoProductCard
+                            product={product}
+                            onBuyClick={() => handleProductClick(product.name ?? "este producto")}
+                            onContactClick={() => handleProductClick(product.name ?? "este producto")}
+                          />
+                        )}
                       </div>
                     );
                   })}

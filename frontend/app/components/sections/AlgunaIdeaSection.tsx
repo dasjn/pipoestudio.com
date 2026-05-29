@@ -65,8 +65,9 @@ export default function AlgunaIdeaSection({
   data,
   mobile = false,
 }: AlgunaIdeaSectionProps = {}) {
-  const { currentSection, activeAnimation } = useNavigationStore();
+  const { currentSection, activeAnimation, ideaPrefill, setIdeaPrefill } = useNavigationStore();
   const [slid, setSlid] = useState(false);
+  const [ideaValue, setIdeaValue] = useState("");
 
   const [fotos, setFotos] = useState<File[]>([]);
   const [compressing, setCompressing] = useState(false);
@@ -95,10 +96,18 @@ export default function AlgunaIdeaSection({
   }, [currentSection, activeAnimation]);
 
   useEffect(() => {
+    if (currentSection === "algunaIdea" && ideaPrefill !== null) {
+      setIdeaValue(ideaPrefill);
+      setIdeaPrefill(null);
+    }
+  }, [currentSection, ideaPrefill, setIdeaPrefill]);
+
+  useEffect(() => {
     if (state.status === "success") {
       toast.success("¡Mensaje enviado! Te contactamos pronto.");
       formRef.current?.reset();
       setFotos([]);
+      setIdeaValue("");
     } else if (state.status === "error") {
       toast.error(state.message);
     }
@@ -179,6 +188,8 @@ export default function AlgunaIdeaSection({
               placeholder="Me encantaría restaurar la mesa de pino de casa de mi abuela"
               required
               rows={mobile ? 4 : 2}
+              value={ideaValue}
+              onChange={(e) => setIdeaValue(e.target.value)}
               className={`${inputBase} resize-none`}
             />
           </div>
