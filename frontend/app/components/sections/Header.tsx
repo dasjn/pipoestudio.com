@@ -285,7 +285,9 @@ const Header: React.FC<HeaderProps> = ({ currentPath = "", blogMode = false }) =
 
   const handleAnimatedLogoClick = () => {
     if (blogMode) {
-      router.push(`/${locale}`);
+      router.push(`/${locale}?section=inicio`);
+    } else if (typeof window !== "undefined" && window.innerWidth < 768) {
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
       scrollToSection("inicio");
     }

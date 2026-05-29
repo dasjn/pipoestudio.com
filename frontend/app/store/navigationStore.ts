@@ -446,6 +446,8 @@ export const useNavigationStore = create<NavigationState>((set, get) => ({
     }
 
     setTimeout(() => set({ isScrolling: false }), 1000);
+    // Fallback: limpia isTransitioning en mobile (no hay CameraController que lo haga)
+    setTimeout(() => set({ isTransitioning: false }), 2500);
   },
 
   registerSection: (sectionId: SectionId, element: HTMLElement) => {
