@@ -74,7 +74,7 @@ export default function InicioSection({ data, mobile = false }: InicioSectionPro
             <div className="mt-6 pointer-events-auto">
               <Button
                 as="button"
-                size="sm"
+                size={mobile ? "sm" : "md"}
                 onClick={() => {
                   if (mobile) {
                     document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth" });
