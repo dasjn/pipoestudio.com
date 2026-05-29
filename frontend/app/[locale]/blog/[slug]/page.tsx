@@ -102,7 +102,7 @@ export default async function BlogPostPage({ params }: Props) {
             {settings?.blogPostClosing ?? (locale === "es" ? "¡Cuéntame tu próximo proyecto!" : "Tell me about your next project!")}
           </p>
           <div className="flex flex-wrap justify-center gap-3">
-            <Button as="link" href={`/${locale}`} variant="primary" size="sm">
+            <Button as="link" href={`/${locale}?section=contacto`} variant="primary" size="sm">
               {locale === "es" ? "Contacta" : "Contact"}
             </Button>
             <Button as="link" href={`/${locale}`} variant="primary" size="sm">
