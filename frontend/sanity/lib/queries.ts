@@ -212,6 +212,8 @@ export const seoPageQuery = defineQuery(`
     "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),
     "slug": slug.current,
     "metaDescription": coalesce(metaDescription[_key == $language][0].value, metaDescription[_key == "es"][0].value, metaDescription[0].value),
+    "heroSubtitle": coalesce(heroSubtitle[_key == $language][0].value, heroSubtitle[_key == "es"][0].value, heroSubtitle[0].value),
+    "heroIntroText": coalesce(heroIntroText[_key == $language][0].value, heroIntroText[_key == "es"][0].value, heroIntroText[0].value),
     "content": coalesce(content[_key == $language][0].value, content[_key == "es"][0].value, content[0].value)[]{
       ...,
       markDefs[]{
@@ -225,6 +227,19 @@ export const seoPageQuery = defineQuery(`
     coverImage {
       asset,
       "alt": coalesce(alt[_key == $language][0].value, alt[_key == "es"][0].value, alt[0].value)
+    }
+  }
+`);
+
+export const cursosHeroQuery = defineQuery(`
+  *[_type == "home"][0]{
+    "sections": sections[_type == "cursosSection"][0]{
+      "youtubeLabel": coalesce(youtubeLabel[_key == $language][0].value, youtubeLabel[_key == "es"][0].value, youtubeLabel[0].value),
+      "youtubeVideo": youtubeVideo { "url": asset->url },
+      youtubeUrl,
+      "instagramLabel": coalesce(instagramLabel[_key == $language][0].value, instagramLabel[_key == "es"][0].value, instagramLabel[0].value),
+      "instagramVideo": instagramVideo { "url": asset->url },
+      instagramUrl
     }
   }
 `);

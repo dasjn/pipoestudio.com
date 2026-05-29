@@ -38,6 +38,18 @@ export const seoPage = defineType({
       description: 'Aparece en Google bajo el título. Ideal entre 120-160 caracteres.',
     }),
     defineField({
+      name: 'heroSubtitle',
+      title: 'Hero — Subtítulo grande',
+      type: 'internationalizedArrayString',
+      description: 'Texto grande bajo el logo. Ej: Muebles a medida en Gran Canaria hechos a mano...',
+    }),
+    defineField({
+      name: 'heroIntroText',
+      title: 'Hero — Texto de introducción',
+      type: 'internationalizedArrayText',
+      description: 'Párrafo de intro que aparece en mayúsculas y negrita bajo el subtítulo.',
+    }),
+    defineField({
       name: 'content',
       title: 'Contenido',
       type: 'internationalizedArrayBlockContent',
