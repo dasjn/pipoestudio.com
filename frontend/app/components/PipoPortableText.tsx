@@ -7,45 +7,47 @@ import ResolvedLink from "@/app/components/ResolvedLink";
 export default function PipoPortableText({
   value,
   className,
+  compact = false,
 }: {
   value: PortableTextBlock[];
   className?: string;
+  compact?: boolean;
 }) {
   const components: PortableTextComponents = {
     block: {
       h1: ({ children }) => (
         <h1 className="font-sans font-extrabold text-green-pipo uppercase mb-4 mt-8 first:mt-0"
-            style={{ fontSize: '61px', lineHeight: '73px' }}>
+            style={compact ? { fontSize: '28px', lineHeight: '1.2' } : { fontSize: '61px', lineHeight: '73px' }}>
           {children}
         </h1>
       ),
       h2: ({ children }) => (
         <h2 className="font-sans font-extrabold text-green-pipo uppercase mb-4 mt-8 first:mt-0"
-            style={{ fontSize: '61px', lineHeight: '73px' }}>
+            style={compact ? { fontSize: '24px', lineHeight: '1.2' } : { fontSize: '61px', lineHeight: '73px' }}>
           {children}
         </h2>
       ),
       h3: ({ children }) => (
         <h3 className="font-sans font-extrabold text-green-pipo uppercase mb-3 mt-6 first:mt-0"
-            style={{ fontSize: '39px', lineHeight: '47px' }}>
+            style={compact ? { fontSize: '20px', lineHeight: '1.3' } : { fontSize: '39px', lineHeight: '47px' }}>
           {children}
         </h3>
       ),
       h4: ({ children }) => (
         <h4 className="font-sans font-extrabold text-green-pipo uppercase mb-3 mt-6 first:mt-0"
-            style={{ fontSize: '39px', lineHeight: '47px' }}>
+            style={compact ? { fontSize: '18px', lineHeight: '1.3' } : { fontSize: '39px', lineHeight: '47px' }}>
           {children}
         </h4>
       ),
       normal: ({ children }) => (
-        <p className="font-sans font-medium text-green-pipo leading-none mb-4"
-           style={{ fontSize: '24px', letterSpacing: '-0.528px' }}>
+        <p className="font-sans font-medium text-green-pipo mb-4"
+           style={compact ? { fontSize: '16px', lineHeight: '1.6' } : { fontSize: '24px', lineHeight: 1, letterSpacing: '-0.528px' }}>
           {children}
         </p>
       ),
       blockquote: ({ children }) => (
-        <blockquote className="font-sans font-medium text-green-pipo italic border-l-4 border-green-pipo pl-4 my-3 leading-none"
-                    style={{ fontSize: '24px', letterSpacing: '-0.528px' }}>
+        <blockquote className="font-sans font-medium text-green-pipo italic border-l-4 border-green-pipo pl-4 my-3"
+                    style={compact ? { fontSize: '16px', lineHeight: '1.6' } : { fontSize: '24px', lineHeight: 1, letterSpacing: '-0.528px' }}>
           {children}
         </blockquote>
       ),
@@ -60,14 +62,14 @@ export default function PipoPortableText({
     },
     listItem: {
       bullet: ({ children }) => (
-        <li className="font-sans font-medium text-green-pipo leading-none"
-            style={{ fontSize: '24px', letterSpacing: '-0.528px' }}>
+        <li className="font-sans font-medium text-green-pipo"
+            style={compact ? { fontSize: '16px', lineHeight: '1.6' } : { fontSize: '24px', lineHeight: 1, letterSpacing: '-0.528px' }}>
           {children}
         </li>
       ),
       number: ({ children }) => (
-        <li className="font-sans font-medium text-green-pipo leading-none"
-            style={{ fontSize: '24px', letterSpacing: '-0.528px' }}>
+        <li className="font-sans font-medium text-green-pipo"
+            style={compact ? { fontSize: '16px', lineHeight: '1.6' } : { fontSize: '24px', lineHeight: 1, letterSpacing: '-0.528px' }}>
           {children}
         </li>
       ),

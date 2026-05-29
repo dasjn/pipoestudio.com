@@ -86,11 +86,11 @@ export default async function Page(props: Props) {
             Pipo estudio
           </p>
 
-          {/* Subtítulo */}
+          {/* H1 */}
           {seoPage.heroSubtitle && (
-            <p className="font-sans font-bold text-green-pipo text-3xl lg:text-5xl leading-tight">
+            <h1 className="font-sans font-bold text-green-pipo leading-tight" style={{ fontSize: "clamp(1.75rem, 4vw, 3rem)" }}>
               {seoPage.heroSubtitle}
-            </p>
+            </h1>
           )}
 
           {/* Intro text */}
@@ -100,16 +100,6 @@ export default async function Page(props: Props) {
             </p>
           )}
 
-          {/* Botonera */}
-          <div className="flex flex-wrap justify-center gap-3">
-            <Button as="link" href={`/${locale}`} variant="primary" size="sm">
-              {locale === "es" ? "Ver página principal" : "Main page"}
-            </Button>
-            <Button as="link" href={`/${locale}/blog`} variant="primary" size="sm">
-              {locale === "es" ? "Ver mi diario" : "Read my diary"}
-            </Button>
-          </div>
-
           {/* Tarjetas de video */}
           {cursos && (
             <div className="flex gap-5 justify-center flex-wrap">
@@ -118,7 +108,7 @@ export default async function Page(props: Props) {
                 { label: cursos.instagramLabel ?? "EN INSTAGRAM", video: cursos.instagramVideo, href: cursos.instagramUrl },
               ].map(({ label, video, href }) => {
                 const inner = (
-                  <div style={{ width: VIDEO_W }}>
+                  <div key={label} style={{ width: VIDEO_W }}>
                     <div className="bg-[#00A750] text-white font-bold uppercase text-[11px] px-2 py-[5px] text-center rounded-t-[4px]">
                       {label}
                     </div>
@@ -137,14 +127,20 @@ export default async function Page(props: Props) {
               })}
             </div>
           )}
+
+          {/* Botonera */}
+          <div className="flex flex-wrap justify-center gap-3">
+            <Button as="link" href={`/${locale}`} variant="primary" size="sm">
+              {locale === "es" ? "Ver página principal" : "Main page"}
+            </Button>
+            <Button as="link" href={`/${locale}/blog`} variant="primary" size="sm">
+              {locale === "es" ? "Ver mi diario" : "Read my diary"}
+            </Button>
+          </div>
         </section>
 
         {/* ── Contenido ── */}
         <main className="max-w-3xl mx-auto px-6 py-8">
-          <h1 className="font-sans font-bold text-green-pipo text-3xl lg:text-5xl uppercase leading-none mb-8">
-            {seoPage.title}
-          </h1>
-
           {seoPage.coverImage && (
             <div className="mb-8">
               <CoverImage image={seoPage.coverImage} priority />
@@ -152,7 +148,7 @@ export default async function Page(props: Props) {
           )}
 
           {seoPage.content?.length ? (
-            <PipoPortableText value={seoPage.content as PortableTextBlock[]} />
+            <PipoPortableText value={seoPage.content as PortableTextBlock[]} compact />
           ) : null}
 
           <div className="mt-12 pt-8 border-t border-green-pipo/30 flex flex-wrap gap-3">
