@@ -1,4 +1,6 @@
+"use client";
 import Button from "../Button";
+import { useNavigationStore } from "@/app/store/navigationStore";
 
 interface CursosSectionData {
   _type: "cursosSection";
@@ -92,6 +94,7 @@ function PresencialCard({
   info,
   buttonText,
   buttonUrl,
+  onButtonClick,
 }: {
   label: string;
   title?: string;
@@ -99,6 +102,7 @@ function PresencialCard({
   info?: string;
   buttonText?: string;
   buttonUrl?: string;
+  onButtonClick?: () => void;
 }) {
   return (
     <div
@@ -144,15 +148,15 @@ function PresencialCard({
             </p>
           )}
           {buttonText && (
-            <Button
-              as="link"
-              href={buttonUrl ?? "#"}
-              target="_blank"
-              size="sm"
-              className="w-full normal-case"
-            >
-              {buttonText}
-            </Button>
+            onButtonClick ? (
+              <Button as="button" size="sm" className="w-full normal-case" onClick={onButtonClick}>
+                {buttonText}
+              </Button>
+            ) : (
+              <Button as="link" href={buttonUrl ?? "#"} target="_blank" size="sm" className="w-full normal-case">
+                {buttonText}
+              </Button>
+            )
           )}
         </div>
       </div>
@@ -168,12 +172,14 @@ function MobileCard({
   children,
   buttonText,
   buttonUrl,
+  onButtonClick,
 }: {
   label: string;
   video?: { url: string };
   children?: React.ReactNode;
   buttonText?: string;
   buttonUrl?: string;
+  onButtonClick?: () => void;
 }) {
   return (
     <div
@@ -221,15 +227,15 @@ function MobileCard({
           {/* Botón dentro de la tarjeta, pegado al fondo */}
           {buttonText && (
             <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, zIndex: 10, padding: "0 12px 12px 12px" }}>
-              <Button
-                as="link"
-                href={buttonUrl ?? "#"}
-                target="_blank"
-                size="sm"
-                className="w-full"
-              >
-                {buttonText}
-              </Button>
+              {onButtonClick ? (
+                <Button as="button" size="sm" className="w-full" onClick={onButtonClick}>
+                  {buttonText}
+                </Button>
+              ) : (
+                <Button as="link" href={buttonUrl ?? "#"} target="_blank" size="sm" className="w-full">
+                  {buttonText}
+                </Button>
+              )}
             </div>
           )}
         </div>
@@ -239,6 +245,12 @@ function MobileCard({
 }
 
 export default function CursosSection({ data, mobile = false }: CursosSectionProps) {
+  const navigateToSection = useNavigationStore((s) => s.navigateToSection);
+
+  const handlePresencialClick = mobile
+    ? () => document.getElementById("algunaIdea")?.scrollIntoView({ behavior: "smooth" })
+    : () => navigateToSection("algunaIdea", "up");
+
   const title = data?.title ?? "APRENDE CON PIPO";
   const youtubeLabel = data?.youtubeLabel ?? "EN YOUTUBE";
   const instagramLabel = data?.instagramLabel ?? "EN INSTAGRAM";
@@ -289,6 +301,7 @@ export default function CursosSection({ data, mobile = false }: CursosSectionPro
             label={presencialLabel}
             buttonText={presencialButtonText}
             buttonUrl={data?.presencialUrl}
+            onButtonClick={handlePresencialClick}
           >
             <p
               className="font-sans font-bold text-green-pipo uppercase"
@@ -336,6 +349,7 @@ export default function CursosSection({ data, mobile = false }: CursosSectionPro
           info={presencialInfo}
           buttonText={presencialButtonText}
           buttonUrl={data?.presencialUrl}
+          onButtonClick={handlePresencialClick}
         />
       </div>
     </section>
