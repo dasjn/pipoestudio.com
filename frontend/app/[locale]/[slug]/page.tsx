@@ -1,10 +1,15 @@
-import type { Metadata } from "next";
+import type { Metadata, ResolvingMetadata } from "next";
 import Head from "next/head";
+import { type PortableTextBlock } from "@portabletext/types";
 
 import Header from "@/app/components/sections/Header";
 import PageBuilderPage from "@/app/components/PageBuilder";
+import PipoPortableText from "@/app/components/PipoPortableText";
+import CoverImage from "@/app/components/CoverImage";
+import Button from "@/app/components/Button";
 import { sanityFetch } from "@/sanity/lib/live";
-import { getPageQuery, pagesSlugs } from "@/sanity/lib/queries";
+import { getPageQuery, pagesSlugs, seoPageQuery, seoPagesSlugs } from "@/sanity/lib/queries";
+import { resolveOpenGraphImage } from "@/sanity/lib/utils";
 import { GetPageQueryResult } from "@/sanity.types";
 import { PageOnboarding } from "@/app/components/Onboarding";
 import { i18n, type Locale } from "@/i18n.config";
@@ -13,21 +18,14 @@ type Props = {
   params: Promise<{ slug: string; locale: Locale }>;
 };
 
-/**
- * Generate the static params for the page.
- * Learn more: https://nextjs.org/docs/app/api-reference/functions/generate-static-params
- */
 export async function generateStaticParams() {
-  const { data } = await sanityFetch({
-    query: pagesSlugs,
-    // // Use the published perspective in generateStaticParams
-    perspective: "published",
-    stega: false,
-  });
+  const [{ data: pageData }, { data: seoData }] = await Promise.all([
+    sanityFetch({ query: pagesSlugs, perspective: "published", stega: false }),
+    sanityFetch({ query: seoPagesSlugs, perspective: "published", stega: false }),
+  ]);
 
-  // Generate params for each locale and slug combination
   const params = [];
-  for (const item of data ?? []) {
+  for (const item of [...(pageData ?? []), ...(seoData ?? [])]) {
     for (const locale of i18n.locales) {
       params.push({ slug: item.slug, locale });
     }
@@ -35,18 +33,25 @@ export async function generateStaticParams() {
   return params;
 }
 
-/**
- * Generate metadata for the page.
- * Learn more: https://nextjs.org/docs/app/api-reference/functions/generate-metadata#generatemetadata-function
- */
-export async function generateMetadata(props: Props): Promise<Metadata> {
+export async function generateMetadata(
+  props: Props,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
   const params = await props.params;
-  const { data: page } = await sanityFetch({
-    query: getPageQuery,
-    params: { slug: params.slug, language: params.locale },
-    // Metadata should never contain stega
-    stega: false,
-  });
+  const [{ data: page }, { data: seoPage }] = await Promise.all([
+    sanityFetch({ query: getPageQuery, params: { slug: params.slug, language: params.locale }, stega: false }),
+    sanityFetch({ query: seoPageQuery, params: { slug: params.slug, language: params.locale }, stega: false }),
+  ]);
+
+  if (seoPage?._id) {
+    const previousImages = (await parent).openGraph?.images || [];
+    const ogImage = resolveOpenGraphImage(seoPage.coverImage);
+    return {
+      title: seoPage.title,
+      description: seoPage.metaDescription,
+      openGraph: { images: ogImage ? [ogImage, ...previousImages] : previousImages },
+    } satisfies Metadata;
+  }
 
   return {
     title: page?.name,
@@ -56,13 +61,51 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
 export default async function Page(props: Props) {
   const params = await props.params;
-  const [{ data: page }] = await Promise.all([
-    sanityFetch({
-      query: getPageQuery,
-      params: { slug: params.slug, language: params.locale },
-    }),
+  const { slug, locale } = params;
+
+  const [{ data: page }, { data: seoPage }] = await Promise.all([
+    sanityFetch({ query: getPageQuery, params: { slug, language: locale } }),
+    sanityFetch({ query: seoPageQuery, params: { slug, language: locale } }),
   ]);
 
+  // ── Página SEO ────────────────────────────────────────────────────────────
+  if (seoPage?._id) {
+    return (
+      <div className="min-h-screen bg-[#E4E5E0]">
+        <Header blogMode />
+
+        <main className="max-w-3xl mx-auto px-6 py-12">
+          <h1 className="font-sans font-bold text-green-pipo text-4xl lg:text-6xl uppercase leading-none mb-10">
+            {seoPage.title}
+          </h1>
+
+          {seoPage.coverImage && (
+            <div className="mb-10">
+              <CoverImage image={seoPage.coverImage} priority />
+            </div>
+          )}
+
+          {seoPage.content?.length ? (
+            <PipoPortableText value={seoPage.content as PortableTextBlock[]} />
+          ) : null}
+
+          <div className="mt-12 pt-8 border-t border-green-pipo/30 flex flex-wrap gap-3">
+            <Button as="link" href={`/${locale}`} variant="primary" size="sm">
+              {locale === "es" ? "Ver página principal" : "Go to main page"}
+            </Button>
+            <Button as="link" href={`/${locale}?section=contacto`} variant="primary" size="sm">
+              {locale === "es" ? "Contacta" : "Contact"}
+            </Button>
+            <Button as="link" href={`/${locale}/blog`} variant="primary" size="sm">
+              {locale === "es" ? "Ver mi diario" : "Read my diary"}
+            </Button>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // ── Página genérica (type: page) ──────────────────────────────────────────
   if (!page?._id) {
     return (
       <>

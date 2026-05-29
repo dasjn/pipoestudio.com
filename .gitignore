@@ -30,6 +30,9 @@ next-env.d.ts
 # VS Code
 .vscode
 
+# Seed scripts (contienen tokens)
+studio/scripts/
+
 # 3D models (large binary files)
 *.glb
 *.gltf

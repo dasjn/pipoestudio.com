@@ -20,6 +20,12 @@ export const sobreMiSection = defineType({
       description: 'Cada párrafo separado por una línea en blanco. El último párrafo se muestra en negrita.',
       validation: (rule) => rule.required(),
     }),
+    defineField({
+      name: 'verMasUrl',
+      title: 'URL del botón "Ver más"',
+      type: 'string',
+      description: 'Ej: /es/carpinteria-artesanal-gran-canaria. Déjalo vacío para ocultar el botón.',
+    }),
   ],
   preview: {
     select: {

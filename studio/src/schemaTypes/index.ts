@@ -1,6 +1,7 @@
 import {person} from './documents/person'
 import {page} from './documents/page'
 import {post} from './documents/post'
+import {seoPage} from './documents/seoPage'
 import {product} from './documents/product'
 import {callToAction} from './objects/callToAction'
 import {infoSection} from './objects/infoSection'
@@ -28,6 +29,7 @@ export const schemaTypes = [
   // Documents
   page,
   post,
+  seoPage,
   person,
   product,
   // Objects

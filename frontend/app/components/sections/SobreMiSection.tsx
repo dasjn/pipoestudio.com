@@ -1,7 +1,12 @@
+"use client";
+import Button from "../Button";
+import { useLocaleStore } from "@/app/store/localeStore";
+
 interface SobreMiSectionData {
   _type: "SobreMiSection";
   title?: string;
   body?: string;
+  verMasUrl?: string;
 }
 
 interface SobreMiSectionProps {
@@ -44,8 +49,10 @@ function renderWithFuguLink(text: string) {
 }
 
 export default function SobreMiSection({ data, mobile = false }: SobreMiSectionProps) {
+  const locale = useLocaleStore((s) => s.locale);
   const title = data?.title ?? DEFAULT_TITLE;
   const body = data?.body ?? DEFAULT_BODY;
+  const verMasUrl = data?.verMasUrl ?? `/${locale}/carpinteria-artesanal-gran-canaria`;
 
   const paragraphs = body.split(/\n\n+/).filter(Boolean);
   const bodyParagraphs = paragraphs.slice(0, -1);
@@ -77,6 +84,12 @@ export default function SobreMiSection({ data, mobile = false }: SobreMiSectionP
         ))}
         {lastParagraph && <p className="font-bold">{lastParagraph}</p>}
       </div>
+
+      {verMasUrl ? (
+        <Button as="link" href={verMasUrl} variant="primary" size="sm" className="!text-[10px] !py-[5px] !px-[7px]">
+          {locale === "es" ? "Ver más" : "Read more"}
+        </Button>
+      ) : null}
     </section>
   );
 }

@@ -137,7 +137,7 @@ export default function SectionOverlays({
     {
       id: "sobreMi",
       content: <SobreMiSection data={sectionsData?.sobreMi} />,
-      planeH: 2.5,
+      planeH: 2.9,
     },
     {
       id: "tienda",
