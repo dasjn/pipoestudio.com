@@ -174,13 +174,22 @@ export default {
       }
     }
 
-    const response = await env.AI.run("@cf/meta/llama-3.1-8b-instruct", {
-      messages: [{ role: "system", content: systemPrompt }, ...messages],
-      stream: true,
-      max_tokens: 300, // Reduced: shorter = more action-oriented
-    } as Parameters<typeof env.AI.run>[1]);
+    let response: ReadableStream;
+    try {
+      response = (await env.AI.run("@cf/meta/llama-3.1-8b-instruct-fast", {
+        messages: [{ role: "system", content: systemPrompt }, ...messages],
+        stream: true,
+        max_tokens: 300,
+      } as Parameters<typeof env.AI.run>[1])) as ReadableStream;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      return new Response(JSON.stringify({ error: msg }), {
+        status: 502,
+        headers: { ...headers, "Content-Type": "application/json" },
+      });
+    }
 
-    return new Response(response as ReadableStream, {
+    return new Response(response, {
       headers: {
         ...headers,
         "Content-Type": "text/event-stream",
