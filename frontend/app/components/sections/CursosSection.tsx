@@ -188,6 +188,7 @@ function MobileCard({
         width: "70vw",
         height: "55vh",
         scrollSnapAlign: "center",
+        scrollSnapStop: "always",
         display: "flex",
         flexDirection: "column",
       }}

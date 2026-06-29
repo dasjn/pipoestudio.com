@@ -152,7 +152,7 @@ export default function TiendaSection({
             {products.map((product) => (
               <div
                 key={product._id}
-                style={{ flexShrink: 0, width: "70vw", scrollSnapAlign: "center" }}
+                style={{ flexShrink: 0, width: "70vw", scrollSnapAlign: "center", scrollSnapStop: "always" }}
               >
                 <PipoProductCard
                   product={product}

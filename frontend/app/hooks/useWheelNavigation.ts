@@ -30,18 +30,7 @@ export const useWheelNavigation = () => {
   }, [navigateNext, navigatePrevious, isTransitioning]);
 
   useEffect(() => {
-    // Desktop wheel navigation
-    const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      
-      if (e.deltaY > 0) {
-        handleNavigation('next');
-      } else if (e.deltaY < 0) {
-        handleNavigation('prev');
-      }
-    };
-
-    // Check if touch is in UI areas (header, mobile menu, or chat)
+    // Check if event happened in a UI area (header, mobile menu, chat, lightbox…)
     const isInUIArea = (element: HTMLElement): boolean => {
       const header = document.querySelector('header');
       const mobileMenu = document.querySelector('[class*="fixed"][class*="inset-0"][class*="z-50"]');
@@ -50,6 +39,23 @@ export const useWheelNavigation = () => {
              (mobileMenu && mobileMenu.contains(element)) ||
              element.closest('header') !== null ||
              element.closest('[data-no-nav-scroll]') !== null;
+    };
+
+    // Desktop wheel navigation
+    const handleWheel = (e: WheelEvent) => {
+      const target = e.target as HTMLElement;
+
+      if (isInUIArea(target)) {
+        return; // Allow normal UI interaction (chat, lightbox…)
+      }
+
+      e.preventDefault();
+
+      if (e.deltaY > 0) {
+        handleNavigation('next');
+      } else if (e.deltaY < 0) {
+        handleNavigation('prev');
+      }
     };
 
     // Mobile touch navigation

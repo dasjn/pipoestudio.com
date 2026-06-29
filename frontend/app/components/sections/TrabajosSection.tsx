@@ -4,11 +4,15 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTrabajosStore } from "@/app/store/trabajosStore";
 import Button from "@/app/components/Button";
+import WorkGalleryLightbox, {
+  type GalleryImage,
+} from "@/app/components/WorkGalleryLightbox";
 
 interface FotoItem {
   url: string;
   nombre?: string;
   descripcion?: string;
+  galeria?: GalleryImage[];
 }
 
 // Posiciones de los dots — ajustar a ojo en la vista (% del slot)
@@ -44,13 +48,17 @@ const GREEN_MARGIN = (PILL_H - GREEN) / 2;
 function WorkDot({
   foto,
   pos,
+  onOpen,
 }: {
   foto: FotoItem;
   pos: { x: number; y: number };
+  onOpen?: () => void;
 }) {
   const [hovered, setHovered] = useState(false);
   const textRef = useRef<HTMLDivElement>(null);
   const [expandedWidth, setExpandedWidth] = useState<number>(PILL_H);
+
+  const hasGallery = (foto.galeria?.length ?? 0) > 0;
 
   useEffect(() => {
     if (textRef.current) {
@@ -74,6 +82,11 @@ function WorkDot({
       onMouseLeave={() => setHovered(false)}
     >
       <motion.div
+        onClick={hasGallery ? onOpen : undefined}
+        role={hasGallery ? "button" : undefined}
+        aria-label={
+          hasGallery && foto.nombre ? `Ver galería de ${foto.nombre}` : undefined
+        }
         initial={{ width: PILL_H }}
         animate={{ width: hovered ? expandedWidth : PILL_H }}
         transition={{ type: "spring", stiffness: 380, damping: 32 }}
@@ -85,7 +98,7 @@ function WorkDot({
           display: "flex",
           alignItems: "center",
           boxShadow: "0 2px 14px rgba(0,0,0,0.16)",
-          cursor: "pointer",
+          cursor: hasGallery ? "pointer" : "default",
         }}
       >
         {/* Círculo verde */}
@@ -155,6 +168,8 @@ export default function TrabajosSection({ data }: TrabajosSectionProps) {
   const { page, setPage } = useTrabajosStore();
   const currentFotos = fotos.slice(page * FOTOS_PER_PAGE, (page + 1) * FOTOS_PER_PAGE);
 
+  const [openFoto, setOpenFoto] = useState<FotoItem | null>(null);
+
   function goToNextPage() {
     setPage((page + 1) % totalPages);
   }
@@ -197,9 +212,20 @@ export default function TrabajosSection({ data }: TrabajosSectionProps) {
               key={i}
               foto={foto}
               pos={DOT_POSITIONS[i] ?? { x: 50, y: 50 }}
+              onOpen={() => setOpenFoto(foto)}
             />
           ))}
         </motion.div>
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {openFoto && (openFoto.galeria?.length ?? 0) > 0 && (
+          <WorkGalleryLightbox
+            images={openFoto.galeria!}
+            title={openFoto.nombre}
+            onClose={() => setOpenFoto(null)}
+          />
+        )}
       </AnimatePresence>
     </section>
   );

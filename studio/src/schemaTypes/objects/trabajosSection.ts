@@ -53,6 +53,24 @@ export const trabajosSection = defineType({
               title: 'Descripción',
               type: 'internationalizedArrayString',
             }),
+            defineField({
+              name: 'galeria',
+              title: 'Galería (se abre al hacer click en el punto)',
+              type: 'array',
+              of: [
+                {
+                  type: 'image',
+                  options: {hotspot: true},
+                  fields: [
+                    defineField({
+                      name: 'alt',
+                      title: 'Texto alternativo',
+                      type: 'string',
+                    }),
+                  ],
+                },
+              ],
+            }),
           ],
           preview: {
             select: {title: 'nombre', media: 'image'},

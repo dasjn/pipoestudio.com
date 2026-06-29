@@ -40,10 +40,34 @@ export type CallToAction = {
   link?: Link;
 };
 
+export type FooterSection = {
+  _type: "footerSection";
+  heading?: InternationalizedArrayString;
+  captionText?: InternationalizedArrayString;
+  captionUrl?: string;
+};
+
+export type PostFooterSection = {
+  _type: "postFooterSection";
+  thankYouText?: InternationalizedArrayString;
+  musicButtonText?: InternationalizedArrayString;
+  musicFile?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
+    };
+    media?: unknown;
+    _type: "file";
+  };
+};
+
 export type SobreMiSection = {
   _type: "SobreMiSection";
   title?: InternationalizedArrayString;
   body?: InternationalizedArrayText;
+  verMasUrl?: string;
 };
 
 export type ContactoSection = {
@@ -132,6 +156,20 @@ export type TrabajosSection = {
     };
     nombre?: InternationalizedArrayString;
     descripcion?: InternationalizedArrayString;
+    galeria?: Array<{
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      alt?: string;
+      _type: "image";
+      _key: string;
+    }>;
     _type: "trabajoFoto";
     _key: string;
   }>;
@@ -271,6 +309,37 @@ export type SanityImageHotspot = {
   width?: number;
 };
 
+export type SeoPage = {
+  _id: string;
+  _type: "seoPage";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  title?: InternationalizedArrayString;
+  slug?: Slug;
+  metaDescription?: InternationalizedArrayText;
+  heroSubtitle?: InternationalizedArrayString;
+  heroIntroText?: InternationalizedArrayText;
+  content?: InternationalizedArrayBlockContent;
+  coverImage?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: InternationalizedArrayString;
+    _type: "image";
+  };
+};
+
+export type InternationalizedArrayBlockContent = Array<{
+  _key: string;
+} & InternationalizedArrayBlockContentValue>;
+
 export type Home = {
   _id: string;
   _type: "home";
@@ -295,7 +364,11 @@ export type Home = {
     _key: string;
   } & TiendaSection | {
     _key: string;
-  } & ContactoSection>;
+  } & ContactoSection | {
+    _key: string;
+  } & FooterSection | {
+    _key: string;
+  } & PostFooterSection>;
 };
 
 export type Settings = {
@@ -339,6 +412,7 @@ export type Settings = {
   }>;
   contactEmail?: string;
   blogTitle?: InternationalizedArrayString;
+  blogPostClosing?: InternationalizedArrayString;
   ogImage?: {
     asset?: {
       _ref: string;
@@ -495,10 +569,6 @@ export type InternationalizedArrayStringValue = {
   _type: "internationalizedArrayStringValue";
   value?: string;
 };
-
-export type InternationalizedArrayBlockContent = Array<{
-  _key: string;
-} & InternationalizedArrayBlockContentValue>;
 
 export type Page = {
   _id: string;
@@ -675,7 +745,7 @@ export type Geopoint = {
   alt?: number;
 };
 
-export type AllSanitySchemaTypes = Link | CallToAction | SobreMiSection | ContactoSection | TiendaSection | CursosSection | AlgunaIdeaSection | TrabajosSection | ManifiestoSection | InicioSection | InfoSection | BlockContent | Product | Slug | InternationalizedArrayString | InternationalizedArrayText | SanityImageCrop | SanityImageHotspot | Home | Settings | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField | InternationalizedArrayBlockContentValue | InternationalizedArraySlugValue | InternationalizedArrayTextValue | InternationalizedArrayStringValue | InternationalizedArrayBlockContent | Page | Post | Person | InternationalizedArraySlug | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint;
+export type AllSanitySchemaTypes = Link | CallToAction | FooterSection | PostFooterSection | SobreMiSection | ContactoSection | TiendaSection | CursosSection | AlgunaIdeaSection | TrabajosSection | ManifiestoSection | InicioSection | InfoSection | BlockContent | Product | Slug | InternationalizedArrayString | InternationalizedArrayText | SanityImageCrop | SanityImageHotspot | SeoPage | InternationalizedArrayBlockContent | Home | Settings | SanityAssistInstructionTask | SanityAssistTaskStatus | SanityAssistSchemaTypeAnnotations | SanityAssistOutputType | SanityAssistOutputField | SanityAssistInstructionContext | AssistInstructionContext | SanityAssistInstructionUserInput | SanityAssistInstructionPrompt | SanityAssistInstructionFieldRef | SanityAssistInstruction | SanityAssistSchemaTypeField | InternationalizedArrayBlockContentValue | InternationalizedArraySlugValue | InternationalizedArrayTextValue | InternationalizedArrayStringValue | Page | Post | Person | InternationalizedArraySlug | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint;
 export declare const internalGroqTypeReferenceTo: unique symbol;
 // Source: ./sanity/lib/queries.ts
 // Variable: settingsQuery
@@ -721,6 +791,7 @@ export type SettingsQueryResult = {
   }>;
   contactEmail: string | null;
   blogTitle?: InternationalizedArrayString;
+  blogPostClosing?: InternationalizedArrayString;
   ogImage?: {
     asset?: {
       _ref: string;
@@ -740,10 +811,10 @@ export type SettingsQueryResult = {
 // Query: *[_type == "settings"][0]{    "blogTitle": coalesce(blogTitle[_key == $language][0].value, blogTitle[_key == "es"][0].value, blogTitle[0].value),    "blogPostClosing": coalesce(blogPostClosing[_key == $language][0].value, blogPostClosing[_key == "es"][0].value, blogPostClosing[0].value)  }
 export type BlogPageQueryResult = {
   blogTitle: string | null;
-  blogPostClosing: null;
+  blogPostClosing: string | null;
 } | null;
 // Variable: homeQuery
-// Query: *[_type == 'home'][0]{    _id,    _type,    "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),    "description": coalesce(description[_key == $language][0].value, description[_key == "es"][0].value, description[0].value),    "sections": sections[]{      ...,      _key,      _type == "inicioSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "subtitle1": coalesce(subtitle1[_key == $language][0].value, subtitle1[_key == "es"][0].value, subtitle1[0].value),        "subtitle2": coalesce(subtitle2[_key == $language][0].value, subtitle2[_key == "es"][0].value, subtitle2[0].value),        "highlightedWord": coalesce(highlightedWord[_key == $language][0].value, highlightedWord[_key == "es"][0].value, highlightedWord[0].value),        "subtitle3": coalesce(subtitle3[_key == $language][0].value, subtitle3[_key == "es"][0].value, subtitle3[0].value),        "location": coalesce(location[_key == $language][0].value, location[_key == "es"][0].value, location[0].value),      },      _type == "manifiestoSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "content": coalesce(content[_key == $language][0].value, content[_key == "es"][0].value, content[0].value),        backgroundColor,      },      _type == "trabajosSection" => {        "statement": coalesce(statement[_key == $language][0].value, statement[_key == "es"][0].value, statement[0].value),        "buttonText": coalesce(buttonText[_key == $language][0].value, buttonText[_key == "es"][0].value, buttonText[0].value),        buttonUrl,        "fotos": fotos[]{          "url": image.asset->url,          "nombre": coalesce(nombre[_key == $language][0].value, nombre[_key == "es"][0].value, nombre[0].value),          "descripcion": coalesce(descripcion[_key == $language][0].value, descripcion[_key == "es"][0].value, descripcion[0].value),        },      },      _type == "algunaIdeaSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "description": coalesce(description[_key == $language][0].value, description[_key == "es"][0].value, description[0].value),        backgroundColor,      },      _type == "cursosSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "youtubeLabel": coalesce(youtubeLabel[_key == $language][0].value, youtubeLabel[_key == "es"][0].value, youtubeLabel[0].value),        "instagramLabel": coalesce(instagramLabel[_key == $language][0].value, instagramLabel[_key == "es"][0].value, instagramLabel[0].value),        "youtubeVideo": youtubeVideo { "url": asset->url },        youtubeUrl,        "instagramVideo": instagramVideo { "url": asset->url },        instagramUrl,        "presencialLabel": coalesce(presencialLabel[_key == $language][0].value, presencialLabel[_key == "es"][0].value, presencialLabel[0].value),        "presencialTitle": coalesce(presencialTitle[_key == $language][0].value, presencialTitle[_key == "es"][0].value, presencialTitle[0].value),        "presencialHighlight": coalesce(presencialHighlight[_key == $language][0].value, presencialHighlight[_key == "es"][0].value, presencialHighlight[0].value),        "presencialInfo": coalesce(presencialInfo[_key == $language][0].value, presencialInfo[_key == "es"][0].value, presencialInfo[0].value),        "presencialButtonText": coalesce(presencialButtonText[_key == $language][0].value, presencialButtonText[_key == "es"][0].value, presencialButtonText[0].value),        presencialUrl,      },      _type == "tiendaSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "subtitle": coalesce(description[_key == $language][0].value, description[_key == "es"][0].value, description[0].value),      },      _type == "contactoSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "instagramLabel": coalesce(instagramLabel[_key == $language][0].value, instagramLabel[_key == "es"][0].value, instagramLabel[0].value),        instagramUrl,        "youtubeLabel": coalesce(youtubeLabel[_key == $language][0].value, youtubeLabel[_key == "es"][0].value, youtubeLabel[0].value),        youtubeUrl,        "formularioLabel": coalesce(formularioLabel[_key == $language][0].value, formularioLabel[_key == "es"][0].value, formularioLabel[0].value),        formularioUrl,        "whatsappLabel": coalesce(whatsappLabel[_key == $language][0].value, whatsappLabel[_key == "es"][0].value, whatsappLabel[0].value),        whatsappNumber,        "emailLabel": coalesce(emailLabel[_key == $language][0].value, emailLabel[_key == "es"][0].value, emailLabel[0].value),        email,        "footerText": coalesce(footerText[_key == $language][0].value, footerText[_key == "es"][0].value, footerText[0].value),      },      _type == "SobreMiSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "body": coalesce(body[_key == $language][0].value, body[_key == "es"][0].value, body[0].value),      },      _type == "footerSection" => {        "heading": coalesce(heading[_key == $language][0].value, heading[_key == "es"][0].value, heading[0].value),        "captionText": coalesce(captionText[_key == $language][0].value, captionText[_key == "es"][0].value, captionText[0].value),        captionUrl,      },      _type == "postFooterSection" => {        "thankYouText": coalesce(thankYouText[_key == $language][0].value, thankYouText[_key == "es"][0].value, thankYouText[0].value),        "musicButtonText": coalesce(musicButtonText[_key == $language][0].value, musicButtonText[_key == "es"][0].value, musicButtonText[0].value),        "musicUrl": musicFile.asset->url,      },    },  }
+// Query: *[_type == 'home'][0]{    _id,    _type,    "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),    "description": coalesce(description[_key == $language][0].value, description[_key == "es"][0].value, description[0].value),    "sections": sections[]{      ...,      _key,      _type == "inicioSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "subtitle1": coalesce(subtitle1[_key == $language][0].value, subtitle1[_key == "es"][0].value, subtitle1[0].value),        "subtitle2": coalesce(subtitle2[_key == $language][0].value, subtitle2[_key == "es"][0].value, subtitle2[0].value),        "highlightedWord": coalesce(highlightedWord[_key == $language][0].value, highlightedWord[_key == "es"][0].value, highlightedWord[0].value),        "subtitle3": coalesce(subtitle3[_key == $language][0].value, subtitle3[_key == "es"][0].value, subtitle3[0].value),        "location": coalesce(location[_key == $language][0].value, location[_key == "es"][0].value, location[0].value),      },      _type == "manifiestoSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "content": coalesce(content[_key == $language][0].value, content[_key == "es"][0].value, content[0].value),        backgroundColor,      },      _type == "trabajosSection" => {        "statement": coalesce(statement[_key == $language][0].value, statement[_key == "es"][0].value, statement[0].value),        "buttonText": coalesce(buttonText[_key == $language][0].value, buttonText[_key == "es"][0].value, buttonText[0].value),        buttonUrl,        "fotos": fotos[]{          "url": image.asset->url,          "nombre": coalesce(nombre[_key == $language][0].value, nombre[_key == "es"][0].value, nombre[0].value),          "descripcion": coalesce(descripcion[_key == $language][0].value, descripcion[_key == "es"][0].value, descripcion[0].value),          "galeria": galeria[]{            "url": asset->url,            "alt": alt,          },        },      },      _type == "algunaIdeaSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "description": coalesce(description[_key == $language][0].value, description[_key == "es"][0].value, description[0].value),        backgroundColor,      },      _type == "cursosSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "youtubeLabel": coalesce(youtubeLabel[_key == $language][0].value, youtubeLabel[_key == "es"][0].value, youtubeLabel[0].value),        "instagramLabel": coalesce(instagramLabel[_key == $language][0].value, instagramLabel[_key == "es"][0].value, instagramLabel[0].value),        "youtubeVideo": youtubeVideo { "url": asset->url },        youtubeUrl,        "instagramVideo": instagramVideo { "url": asset->url },        instagramUrl,        "presencialLabel": coalesce(presencialLabel[_key == $language][0].value, presencialLabel[_key == "es"][0].value, presencialLabel[0].value),        "presencialTitle": coalesce(presencialTitle[_key == $language][0].value, presencialTitle[_key == "es"][0].value, presencialTitle[0].value),        "presencialHighlight": coalesce(presencialHighlight[_key == $language][0].value, presencialHighlight[_key == "es"][0].value, presencialHighlight[0].value),        "presencialInfo": coalesce(presencialInfo[_key == $language][0].value, presencialInfo[_key == "es"][0].value, presencialInfo[0].value),        "presencialButtonText": coalesce(presencialButtonText[_key == $language][0].value, presencialButtonText[_key == "es"][0].value, presencialButtonText[0].value),        presencialUrl,      },      _type == "tiendaSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "subtitle": coalesce(description[_key == $language][0].value, description[_key == "es"][0].value, description[0].value),      },      _type == "contactoSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "instagramLabel": coalesce(instagramLabel[_key == $language][0].value, instagramLabel[_key == "es"][0].value, instagramLabel[0].value),        instagramUrl,        "youtubeLabel": coalesce(youtubeLabel[_key == $language][0].value, youtubeLabel[_key == "es"][0].value, youtubeLabel[0].value),        youtubeUrl,        "formularioLabel": coalesce(formularioLabel[_key == $language][0].value, formularioLabel[_key == "es"][0].value, formularioLabel[0].value),        formularioUrl,        "whatsappLabel": coalesce(whatsappLabel[_key == $language][0].value, whatsappLabel[_key == "es"][0].value, whatsappLabel[0].value),        whatsappNumber,        "emailLabel": coalesce(emailLabel[_key == $language][0].value, emailLabel[_key == "es"][0].value, emailLabel[0].value),        email,        "footerText": coalesce(footerText[_key == $language][0].value, footerText[_key == "es"][0].value, footerText[0].value),      },      _type == "SobreMiSection" => {        "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),        "body": coalesce(body[_key == $language][0].value, body[_key == "es"][0].value, body[0].value),        verMasUrl,      },      _type == "footerSection" => {        "heading": coalesce(heading[_key == $language][0].value, heading[_key == "es"][0].value, heading[0].value),        "captionText": coalesce(captionText[_key == $language][0].value, captionText[_key == "es"][0].value, captionText[0].value),        captionUrl,      },      _type == "postFooterSection" => {        "thankYouText": coalesce(thankYouText[_key == $language][0].value, thankYouText[_key == "es"][0].value, thankYouText[0].value),        "musicButtonText": coalesce(musicButtonText[_key == $language][0].value, musicButtonText[_key == "es"][0].value, musicButtonText[0].value),        "musicUrl": musicFile.asset->url,      },    },  }
 export type HomeQueryResult = {
   _id: string;
   _type: "home";
@@ -792,6 +863,12 @@ export type HomeQueryResult = {
     presencialUrl: string | null;
   } | {
     _key: string;
+    _type: "footerSection";
+    heading: string | null;
+    captionText: string | null;
+    captionUrl: string | null;
+  } | {
+    _key: string;
     _type: "inicioSection";
     title: string | null;
     subtitle1: string | null;
@@ -807,9 +884,26 @@ export type HomeQueryResult = {
     backgroundColor: "bg-blue-200" | "bg-clean-gray" | "bg-gray-100" | "bg-white" | null;
   } | {
     _key: string;
+    _type: "postFooterSection";
+    thankYouText: string | null;
+    musicButtonText: string | null;
+    musicFile?: {
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.fileAsset";
+      };
+      media?: unknown;
+      _type: "file";
+    };
+    musicUrl: string | null;
+  } | {
+    _key: string;
     _type: "SobreMiSection";
     title: string | null;
     body: string | null;
+    verMasUrl: string | null;
   } | {
     _key: string;
     _type: "tiendaSection";
@@ -828,6 +922,10 @@ export type HomeQueryResult = {
       url: string | null;
       nombre: string | null;
       descripcion: string | null;
+      galeria: Array<{
+        url: string | null;
+        alt: string | null;
+      }> | null;
     }> | null;
     description?: InternationalizedArrayText;
     maxPosts?: number;
@@ -1091,6 +1189,83 @@ export type PostPagesSlugsResult = Array<{
 export type PagesSlugsResult = Array<{
   slug: string | null;
 }>;
+// Variable: seoPagesSlugs
+// Query: *[_type == "seoPage" && defined(slug.current)]  {"slug": slug.current}
+export type SeoPagesSlugsResult = Array<{
+  slug: string | null;
+}>;
+// Variable: seoPageQuery
+// Query: *[_type == "seoPage" && slug.current == $slug][0] {    _id,    "title": coalesce(title[_key == $language][0].value, title[_key == "es"][0].value, title[0].value),    "slug": slug.current,    "metaDescription": coalesce(metaDescription[_key == $language][0].value, metaDescription[_key == "es"][0].value, metaDescription[0].value),    "heroSubtitle": coalesce(heroSubtitle[_key == $language][0].value, heroSubtitle[_key == "es"][0].value, heroSubtitle[0].value),    "heroIntroText": coalesce(heroIntroText[_key == $language][0].value, heroIntroText[_key == "es"][0].value, heroIntroText[0].value),    "content": coalesce(content[_key == $language][0].value, content[_key == "es"][0].value, content[0].value)[]{      ...,      markDefs[]{        ...,        _type == "link" => {          "page": page->slug.current,          "post": post->slug.current        }      }    },    coverImage {      asset,      "alt": coalesce(alt[_key == $language][0].value, alt[_key == "es"][0].value, alt[0].value)    }  }
+export type SeoPageQueryResult = {
+  _id: string;
+  title: string | null;
+  slug: string | null;
+  metaDescription: string | null;
+  heroSubtitle: string | null;
+  heroIntroText: string | null;
+  content: Array<{
+    children?: Array<{
+      marks?: Array<string>;
+      text?: string;
+      _type: "span";
+      _key: string;
+    }>;
+    style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "normal";
+    listItem?: "bullet" | "number";
+    markDefs: Array<{
+      linkType?: "href" | "page" | "post";
+      href?: string;
+      page: string | null;
+      post: string | null;
+      openInNewTab?: boolean;
+      _type: "link";
+      _key: string;
+    }> | null;
+    level?: number;
+    _type: "block";
+    _key: string;
+  } | {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    caption?: string;
+    _type: "image";
+    _key: string;
+    markDefs: null;
+  }> | null;
+  coverImage: {
+    asset: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    } | null;
+    alt: string | null;
+  } | null;
+} | null;
+// Variable: cursosHeroQuery
+// Query: *[_type == "home"][0]{    "sections": sections[_type == "cursosSection"][0]{      "youtubeLabel": coalesce(youtubeLabel[_key == $language][0].value, youtubeLabel[_key == "es"][0].value, youtubeLabel[0].value),      "youtubeVideo": youtubeVideo { "url": asset->url },      youtubeUrl,      "instagramLabel": coalesce(instagramLabel[_key == $language][0].value, instagramLabel[_key == "es"][0].value, instagramLabel[0].value),      "instagramVideo": instagramVideo { "url": asset->url },      instagramUrl    }  }
+export type CursosHeroQueryResult = {
+  sections: {
+    youtubeLabel: string | null;
+    youtubeVideo: {
+      url: string | null;
+    } | null;
+    youtubeUrl: string | null;
+    instagramLabel: string | null;
+    instagramVideo: {
+      url: string | null;
+    } | null;
+    instagramUrl: string | null;
+  } | null;
+} | null;
 // Variable: productsQuery
 // Query: *[_type == "product" && isActive == true] | order(sortOrder asc, _createdAt desc) {    _id,    "name": coalesce(name[_key == $language][0].value, name[_key == "es"][0].value, name[0].value),    "subtitle": coalesce(subtitle[_key == $language][0].value, subtitle[_key == "es"][0].value, subtitle[0].value),    image {      asset,      "alt": coalesce(alt[_key == $language][0].value, alt[_key == "es"][0].value, alt[0].value)    },    "buttonText": coalesce(buttonText[_key == $language][0].value, buttonText[_key == "es"][0].value, buttonText[0].value),    "priceShippingInfo": coalesce(priceShippingInfo[_key == $language][0].value, priceShippingInfo[_key == "es"][0].value, priceShippingInfo[0].value),    "soldText": coalesce(soldText[_key == $language][0].value, soldText[_key == "es"][0].value, soldText[0].value),    "slug": slug.current,    sortOrder,    sold  }
 export type ProductsQueryResult = Array<{
@@ -1142,7 +1317,7 @@ declare module "@sanity/client" {
   interface SanityQueries {
     "*[_type == \"settings\"][0]{ ..., contactEmail }": SettingsQueryResult;
     "\n  *[_type == \"settings\"][0]{\n    \"blogTitle\": coalesce(blogTitle[_key == $language][0].value, blogTitle[_key == \"es\"][0].value, blogTitle[0].value),\n    \"blogPostClosing\": coalesce(blogPostClosing[_key == $language][0].value, blogPostClosing[_key == \"es\"][0].value, blogPostClosing[0].value)\n  }\n": BlogPageQueryResult;
-    "\n  *[_type == 'home'][0]{\n    _id,\n    _type,\n    \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n    \"description\": coalesce(description[_key == $language][0].value, description[_key == \"es\"][0].value, description[0].value),\n    \"sections\": sections[]{\n      ...,\n      _key,\n      _type == \"inicioSection\" => {\n        \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n        \"subtitle1\": coalesce(subtitle1[_key == $language][0].value, subtitle1[_key == \"es\"][0].value, subtitle1[0].value),\n        \"subtitle2\": coalesce(subtitle2[_key == $language][0].value, subtitle2[_key == \"es\"][0].value, subtitle2[0].value),\n        \"highlightedWord\": coalesce(highlightedWord[_key == $language][0].value, highlightedWord[_key == \"es\"][0].value, highlightedWord[0].value),\n        \"subtitle3\": coalesce(subtitle3[_key == $language][0].value, subtitle3[_key == \"es\"][0].value, subtitle3[0].value),\n        \"location\": coalesce(location[_key == $language][0].value, location[_key == \"es\"][0].value, location[0].value),\n      },\n      _type == \"manifiestoSection\" => {\n        \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n        \"content\": coalesce(content[_key == $language][0].value, content[_key == \"es\"][0].value, content[0].value),\n        backgroundColor,\n      },\n      _type == \"trabajosSection\" => {\n        \"statement\": coalesce(statement[_key == $language][0].value, statement[_key == \"es\"][0].value, statement[0].value),\n        \"buttonText\": coalesce(buttonText[_key == $language][0].value, buttonText[_key == \"es\"][0].value, buttonText[0].value),\n        buttonUrl,\n        \"fotos\": fotos[]{\n          \"url\": image.asset->url,\n          \"nombre\": coalesce(nombre[_key == $language][0].value, nombre[_key == \"es\"][0].value, nombre[0].value),\n          \"descripcion\": coalesce(descripcion[_key == $language][0].value, descripcion[_key == \"es\"][0].value, descripcion[0].value),\n        },\n      },\n      _type == \"algunaIdeaSection\" => {\n        \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n        \"description\": coalesce(description[_key == $language][0].value, description[_key == \"es\"][0].value, description[0].value),\n        backgroundColor,\n      },\n      _type == \"cursosSection\" => {\n        \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n        \"youtubeLabel\": coalesce(youtubeLabel[_key == $language][0].value, youtubeLabel[_key == \"es\"][0].value, youtubeLabel[0].value),\n        \"instagramLabel\": coalesce(instagramLabel[_key == $language][0].value, instagramLabel[_key == \"es\"][0].value, instagramLabel[0].value),\n        \"youtubeVideo\": youtubeVideo { \"url\": asset->url },\n        youtubeUrl,\n        \"instagramVideo\": instagramVideo { \"url\": asset->url },\n        instagramUrl,\n        \"presencialLabel\": coalesce(presencialLabel[_key == $language][0].value, presencialLabel[_key == \"es\"][0].value, presencialLabel[0].value),\n        \"presencialTitle\": coalesce(presencialTitle[_key == $language][0].value, presencialTitle[_key == \"es\"][0].value, presencialTitle[0].value),\n        \"presencialHighlight\": coalesce(presencialHighlight[_key == $language][0].value, presencialHighlight[_key == \"es\"][0].value, presencialHighlight[0].value),\n        \"presencialInfo\": coalesce(presencialInfo[_key == $language][0].value, presencialInfo[_key == \"es\"][0].value, presencialInfo[0].value),\n        \"presencialButtonText\": coalesce(presencialButtonText[_key == $language][0].value, presencialButtonText[_key == \"es\"][0].value, presencialButtonText[0].value),\n        presencialUrl,\n      },\n      _type == \"tiendaSection\" => {\n        \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n        \"subtitle\": coalesce(description[_key == $language][0].value, description[_key == \"es\"][0].value, description[0].value),\n      },\n      _type == \"contactoSection\" => {\n        \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n        \"instagramLabel\": coalesce(instagramLabel[_key == $language][0].value, instagramLabel[_key == \"es\"][0].value, instagramLabel[0].value),\n        instagramUrl,\n        \"youtubeLabel\": coalesce(youtubeLabel[_key == $language][0].value, youtubeLabel[_key == \"es\"][0].value, youtubeLabel[0].value),\n        youtubeUrl,\n        \"formularioLabel\": coalesce(formularioLabel[_key == $language][0].value, formularioLabel[_key == \"es\"][0].value, formularioLabel[0].value),\n        formularioUrl,\n        \"whatsappLabel\": coalesce(whatsappLabel[_key == $language][0].value, whatsappLabel[_key == \"es\"][0].value, whatsappLabel[0].value),\n        whatsappNumber,\n        \"emailLabel\": coalesce(emailLabel[_key == $language][0].value, emailLabel[_key == \"es\"][0].value, emailLabel[0].value),\n        email,\n        \"footerText\": coalesce(footerText[_key == $language][0].value, footerText[_key == \"es\"][0].value, footerText[0].value),\n      },\n      _type == \"SobreMiSection\" => {\n        \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n        \"body\": coalesce(body[_key == $language][0].value, body[_key == \"es\"][0].value, body[0].value),\n      },\n      _type == \"footerSection\" => {\n        \"heading\": coalesce(heading[_key == $language][0].value, heading[_key == \"es\"][0].value, heading[0].value),\n        \"captionText\": coalesce(captionText[_key == $language][0].value, captionText[_key == \"es\"][0].value, captionText[0].value),\n        captionUrl,\n      },\n      _type == \"postFooterSection\" => {\n        \"thankYouText\": coalesce(thankYouText[_key == $language][0].value, thankYouText[_key == \"es\"][0].value, thankYouText[0].value),\n        \"musicButtonText\": coalesce(musicButtonText[_key == $language][0].value, musicButtonText[_key == \"es\"][0].value, musicButtonText[0].value),\n        \"musicUrl\": musicFile.asset->url,\n      },\n    },\n  }\n": HomeQueryResult;
+    "\n  *[_type == 'home'][0]{\n    _id,\n    _type,\n    \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n    \"description\": coalesce(description[_key == $language][0].value, description[_key == \"es\"][0].value, description[0].value),\n    \"sections\": sections[]{\n      ...,\n      _key,\n      _type == \"inicioSection\" => {\n        \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n        \"subtitle1\": coalesce(subtitle1[_key == $language][0].value, subtitle1[_key == \"es\"][0].value, subtitle1[0].value),\n        \"subtitle2\": coalesce(subtitle2[_key == $language][0].value, subtitle2[_key == \"es\"][0].value, subtitle2[0].value),\n        \"highlightedWord\": coalesce(highlightedWord[_key == $language][0].value, highlightedWord[_key == \"es\"][0].value, highlightedWord[0].value),\n        \"subtitle3\": coalesce(subtitle3[_key == $language][0].value, subtitle3[_key == \"es\"][0].value, subtitle3[0].value),\n        \"location\": coalesce(location[_key == $language][0].value, location[_key == \"es\"][0].value, location[0].value),\n      },\n      _type == \"manifiestoSection\" => {\n        \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n        \"content\": coalesce(content[_key == $language][0].value, content[_key == \"es\"][0].value, content[0].value),\n        backgroundColor,\n      },\n      _type == \"trabajosSection\" => {\n        \"statement\": coalesce(statement[_key == $language][0].value, statement[_key == \"es\"][0].value, statement[0].value),\n        \"buttonText\": coalesce(buttonText[_key == $language][0].value, buttonText[_key == \"es\"][0].value, buttonText[0].value),\n        buttonUrl,\n        \"fotos\": fotos[]{\n          \"url\": image.asset->url,\n          \"nombre\": coalesce(nombre[_key == $language][0].value, nombre[_key == \"es\"][0].value, nombre[0].value),\n          \"descripcion\": coalesce(descripcion[_key == $language][0].value, descripcion[_key == \"es\"][0].value, descripcion[0].value),\n          \"galeria\": galeria[]{\n            \"url\": asset->url,\n            \"alt\": alt,\n          },\n        },\n      },\n      _type == \"algunaIdeaSection\" => {\n        \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n        \"description\": coalesce(description[_key == $language][0].value, description[_key == \"es\"][0].value, description[0].value),\n        backgroundColor,\n      },\n      _type == \"cursosSection\" => {\n        \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n        \"youtubeLabel\": coalesce(youtubeLabel[_key == $language][0].value, youtubeLabel[_key == \"es\"][0].value, youtubeLabel[0].value),\n        \"instagramLabel\": coalesce(instagramLabel[_key == $language][0].value, instagramLabel[_key == \"es\"][0].value, instagramLabel[0].value),\n        \"youtubeVideo\": youtubeVideo { \"url\": asset->url },\n        youtubeUrl,\n        \"instagramVideo\": instagramVideo { \"url\": asset->url },\n        instagramUrl,\n        \"presencialLabel\": coalesce(presencialLabel[_key == $language][0].value, presencialLabel[_key == \"es\"][0].value, presencialLabel[0].value),\n        \"presencialTitle\": coalesce(presencialTitle[_key == $language][0].value, presencialTitle[_key == \"es\"][0].value, presencialTitle[0].value),\n        \"presencialHighlight\": coalesce(presencialHighlight[_key == $language][0].value, presencialHighlight[_key == \"es\"][0].value, presencialHighlight[0].value),\n        \"presencialInfo\": coalesce(presencialInfo[_key == $language][0].value, presencialInfo[_key == \"es\"][0].value, presencialInfo[0].value),\n        \"presencialButtonText\": coalesce(presencialButtonText[_key == $language][0].value, presencialButtonText[_key == \"es\"][0].value, presencialButtonText[0].value),\n        presencialUrl,\n      },\n      _type == \"tiendaSection\" => {\n        \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n        \"subtitle\": coalesce(description[_key == $language][0].value, description[_key == \"es\"][0].value, description[0].value),\n      },\n      _type == \"contactoSection\" => {\n        \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n        \"instagramLabel\": coalesce(instagramLabel[_key == $language][0].value, instagramLabel[_key == \"es\"][0].value, instagramLabel[0].value),\n        instagramUrl,\n        \"youtubeLabel\": coalesce(youtubeLabel[_key == $language][0].value, youtubeLabel[_key == \"es\"][0].value, youtubeLabel[0].value),\n        youtubeUrl,\n        \"formularioLabel\": coalesce(formularioLabel[_key == $language][0].value, formularioLabel[_key == \"es\"][0].value, formularioLabel[0].value),\n        formularioUrl,\n        \"whatsappLabel\": coalesce(whatsappLabel[_key == $language][0].value, whatsappLabel[_key == \"es\"][0].value, whatsappLabel[0].value),\n        whatsappNumber,\n        \"emailLabel\": coalesce(emailLabel[_key == $language][0].value, emailLabel[_key == \"es\"][0].value, emailLabel[0].value),\n        email,\n        \"footerText\": coalesce(footerText[_key == $language][0].value, footerText[_key == \"es\"][0].value, footerText[0].value),\n      },\n      _type == \"SobreMiSection\" => {\n        \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n        \"body\": coalesce(body[_key == $language][0].value, body[_key == \"es\"][0].value, body[0].value),\n        verMasUrl,\n      },\n      _type == \"footerSection\" => {\n        \"heading\": coalesce(heading[_key == $language][0].value, heading[_key == \"es\"][0].value, heading[0].value),\n        \"captionText\": coalesce(captionText[_key == $language][0].value, captionText[_key == \"es\"][0].value, captionText[0].value),\n        captionUrl,\n      },\n      _type == \"postFooterSection\" => {\n        \"thankYouText\": coalesce(thankYouText[_key == $language][0].value, thankYouText[_key == \"es\"][0].value, thankYouText[0].value),\n        \"musicButtonText\": coalesce(musicButtonText[_key == $language][0].value, musicButtonText[_key == \"es\"][0].value, musicButtonText[0].value),\n        \"musicUrl\": musicFile.asset->url,\n      },\n    },\n  }\n": HomeQueryResult;
     "\n  *[_type == 'page' && slug.current == $slug][0]{\n    _id,\n    _type,\n    \"name\": coalesce(name[_key == $language][0].value, name[_key == \"es\"][0].value, name[0].value),\n    slug,\n    \"heading\": coalesce(heading[_key == $language][0].value, heading[_key == \"es\"][0].value, heading[0].value),\n    \"subheading\": coalesce(subheading[_key == $language][0].value, subheading[_key == \"es\"][0].value, subheading[0].value),\n    \"pageBuilder\": pageBuilder[]{\n      ...,\n      _type == \"callToAction\" => {\n        \n  link {\n      ...,\n      \n  _type == \"link\" => {\n    \"page\": page->slug.current,\n    \"post\": post->slug.current\n  }\n\n      }\n,\n      },\n      _type == \"infoSection\" => {\n        content[]{\n          ...,\n          markDefs[]{\n            ...,\n            \n  _type == \"link\" => {\n    \"page\": page->slug.current,\n    \"post\": post->slug.current\n  }\n\n          }\n        }\n      },\n      _type == \"inicioSection\" => {\n        \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n        \"subtitle1\": coalesce(subtitle1[_key == $language][0].value, subtitle1[_key == \"es\"][0].value, subtitle1[0].value),\n        \"subtitle2\": coalesce(subtitle2[_key == $language][0].value, subtitle2[_key == \"es\"][0].value, subtitle2[0].value),\n        \"highlightedWord\": coalesce(highlightedWord[_key == $language][0].value, highlightedWord[_key == \"es\"][0].value, highlightedWord[0].value),\n        \"subtitle3\": coalesce(subtitle3[_key == $language][0].value, subtitle3[_key == \"es\"][0].value, subtitle3[0].value),\n        \"location\": coalesce(location[_key == $language][0].value, location[_key == \"es\"][0].value, location[0].value),\n      },\n    },\n  }\n": GetPageQueryResult;
     "\n  *[_type == \"page\" || _type == \"post\" && defined(slug.current)] | order(_type asc) {\n    \"slug\": slug.current,\n    _type,\n    _updatedAt,\n  }\n": SitemapDataResult;
     "\n  *[_type == \"post\" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value, \"Untitled\"),\n  \"slug\": slug.current,\n  \"label\": coalesce(label[_key == $language][0].value, label[_key == \"es\"][0].value, label[0].value),\n  \"excerpt\": coalesce(excerpt[_key == $language][0].value, excerpt[_key == \"es\"][0].value, excerpt[0].value),\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{firstName, lastName, picture},\n\n  }\n": AllPostsQueryResult;
@@ -1150,6 +1325,9 @@ declare module "@sanity/client" {
     "\n  *[_type == \"post\" && slug.current == $slug] [0] {\n    \"content\": coalesce(content[_key == $language][0].value, content[_key == \"es\"][0].value, content[0].value)[]{\n    ...,\n    markDefs[]{\n      ...,\n      \n  _type == \"link\" => {\n    \"page\": page->slug.current,\n    \"post\": post->slug.current\n  }\n\n    }\n  },\n    \n  _id,\n  \"status\": select(_originalId in path(\"drafts.**\") => \"draft\", \"published\"),\n  \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value, \"Untitled\"),\n  \"slug\": slug.current,\n  \"label\": coalesce(label[_key == $language][0].value, label[_key == \"es\"][0].value, label[0].value),\n  \"excerpt\": coalesce(excerpt[_key == $language][0].value, excerpt[_key == \"es\"][0].value, excerpt[0].value),\n  coverImage,\n  \"date\": coalesce(date, _updatedAt),\n  \"author\": author->{firstName, lastName, picture},\n\n  }\n": PostQueryResult;
     "\n  *[_type == \"post\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": PostPagesSlugsResult;
     "\n  *[_type == \"page\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": PagesSlugsResult;
+    "\n  *[_type == \"seoPage\" && defined(slug.current)]\n  {\"slug\": slug.current}\n": SeoPagesSlugsResult;
+    "\n  *[_type == \"seoPage\" && slug.current == $slug][0] {\n    _id,\n    \"title\": coalesce(title[_key == $language][0].value, title[_key == \"es\"][0].value, title[0].value),\n    \"slug\": slug.current,\n    \"metaDescription\": coalesce(metaDescription[_key == $language][0].value, metaDescription[_key == \"es\"][0].value, metaDescription[0].value),\n    \"heroSubtitle\": coalesce(heroSubtitle[_key == $language][0].value, heroSubtitle[_key == \"es\"][0].value, heroSubtitle[0].value),\n    \"heroIntroText\": coalesce(heroIntroText[_key == $language][0].value, heroIntroText[_key == \"es\"][0].value, heroIntroText[0].value),\n    \"content\": coalesce(content[_key == $language][0].value, content[_key == \"es\"][0].value, content[0].value)[]{\n      ...,\n      markDefs[]{\n        ...,\n        _type == \"link\" => {\n          \"page\": page->slug.current,\n          \"post\": post->slug.current\n        }\n      }\n    },\n    coverImage {\n      asset,\n      \"alt\": coalesce(alt[_key == $language][0].value, alt[_key == \"es\"][0].value, alt[0].value)\n    }\n  }\n": SeoPageQueryResult;
+    "\n  *[_type == \"home\"][0]{\n    \"sections\": sections[_type == \"cursosSection\"][0]{\n      \"youtubeLabel\": coalesce(youtubeLabel[_key == $language][0].value, youtubeLabel[_key == \"es\"][0].value, youtubeLabel[0].value),\n      \"youtubeVideo\": youtubeVideo { \"url\": asset->url },\n      youtubeUrl,\n      \"instagramLabel\": coalesce(instagramLabel[_key == $language][0].value, instagramLabel[_key == \"es\"][0].value, instagramLabel[0].value),\n      \"instagramVideo\": instagramVideo { \"url\": asset->url },\n      instagramUrl\n    }\n  }\n": CursosHeroQueryResult;
     "\n  *[_type == \"product\" && isActive == true] | order(sortOrder asc, _createdAt desc) {\n    _id,\n    \"name\": coalesce(name[_key == $language][0].value, name[_key == \"es\"][0].value, name[0].value),\n    \"subtitle\": coalesce(subtitle[_key == $language][0].value, subtitle[_key == \"es\"][0].value, subtitle[0].value),\n    image {\n      asset,\n      \"alt\": coalesce(alt[_key == $language][0].value, alt[_key == \"es\"][0].value, alt[0].value)\n    },\n    \"buttonText\": coalesce(buttonText[_key == $language][0].value, buttonText[_key == \"es\"][0].value, buttonText[0].value),\n    \"priceShippingInfo\": coalesce(priceShippingInfo[_key == $language][0].value, priceShippingInfo[_key == \"es\"][0].value, priceShippingInfo[0].value),\n    \"soldText\": coalesce(soldText[_key == $language][0].value, soldText[_key == \"es\"][0].value, soldText[0].value),\n    \"slug\": slug.current,\n    sortOrder,\n    sold\n  }\n": ProductsQueryResult;
     "\n  *[_type == \"product\" && isActive != false] | order(sortOrder asc, _createdAt desc) [0...$limit] {\n    _id,\n    \"name\": coalesce(name[_key == $language][0].value, name[_key == \"es\"][0].value, name[0].value),\n    \"subtitle\": coalesce(subtitle[_key == $language][0].value, subtitle[_key == \"es\"][0].value, subtitle[0].value),\n    image {\n      asset,\n      \"alt\": coalesce(alt[_key == $language][0].value, alt[_key == \"es\"][0].value, alt[0].value)\n    },\n    \"buttonText\": coalesce(buttonText[_key == $language][0].value, buttonText[_key == \"es\"][0].value, buttonText[0].value),\n    \"priceShippingInfo\": coalesce(priceShippingInfo[_key == $language][0].value, priceShippingInfo[_key == \"es\"][0].value, priceShippingInfo[0].value),\n    \"soldText\": coalesce(soldText[_key == $language][0].value, soldText[_key == \"es\"][0].value, soldText[0].value),\n    \"slug\": slug.current,\n    sortOrder,\n    sold\n  }\n": FeaturedProductsQueryResult;
   }

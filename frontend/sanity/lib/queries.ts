@@ -39,6 +39,10 @@ export const homeQuery = defineQuery(`
           "url": image.asset->url,
           "nombre": coalesce(nombre[_key == $language][0].value, nombre[_key == "es"][0].value, nombre[0].value),
           "descripcion": coalesce(descripcion[_key == $language][0].value, descripcion[_key == "es"][0].value, descripcion[0].value),
+          "galeria": galeria[]{
+            "url": asset->url,
+            "alt": alt,
+          },
         },
       },
       _type == "algunaIdeaSection" => {

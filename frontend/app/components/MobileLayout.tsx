@@ -5,6 +5,7 @@ import type { SectionsData } from "./Shelves";
 import InicioSection from "./sections/InicioSection";
 import PlaygroundSection from "./sections/PlaygroundSection";
 import ManifiestoSection from "./sections/ManifiestoSection";
+import TrabajosMobile from "./sections/TrabajosMobile";
 import AlgunaIdeaSection from "./sections/AlgunaIdeaSection";
 import CursosSection from "./sections/CursosSection";
 import SobreMiSection from "./sections/SobreMiSection";
@@ -54,61 +55,7 @@ export default function MobileLayout({
           fill
           className="object-cover"
         />
-        <div className="absolute inset-0 z-10 flex flex-col justify-center gap-6 items-center overflow-hidden">
-          <p className="font-sans font-bold text-4xl leading-none tracking-normal text-center text-green-pipo px-12">
-            {sectionsData.trabajos?.statement || "PROYECTOS QUE HABLAN POR SÍ SOLOS."}
-          </p>
-          <div
-            style={{
-              width: "100%",
-              height: "55vh",
-              display: "flex",
-              overflowX: "auto",
-              gap: 12,
-              paddingLeft: "calc((100% - 55vw) / 2)",
-              paddingRight: "calc((100% - 55vw) / 2)",
-              scrollSnapType: "x mandatory",
-              scrollbarWidth: "none",
-            }}
-          >
-            {(sectionsData.trabajos?.fotos ?? []).map(
-              (foto: { url?: string; nombre?: string; descripcion?: string }, i: number) => (
-                <div
-                  key={i}
-                  style={{
-                    flexShrink: 0,
-                    width: "55vw",
-                    height: "55vh",
-                    scrollSnapAlign: "center",
-                    borderRadius: 6,
-                    overflow: "hidden",
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <div className="bg-green-pipo text-white font-sans text-center py-2 px-2 flex-shrink-0 flex flex-col gap-0.5">
-                    <span className="font-bold uppercase text-sm">{foto.nombre || "—"}</span>
-                    {foto.descripcion && (
-                      <span className="text-xs opacity-90">{foto.descripcion}</span>
-                    )}
-                  </div>
-                  <div className="flex-1 relative min-h-0">
-                    {foto.url ? (
-                      <Image
-                        src={foto.url}
-                        alt={foto.nombre ?? ""}
-                        fill
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-[#2a2a2a]" />
-                    )}
-                  </div>
-                </div>
-              ),
-            )}
-          </div>
-        </div>
+        <TrabajosMobile data={sectionsData.trabajos} />
       </section>
 
       {/* ALGUNA IDEA */}
